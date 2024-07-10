@@ -1,0 +1,12 @@
+C:\AM_System\ApiAmSystem\ApiAmSystem.Domain\obj\Debug\net8.0\ApiAmSystem.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\AM_System\ApiAmSystem\ApiAmSystem.Domain\obj\Debug\net8.0\ApiAmSystem.Domain.AssemblyInfoInputs.cache
+C:\AM_System\ApiAmSystem\ApiAmSystem.Domain\obj\Debug\net8.0\ApiAmSystem.Domain.AssemblyInfo.cs
+C:\AM_System\ApiAmSystem\ApiAmSystem.Domain\obj\Debug\net8.0\ApiAmSystem.Domain.csproj.CoreCompileInputs.cache
+C:\AM_System\ApiAmSystem\ApiAmSystem.Domain\bin\Debug\net8.0\ApiAmSystem.Domain.deps.json
+C:\AM_System\ApiAmSystem\ApiAmSystem.Domain\bin\Debug\net8.0\ApiAmSystem.Domain.dll
+C:\AM_System\ApiAmSystem\ApiAmSystem.Domain\bin\Debug\net8.0\ApiAmSystem.Domain.pdb
+C:\AM_System\ApiAmSystem\ApiAmSystem.Domain\obj\Debug\net8.0\ApiAmSystem.Domain.csproj.AssemblyReference.cache
+C:\AM_System\ApiAmSystem\ApiAmSystem.Domain\obj\Debug\net8.0\ApiAmSystem.Domain.dll
+C:\AM_System\ApiAmSystem\ApiAmSystem.Domain\obj\Debug\net8.0\refint\ApiAmSystem.Domain.dll
+C:\AM_System\ApiAmSystem\ApiAmSystem.Domain\obj\Debug\net8.0\ApiAmSystem.Domain.pdb
+C:\AM_System\ApiAmSystem\ApiAmSystem.Domain\obj\Debug\net8.0\ref\ApiAmSystem.Domain.dll
