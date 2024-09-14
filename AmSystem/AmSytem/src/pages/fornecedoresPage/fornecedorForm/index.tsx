@@ -15,7 +15,6 @@ import {
   insertMaskCel,
   insertMaskRG,
 } from "@/functions/masks";
-import { iCliente } from "@/interfaces/cliente.interfaces";
 import {
   Dialog,
   DialogHeader,
@@ -43,25 +42,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { GetCidades } from "@/pages/cidadesPage/services/queries";
 import FormFieldInput from "@/components/form/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { ICidade } from "@/interfaces/cidade.interfaces";
-import { DateObject } from "react-multi-date-picker";
-import DatePicker from "react-multi-date-picker";
-// import "./style.css";
-import { Calendar } from "@/components/calendar";
 import { IFornecedor } from "@/interfaces/fornecedor.interfaces";
 import InputCalendar from "@/components/form/inputCalendar";
 import { Search } from "lucide-react";
@@ -107,12 +91,12 @@ const FornecedorForm = ({
   }, [cidade]);
 
   useEffect(() => {
-    const tpFornecedor = form.getValues("tpFornecedor");
+    const tpPessoa = form.getValues("tpPessoa");
     form.reset({
       ...defaultValues,
-      tpFornecedor: tpFornecedor,
+      tpPessoa: tpPessoa,
     });
-  }, [form.watch("tpFornecedor")]);
+  }, [form.watch("tpPessoa")]);
 
   const onSubmit = (data: IFornecedor) => {
     if (openCidades === false) {
@@ -157,7 +141,7 @@ const FornecedorForm = ({
                   disabled={true}
                 />
                 <FormField
-                  name="tpFornecedor"
+                  name="tpPessoa"
                   control={form.control}
                   render={({ field }) => {
                     return (
@@ -201,8 +185,8 @@ const FornecedorForm = ({
                 )}
               />
             </div>
-            {form.watch("tpFornecedor") === "F" ||
-            form.watch("tpFornecedor") === "J" ? (
+            {form.watch("tpPessoa") === "F" ||
+            form.watch("tpPessoa") === "J" ? (
               <>
                 <Separator className="!mt-10 !mb-9" />
                 <div className="!m-0">
@@ -210,21 +194,21 @@ const FornecedorForm = ({
                   <div className="grid grid-cols-9 gap-4">
                     <FormFieldInput<FornecedorFormData>
                       errorMessage={
-                        form.formState.errors.fornecedorRazaoSocial?.message
+                        form.formState.errors.pessoaRazaoSocial?.message
                       }
                       label={
-                        form.watch("tpFornecedor") === "F"
+                        form.watch("tpPessoa") === "F"
                           ? "Cliente*"
                           : "Razão Social*"
                       }
-                      name="fornecedorRazaoSocial"
+                      name="pessoaRazaoSocial"
                       control={form.control}
                       className="col-span-4"
                     />
 
                     <FormFieldInput
                       label={
-                        form.watch("tpFornecedor") === "F"
+                        form.watch("tpPessoa") === "F"
                           ? "Apelido"
                           : "Nome Fantasia"
                       }
@@ -242,7 +226,7 @@ const FornecedorForm = ({
                       render={({ field }) => (
                         <FormItem
                           className={`col-span-2 ${
-                            form.watch("tpFornecedor") === "F"
+                            form.watch("tpPessoa") === "F"
                               ? "visible"
                               : "hidden"
                           }`}
@@ -308,7 +292,7 @@ const FornecedorForm = ({
                       name="representante"
                       control={form.control}
                       className={`col-span-4 ${
-                        form.watch("tpFornecedor") === "F" ? "hidden" : "block"
+                        form.watch("tpPessoa") === "F" ? "hidden" : "block"
                       }`}
                       errorMessage={
                         form.formState.errors.representante?.message
@@ -321,7 +305,7 @@ const FornecedorForm = ({
                       control={form.control}
                       maskFunction={insertMaskCel}
                       className={`col-span-4 ${
-                        form.watch("tpFornecedor") === "F" ? "hidden" : "block"
+                        form.watch("tpPessoa") === "F" ? "hidden" : "block"
                       }`}
                       errorMessage={
                         form.formState.errors.celularRepresentante?.message
@@ -329,15 +313,13 @@ const FornecedorForm = ({
                     />
 
                     <FormFieldInput
-                      label={
-                        form.watch("tpFornecedor") === "F" ? "CPF*" : "CNPJ*"
-                      }
+                      label={form.watch("tpPessoa") === "F" ? "CPF*" : "CNPJ*"}
                       name="cpfCnpj"
                       control={form.control}
                       className="col-span-2"
                       errorMessage={form.formState.errors.cpfCnpj?.message}
                       maskFunction={
-                        form.watch("tpFornecedor") === "F"
+                        form.watch("tpPessoa") === "F"
                           ? insertMaskCPF
                           : insertMaskCNPJ
                       }
@@ -345,7 +327,7 @@ const FornecedorForm = ({
 
                     <FormFieldInput
                       label={
-                        form.watch("tpFornecedor") === "F"
+                        form.watch("tpPessoa") === "F"
                           ? "RG"
                           : "Inscrição Estadual"
                       }
@@ -354,7 +336,7 @@ const FornecedorForm = ({
                       className="col-span-2"
                       errorMessage={form.formState.errors.ieRg?.message}
                       maskFunction={
-                        form.watch("tpFornecedor") === "F"
+                        form.watch("tpPessoa") === "F"
                           ? insertMaskRG
                           : undefined
                       }
@@ -384,11 +366,11 @@ const FornecedorForm = ({
                     />
 
                     <FormFieldInput
-                      label="Rua*"
-                      name="endereco"
+                      label="Logradouro*"
+                      name="logradouro"
                       control={form.control}
                       className="col-span-3"
-                      errorMessage={form.formState.errors.endereco?.message}
+                      errorMessage={form.formState.errors.logradouro?.message}
                     />
 
                     <FormFieldInput

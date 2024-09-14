@@ -104,12 +104,12 @@ const ClienteForm = ({
   }, [cidade]);
 
   useEffect(() => {
-    const tpCliente = form.getValues("tpCliente");
+    const tpPessoa = form.getValues("tpPessoa");
     form.reset({
       ...defaultValues,
-      tpCliente: tpCliente,
+      tpPessoa: tpPessoa,
     });
-  }, [form.watch("tpCliente")]);
+  }, [form.watch("tpPessoa")]);
 
   const onSubmit = (data: iCliente) => {
     if (openCidades === false) {
@@ -152,7 +152,7 @@ const ClienteForm = ({
                   disabled={true}
                 />
                 <FormField
-                  name="tpCliente"
+                  name="tpPessoa"
                   control={form.control}
                   render={({ field }) => {
                     return (
@@ -196,8 +196,8 @@ const ClienteForm = ({
                 )}
               />
             </div>
-            {form.watch("tpCliente") === "F" ||
-            form.watch("tpCliente") === "J" ? (
+            {form.watch("tpPessoa") === "F" ||
+            form.watch("tpPessoa") === "J" ? (
               <>
                 <Separator className="!mt-10 !mb-9" />
                 <div className="!m-0">
@@ -205,21 +205,21 @@ const ClienteForm = ({
                   <div className="grid grid-cols-9 gap-4">
                     <FormFieldInput<ClienteFormData>
                       errorMessage={
-                        form.formState.errors.clienteRazaoSocial?.message
+                        form.formState.errors.pessoaRazaoSocial?.message
                       }
                       label={
-                        form.watch("tpCliente") === "F"
+                        form.watch("tpPessoa") === "F"
                           ? "Cliente*"
                           : "Razão Social*"
                       }
-                      name="clienteRazaoSocial"
+                      name="pessoaRazaoSocial"
                       control={form.control}
                       className="col-span-4"
                     />
 
                     <FormFieldInput
                       label={
-                        form.watch("tpCliente") === "F"
+                        form.watch("tpPessoa") === "F"
                           ? "Apelido"
                           : "Nome Fantasia"
                       }
@@ -237,7 +237,7 @@ const ClienteForm = ({
                       render={({ field }) => (
                         <FormItem
                           className={`col-span-2 ${
-                            form.watch("tpCliente") === "F"
+                            form.watch("tpPessoa") === "F"
                               ? "visible"
                               : "hidden"
                           }`}
@@ -303,7 +303,7 @@ const ClienteForm = ({
                       name="representante"
                       control={form.control}
                       className={`col-span-4 ${
-                        form.watch("tpCliente") === "F" ? "hidden" : "block"
+                        form.watch("tpPessoa") === "F" ? "hidden" : "block"
                       }`}
                       errorMessage={
                         form.formState.errors.representante?.message
@@ -316,7 +316,7 @@ const ClienteForm = ({
                       control={form.control}
                       maskFunction={insertMaskCel}
                       className={`col-span-4 ${
-                        form.watch("tpCliente") === "F" ? "hidden" : "block"
+                        form.watch("tpPessoa") === "F" ? "hidden" : "block"
                       }`}
                       errorMessage={
                         form.formState.errors.celularRepresentante?.message
@@ -324,13 +324,13 @@ const ClienteForm = ({
                     />
 
                     <FormFieldInput
-                      label={form.watch("tpCliente") === "F" ? "CPF*" : "CNPJ*"}
+                      label={form.watch("tpPessoa") === "F" ? "CPF*" : "CNPJ*"}
                       name="cpfCnpj"
                       control={form.control}
                       className="col-span-2"
                       errorMessage={form.formState.errors.cpfCnpj?.message}
                       maskFunction={
-                        form.watch("tpCliente") === "F"
+                        form.watch("tpPessoa") === "F"
                           ? insertMaskCPF
                           : insertMaskCNPJ
                       }
@@ -338,7 +338,7 @@ const ClienteForm = ({
 
                     <FormFieldInput
                       label={
-                        form.watch("tpCliente") === "F"
+                        form.watch("tpPessoa") === "F"
                           ? "RG"
                           : "Inscrição Estadual"
                       }
@@ -347,7 +347,7 @@ const ClienteForm = ({
                       className="col-span-2"
                       errorMessage={form.formState.errors.ieRg?.message}
                       maskFunction={
-                        form.watch("tpCliente") === "F"
+                        form.watch("tpPessoa") === "F"
                           ? insertMaskRG
                           : undefined
                       }
@@ -377,11 +377,11 @@ const ClienteForm = ({
                     />
 
                     <FormFieldInput
-                      label="Rua*"
-                      name="endereco"
+                      label="Logradouro*"
+                      name="logradouro"
                       control={form.control}
                       className="col-span-3"
-                      errorMessage={form.formState.errors.endereco?.message}
+                      errorMessage={form.formState.errors.logradouro?.message}
                     />
 
                     <FormFieldInput

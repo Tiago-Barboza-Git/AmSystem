@@ -63,3 +63,12 @@ export function definirProximaParcela(parcelas: IParcela[]): number {
 
   return proximaParcela;
 }
+
+export function formatMoney(value: string): number {
+  if (value === undefined || value.length == 0) return 0;
+  if (value.toString().includes(",")) {
+    const valueNumber = Number(value.toString().replace(".", "").replace(",", "."));
+    return valueNumber;
+  }
+  return Number(value);
+}

@@ -1,21 +1,9 @@
 import React from "react";
-import {
-  Control,
-  FieldValues,
-  Path,
-  UseFormWatch,
-  useController,
-  useWatch,
-} from "react-hook-form";
+import { Control, FieldValues, Path, UseFormWatch, useController, useWatch } from "react-hook-form";
 import { Input } from "@/components/ui/input"; // Ajuste o caminho conforme necessário
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form"; // Ajuste o caminho conforme necessário
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"; // Ajuste o caminho conforme necessário
 import { error } from "console";
+import { Label } from "@/components/text/text";
 
 export interface FormFieldInputProps<T extends FieldValues> {
   name: Path<T>;
@@ -54,7 +42,7 @@ const FormFieldInput = <T extends FieldValues>({
   return (
     <FormItem className={className}>
       <FormLabel className={`${hasError ? "text-red-500" : ""}`}>
-        {label}
+        <Label>{label}</Label>
       </FormLabel>
       <FormControl>
         <Input
@@ -85,9 +73,7 @@ const FormFieldInput = <T extends FieldValues>({
         />
       </FormControl>
       {/* {hasError && <FormMessage>{errorMessage}</FormMessage>} */}
-      {invalid && error && (
-        <FormMessage className="text-red-500">{error.message}</FormMessage>
-      )}
+      {invalid && error && <FormMessage className="text-red-500">{error.message}</FormMessage>}
     </FormItem>
   );
 };

@@ -11,15 +11,10 @@ interface fornecedoresColumnsProps {
   onDelete: (cliente: IFornecedor) => void;
 }
 
-export const getFornecedoresColumns = ({
-  onEdit,
-  onDelete,
-}: fornecedoresColumnsProps): ColumnDef<IFornecedor>[] => [
+export const getFornecedoresColumns = ({ onEdit, onDelete }: fornecedoresColumnsProps): ColumnDef<IFornecedor>[] => [
   {
     accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cód. " />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Cód. " />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.id}</span>
@@ -29,12 +24,10 @@ export const getFornecedoresColumns = ({
   },
   {
     accessorKey: "fornecedorRazaoSocial",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Fornecedor/Razão Social" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Fornecedor/Razão Social" />,
     cell: ({ row }) => (
       <div>
-        <span>{row.original.fornecedorRazaoSocial}</span>
+        <span>{row.original.pessoaRazaoSocial}</span>
       </div>
     ),
     enableGlobalFilter: true,
@@ -45,7 +38,7 @@ export const getFornecedoresColumns = ({
     enableGlobalFilter: false,
     cell: ({ row }) => (
       <div>
-        <span>{row.original.tpFornecedor === "F" ? "Física" : "Jurídica"}</span>
+        <span>{row.original.tpPessoa === "F" ? "Física" : "Jurídica"}</span>
       </div>
     ),
   },
@@ -56,9 +49,7 @@ export const getFornecedoresColumns = ({
     cell: ({ row }) => (
       <div>
         <span>
-          {row.original.tpFornecedor === "F"
-            ? insertMaskCPF(row.original.cpfCnpj)
-            : insertMaskCNPJ(row.original.cpfCnpj)}
+          {row.original.tpPessoa === "F" ? insertMaskCPF(row.original.cpfCnpj) : insertMaskCNPJ(row.original.cpfCnpj)}
         </span>
       </div>
     ),
@@ -77,16 +68,12 @@ export const getFornecedoresColumns = ({
   {
     accessorKey: "dtAlteracao",
     header: "Dt. Alteração",
-    cell: ({ row }) => (
-      <div>{formatDate(String(row.original.dtAlteracao))}</div>
-    ),
+    cell: ({ row }) => <div>{formatDate(String(row.original.dtAlteracao))}</div>,
     enableGlobalFilter: false,
   },
   {
     id: "actions",
-    cell: ({ row }) => (
-      <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />
-    ),
+    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />,
   },
 ];
 

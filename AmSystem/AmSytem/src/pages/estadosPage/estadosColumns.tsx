@@ -1,5 +1,4 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { iPais } from "@/interfaces/pais.interfaces";
 import DataTableColumnHeader from "@/components/datatable/dataTableColumnHeader";
 import { DataTableRowActions } from "@/components/datatable/dataTableRowActions";
 import { formatDate } from "@/functions/functions";
@@ -10,15 +9,10 @@ interface estadosColumnsProps {
   onDelete: (estado: IEstado) => void;
 }
 
-export const getEstadosColumns = ({
-  onEdit,
-  onDelete,
-}: estadosColumnsProps): ColumnDef<IEstado>[] => [
+export const getEstadosColumns = ({ onEdit, onDelete }: estadosColumnsProps): ColumnDef<IEstado>[] => [
   {
     accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cód. " />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Cód. " />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.id}</span>
@@ -28,9 +22,7 @@ export const getEstadosColumns = ({
   },
   {
     accessorKey: "estado",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Estado" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Estado" />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.estado}</span>
@@ -58,14 +50,10 @@ export const getEstadosColumns = ({
     accessorKey: "dtAlteracao",
     header: "Dt. Alteração",
     enableColumnFilter: false,
-    cell: ({ row }) => (
-      <div>{formatDate(String(row.original.dtAlteracao))}</div>
-    ),
+    cell: ({ row }) => <div>{formatDate(String(row.original.dtAlteracao))}</div>,
   },
   {
     id: "actions",
-    cell: ({ row }) => (
-      <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />
-    ),
+    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />,
   },
 ];

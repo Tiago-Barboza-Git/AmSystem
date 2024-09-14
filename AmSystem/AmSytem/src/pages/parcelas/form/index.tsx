@@ -25,6 +25,7 @@ import { Search } from "lucide-react";
 import { PaisesPage } from "@/pages/paisesPage";
 import { FormasPagamentosPage } from "@/pages/formasPagamentosPage";
 import { formatPercentage, definirProximaParcela } from "@/functions/functions";
+import { toast } from "sonner";
 
 interface ParcelaFormProps {
   isOpen: boolean;
@@ -61,7 +62,6 @@ export const ParcelaForm = ({
   }, [formaPagamento]);
 
   const onSubmit = (data: IParcela) => {
-    console.log("Teste");
     addParcela(data);
     form.reset();
     onOpenChange(false);

@@ -53,14 +53,16 @@ export const insertMaskCEP = (cep?: string) => {
   return cleaned.replace(/^(\d{5})(\d{3})/, "$1-$2");
 };
 
-export function formatCurrency(input?: string): number {
+export function formatCurrency(input: string): number {
+  if (input === undefined) return 0;
   if (!input) return 0;
-  input.trim();
+  input.toString().trim();
   // Verifica se a string começa com "R$ " e extrai o valor numérico
-  if (input.startsWith("R$")) {
+  if (input.toString().startsWith("R$")) {
     const value = input.substring(3); // Remove "R$ "
     // Remove pontos e vírgulas para obter apenas os dígitos
     const cleanValue = value.replace(/[\.,]/g, "");
+    console.log("CleanValue", Number(cleanValue));
     // Verifica se há ao menos três caracteres no valor limpo
     if (cleanValue.length >= 3) {
       // Separa os últimos dois caracteres do restante
@@ -70,8 +72,10 @@ export function formatCurrency(input?: string): number {
       const formattedValue = integerPart + "," + decimalPart;
       // Adiciona "R$ " no início e retorna
       return Number(formattedValue.replace(",", "."));
+    } else if (Number(cleanValue) === 0) {
+      return 0;
     } else {
-      throw new Error("O valor fornecido é inválido.");
+      return Number(input);
     }
   } else {
     return Number(input);

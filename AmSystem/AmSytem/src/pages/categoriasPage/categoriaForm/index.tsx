@@ -1,23 +1,9 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  CategoriaFormData,
-  CategoriaFormSchema,
-  defaultValues,
-} from "./schema.tsx";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CategoriaFormData, CategoriaFormSchema, defaultValues } from "./schema.tsx";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form.tsx";
+import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form.tsx";
 import { useEffect } from "react";
 import { Switch } from "@/components/ui/switch.tsx";
 import { PostCategoria, PutCategoria } from "../services/queries.tsx";
@@ -33,12 +19,7 @@ interface categoriaFormProps {
   categoria: ICategoria | null;
 }
 
-const CategoriaForm = ({
-  action,
-  isOpen,
-  onOpenChange,
-  categoria,
-}: categoriaFormProps) => {
+const CategoriaForm = ({ action, isOpen, onOpenChange, categoria }: categoriaFormProps) => {
   const putCategoria = PutCategoria(onOpenChange);
   const postCategoria = PostCategoria(onOpenChange);
   const form = useForm<CategoriaFormData>({
@@ -73,9 +54,7 @@ const CategoriaForm = ({
         }}
       >
         <DialogHeader>
-          <DialogTitle>
-            {categoria ? "Atualizar a categoria" : "Adicionar nova categoria"}
-          </DialogTitle>
+          <DialogTitle>{categoria ? "Atualizar a categoria" : "Adicionar nova categoria"}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
           <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
@@ -99,10 +78,7 @@ const CategoriaForm = ({
                     <FormItem className="flex flex-col gap-2 items-center justify-center">
                       <FormLabel>Ativo</FormLabel>
                       <FormControl>
-                        <Switch
-                          defaultChecked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -118,12 +94,7 @@ const CategoriaForm = ({
                   className="col-span-4"
                 />
 
-                <FormFieldTextArea
-                  control={form.control}
-                  name="descricao"
-                  label="Descrição"
-                  className="col-span-8"
-                />
+                <FormFieldTextArea control={form.control} name="descricao" label="Descrição" className="col-span-8" />
 
                 {/* <FormFieldInput
                   label="Descrição"

@@ -8,7 +8,11 @@ import { IProduto } from "@/interfaces/produto.interfaces";
 import { DeleteProduto, GetProdutos } from "./services/queries";
 import ProdutoForm from "./produtoForm";
 
-export function ProdutosPage() {
+interface produtosPageProps {
+  setProduto?: (produto: IProduto) => void;
+}
+
+export function ProdutosPage({ setProduto }: produtosPageProps) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
@@ -81,6 +85,7 @@ export function ProdutosPage() {
           onAdd={onAdd}
           onGet={onGet}
           ativos={ativos}
+          setObj={setProduto}
         />
       </CardContent>
     </Card>

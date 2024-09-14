@@ -13,7 +13,11 @@ import { DeleteFornecedor, GetFornecedores } from "./services/queries.tsx";
 import getFornecedoresColumns from "./fornecedoresColumns.tsx";
 import FornecedorForm from "./fornecedorForm/index.tsx";
 
-export function FornecedoresPage() {
+interface FornecedoresPageProps {
+  setFornecedor?: (fornecedor: IFornecedor) => void;
+}
+
+export function FornecedoresPage({ setFornecedor }: FornecedoresPageProps) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
@@ -53,8 +57,8 @@ export function FornecedoresPage() {
   const fornecedores = fornecedoresQuery.data || []; // Ensure paises is an array
 
   return (
-    <Card className="h-full">
-      <CardHeader>
+    <Card className="h-full max-w-2xl">
+      <CardHeader className="!w-[200px]">
         <CardTitle>Fornecedores</CardTitle>
         <div className="flex justify-between">
           <div />
@@ -90,6 +94,7 @@ export function FornecedoresPage() {
           onAdd={onAdd}
           onGet={onGet}
           ativos={ativos}
+          setObj={setFornecedor}
         />
       </CardContent>
     </Card>

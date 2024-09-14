@@ -27,13 +27,13 @@ export const getClientesColumns = ({
     enableColumnFilter: true,
   },
   {
-    accessorKey: "clienteRazaoSocial",
+    accessorKey: "pessoaRazaoSocial",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Cliente/Razão Social" />
     ),
     cell: ({ row }) => (
       <div>
-        <span>{row.original.clienteRazaoSocial}</span>
+        <span>{row.original.pessoaRazaoSocial}</span>
       </div>
     ),
     enableGlobalFilter: true,
@@ -44,7 +44,7 @@ export const getClientesColumns = ({
     enableGlobalFilter: false,
     cell: ({ row }) => (
       <div>
-        <span>{row.original.tpCliente === "F" ? "Física" : "Jurídica"}</span>
+        <span>{row.original.tpPessoa === "F" ? "Física" : "Jurídica"}</span>
       </div>
     ),
   },
@@ -55,7 +55,7 @@ export const getClientesColumns = ({
     cell: ({ row }) => (
       <div>
         <span>
-          {row.original.tpCliente === "F"
+          {row.original.tpPessoa === "F"
             ? insertMaskCPF(row.original.cpfCnpj)
             : insertMaskCNPJ(row.original.cpfCnpj)}
         </span>

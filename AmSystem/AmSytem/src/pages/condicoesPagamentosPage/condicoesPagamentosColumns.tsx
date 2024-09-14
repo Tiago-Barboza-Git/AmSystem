@@ -15,9 +15,7 @@ export const getCondicoesPagamentosColumns = ({
 }: condicoesPagamentosColumnsProps): ColumnDef<ICondicaoPagamento>[] => [
   {
     accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cód. " />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Cód. " />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.id}</span>
@@ -27,9 +25,7 @@ export const getCondicoesPagamentosColumns = ({
   },
   {
     accessorKey: "condicaoPagamento",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Condição de Pagamento" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Condição de Pagamento" />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.condicaoPagamento}</span>
@@ -62,14 +58,10 @@ export const getCondicoesPagamentosColumns = ({
     accessorKey: "dtAlteracao",
     header: "Dt. Alteração",
     enableColumnFilter: false,
-    cell: ({ row }) => (
-      <div>{formatDate(String(row.original.dtAlteracao))}</div>
-    ),
+    cell: ({ row }) => <div>{formatDate(String(row.original.dtAlteracao))}</div>,
   },
   {
     id: "actions",
-    cell: ({ row }) => (
-      <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />
-    ),
+    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />,
   },
 ];

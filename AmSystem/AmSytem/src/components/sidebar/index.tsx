@@ -13,11 +13,13 @@ import {
   WalletCards,
   CreditCard,
   Ruler,
+  ShoppingCart,
 } from "lucide-react";
 import { useState } from "react";
+import "./style.css";
 
 export function Sidebar() {
-  const [selectedItem, setSelectedItem] = useState(location.pathname);
+  const [selectedItem, setSelectedItem] = useState(window.location.pathname);
   const menuList = [
     {
       group: "Cadastros",
@@ -54,16 +56,17 @@ export function Sidebar() {
         },
         {
           key: 6,
-          link: "/produtos",
-          text: "Produtos",
-          icon: <Barcode />,
-        },
-        {
-          key: 7,
           link: "/funcionarios",
           text: "Funcionários",
           icon: <User />,
         },
+        {
+          key: 7,
+          link: "/produtos",
+          text: "Produtos",
+          icon: <Barcode />,
+        },
+
         {
           key: 8,
           link: "/condicoesPagamentos",
@@ -90,6 +93,23 @@ export function Sidebar() {
         },
       ],
     },
+    {
+      group: "Movimentações",
+      items: [
+        {
+          key: 12,
+          link: "/compras",
+          text: "Compras",
+          icon: <ShoppingCart />,
+        },
+        {
+          key: 13,
+          link: "/contasPagar",
+          text: "Contas a Pagar",
+          icon: <ShoppingCart />,
+        },
+      ],
+    },
   ];
 
   return (
@@ -97,7 +117,7 @@ export function Sidebar() {
       <UserItem />
       <div className="grow">
         <Command>
-          <CommandList>
+          <CommandList className="max-h-full">
             {menuList.map((menu: any, key: number) => (
               <CommandGroup key={key} heading={menu.group}>
                 {menu.items.map((option: any, optionKey: number) => (
@@ -105,16 +125,18 @@ export function Sidebar() {
                     to={option.link}
                     key={option}
                     onClick={() => setSelectedItem(option.link)}
-                    className="!hover:bg-none"
+                    className="hover:!bg-red-500"
                   >
                     <CommandItem
                       key={optionKey}
-                      className="flex gap-2 curor-pointer"
-                      // className={`hover:bg-none flex gap-2 cursor-pointer ${
-                      //   selectedItem === option.link
-                      //     ? "bg-blue-500 text-white"
-                      //     : ""
-                      // }`}
+                      aria-selected={false}
+                      className={`flex gap-2 ${
+                        selectedItem === option.link
+                          ? "bg-slate-500 text-white hover:!bg-slate-500 hover:!text-white"
+                          : "hover:!bg-slate-300 bg-white"
+                      }`}
+                      aria-multiselectable="false"
+                      aria-disabled="true"
                     >
                       {option.icon}
                       {option.text}

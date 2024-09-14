@@ -1,26 +1,10 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ICidade } from "@/interfaces/cidade.interfaces";
-import {
-  ProdutoFormData,
-  ProdutoFormSchema,
-  defaultValues,
-} from "./schema.tsx";
+import { ProdutoFormData, ProdutoFormSchema, defaultValues } from "./schema.tsx";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form.tsx";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch.tsx";
@@ -37,11 +21,9 @@ import {
   SelectValue,
 } from "@/components/ui/select.tsx";
 import { IProduto } from "@/interfaces/produto.interfaces.tsx";
-import { currencyFormatter } from "@/components/form/inputMoney/index.tsx";
 import { formatCurrency } from "@/functions/masks.tsx";
 import { CurrencyInput } from "react-currency-mask";
 import InputCalendar from "@/components/form/inputCalendar/index.tsx";
-import { formToJSON } from "axios";
 import { IUnidadeMedida } from "@/interfaces/unidadeMedida.interfaces.tsx";
 import { ICategoria } from "@/interfaces/categoria.interfaces.tsx";
 import { UnidadesMedidasPage } from "@/pages/unidadeMedidaPage/index.tsx";
@@ -56,21 +38,11 @@ interface produtoFormProps {
   produto: IProduto | null;
 }
 
-const ProdutoForm = ({
-  action,
-  isOpen,
-  onOpenChange,
-  produto,
-}: produtoFormProps) => {
-  const [openUnidadesMedidas, setOpenUnidadesMedidas] =
-    useState<boolean>(false);
-  const [unidadeMedida, setUnidadeMedida] = useState<
-    IUnidadeMedida | undefined
-  >(produto?.unidadeMedida);
+const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps) => {
+  const [openUnidadesMedidas, setOpenUnidadesMedidas] = useState<boolean>(false);
+  const [unidadeMedida, setUnidadeMedida] = useState<IUnidadeMedida | undefined>(produto?.unidadeMedida);
   const [openCategorias, setOpenCategorias] = useState<boolean>(false);
-  const [categoria, setCategoria] = useState<ICategoria | undefined>(
-    produto?.categoria
-  );
+  const [categoria, setCategoria] = useState<ICategoria | undefined>(produto?.categoria);
 
   const putProduto = PutProduto(onOpenChange);
   const postProduto = PostProduto(onOpenChange);
@@ -105,9 +77,9 @@ const ProdutoForm = ({
 
   const onSubmit = (data: IProduto) => {
     if (openUnidadesMedidas === false && openCategorias == false) {
-      data.precoVenda = formatCurrency(data.precoVenda?.toString());
-      data.precoUltCompra = formatCurrency(data.precoUltCompra?.toString());
-      data.custoMedio = formatCurrency(data.custoMedio?.toString());
+      data.precoVenda = formatCurrency(data.precoVenda as string);
+      data.precoUltCompra = formatCurrency(data.precoUltCompra as string);
+      data.custoMedio = formatCurrency(data.custoMedio as string);
       if (action === "Edit") {
         putProduto.mutate(data);
       } else {
@@ -125,9 +97,7 @@ const ProdutoForm = ({
         }}
       >
         <DialogHeader>
-          <DialogTitle>
-            {produto ? "Atualizar o produto" : "Adicionar novo produto"}
-          </DialogTitle>
+          <DialogTitle>{produto ? "Atualizar o produto" : "Adicionar novo produto"}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
           <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
@@ -151,10 +121,7 @@ const ProdutoForm = ({
                     <FormItem className="flex flex-col gap-2 items-center justify-center">
                       <FormLabel>Ativo</FormLabel>
                       <FormControl>
-                        <Switch
-                          defaultChecked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -195,9 +162,7 @@ const ProdutoForm = ({
                         InputElement={<Input defaultValue={field.value} />}
                       />
                     </FormControl>
-                    <FormMessage>
-                      {form.formState.errors.quantidade?.message}
-                    </FormMessage>
+                    <FormMessage>{form.formState.errors.quantidade?.message}</FormMessage>
                   </FormItem>
                 )}
               />
@@ -215,9 +180,7 @@ const ProdutoForm = ({
                         onChangeValue={field.onChange}
                         currency="BRL"
                         locale="pt-BR"
-                        InputElement={
-                          <Input disabled={true} defaultValue={field.value} />
-                        }
+                        InputElement={<Input disabled={true} defaultValue={field.value} />}
                       />
                     </FormControl>
                   </FormItem>
@@ -236,9 +199,7 @@ const ProdutoForm = ({
                         onChangeValue={field.onChange}
                         currency="BRL"
                         locale="pt-BR"
-                        InputElement={
-                          <Input disabled={true} defaultValue={field.value} />
-                        }
+                        InputElement={<Input disabled={true} defaultValue={field.value} />}
                       />
                     </FormControl>
                   </FormItem>
@@ -255,12 +216,7 @@ const ProdutoForm = ({
                 className="col-span-2"
               />
 
-              <FormFieldTextArea
-                control={form.control}
-                name="observacao"
-                label="Observação"
-                className="col-span-6"
-              />
+              <FormFieldTextArea control={form.control} name="observacao" label="Observação" className="col-span-6" />
 
               <div className="col-span-3 grid grid-cols-6 gap-4">
                 <FormFieldInput
@@ -281,19 +237,14 @@ const ProdutoForm = ({
                 />
 
                 <div className="relative">
-                  <Dialog
-                    open={openUnidadesMedidas}
-                    onOpenChange={(value) => setOpenUnidadesMedidas(value)}
-                  >
+                  <Dialog open={openUnidadesMedidas} onOpenChange={(value) => setOpenUnidadesMedidas(value)}>
                     <DialogTrigger asChild className="absolute bottom-0">
                       <Button variant="default">
                         <Search />
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="!p-0">
-                      <UnidadesMedidasPage
-                        setUnidadeMedida={setUnidadeMedida}
-                      />
+                      <UnidadesMedidasPage setUnidadeMedida={setUnidadeMedida} />
                     </DialogContent>
                   </Dialog>
                 </div>
@@ -318,10 +269,7 @@ const ProdutoForm = ({
                 />
 
                 <div className="relative">
-                  <Dialog
-                    open={openCategorias}
-                    onOpenChange={(value) => setOpenCategorias(value)}
-                  >
+                  <Dialog open={openCategorias} onOpenChange={(value) => setOpenCategorias(value)}>
                     <DialogTrigger asChild className="absolute bottom-0">
                       <Button variant="default">
                         <Search />
@@ -336,7 +284,7 @@ const ProdutoForm = ({
 
               <FormFieldInput
                 label="Principal Fornecedor"
-                name="fornecedor.fornecedorRazaoSocial"
+                name="fornecedor.pessoaRazaoSocial"
                 control={form.control}
                 disabled={true}
                 className="col-span-3"
@@ -363,10 +311,10 @@ const ProdutoForm = ({
                   className="col-span-2"
                 />
               </div>
-              <Button type="submit" variant="default">
-                Salvar
-              </Button>
             </div>
+            <Button type="submit" variant="default">
+              Salvar
+            </Button>
           </form>
         </FormProvider>
       </DialogContent>

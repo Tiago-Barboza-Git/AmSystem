@@ -1,18 +1,10 @@
 import DataTable from "@/components/datatable";
 import { getCondicoesPagamentosColumns } from "./condicoesPagamentosColumns";
-import {
-  DeleteCondicaoPagamento,
-  GetCondicoesPagamentos,
-} from "./services/queries";
+import { DeleteCondicaoPagamento, GetCondicoesPagamentos } from "./services/queries";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueryClient, UseQueryResult } from "react-query";
 // import PaisForm from "./paisForm/index.tsx";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
 import DeleteDialog from "@/components/dialog/deleteDialog/index.tsx";
 import CondicaoPagamentoForm from "./form";
 import { ICondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
@@ -22,16 +14,13 @@ interface CondicoesPagamentosProps {
   setCondicaoPagamento?: (condicaoPagamento: ICondicaoPagamento) => void;
 }
 
-export function CondicoesPagamentosPage({
-  setCondicaoPagamento,
-}: CondicoesPagamentosProps) {
+export function CondicoesPagamentosPage({ setCondicaoPagamento }: CondicoesPagamentosProps) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
   const [ativos, setAtivos] = useState<boolean>(true);
-  const [selectedCondicaoPagamento, setSelectedCondicaoPagamento] =
-    useState<ICondicaoPagamento | null>(null);
+  const [selectedCondicaoPagamento, setSelectedCondicaoPagamento] = useState<ICondicaoPagamento | null>(null);
   const deleteCondicao = DeleteCondicaoPagamento();
 
   const onGet = useCallback(async () => {
@@ -93,14 +82,12 @@ export function CondicoesPagamentosPage({
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(
-            () => getCondicoesPagamentosColumns({ onEdit, onDelete }),
-            []
-          )}
+          columns={useMemo(() => getCondicoesPagamentosColumns({ onEdit, onDelete }), [])}
           data={condicoesPagamentos}
           onAdd={onAdd}
           onGet={onGet}
           ativos={ativos}
+          setObj={setCondicaoPagamento}
         />
       </CardContent>
     </Card>

@@ -14,7 +14,6 @@ export const ParcelaFormSchema = z
     formaPagamento: z.custom<IFormaPagamento>().optional(),
   })
   .superRefine((data, ctx) => {
-    console.log(Number(data.porcentagem));
     if (Number(data.porcentagem) <= 0 || isNaN(Number(data.porcentagem)))
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

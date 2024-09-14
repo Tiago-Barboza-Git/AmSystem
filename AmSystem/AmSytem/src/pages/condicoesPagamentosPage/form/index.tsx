@@ -1,50 +1,24 @@
 import FormFieldInput from "@/components/form/input";
 import InputCalendar from "@/components/form/inputCalendar";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { ICondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Search, Trash2 } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
-import {
-  CondicaoPagamentoFormData,
-  CondicaoPagamentoFormSchema,
-  defaultValues,
-} from "./schema";
+import { CondicaoPagamentoFormData, CondicaoPagamentoFormSchema, defaultValues } from "./schema";
 import { useEffect, useState } from "react";
 import { IFormaPagamento } from "@/interfaces/formaPagamento.interfaces";
-import {
-  PostCondicaoPagamento,
-  PutCondicaoPagamento,
-} from "../services/queries";
+import { PostCondicaoPagamento, PutCondicaoPagamento } from "../services/queries";
 import { CurrencyInput } from "react-currency-mask";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Parcelas } from "@/pages/parcelas";
 import { IParcela } from "@/interfaces/parcela.interfaces";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ParcelaForm } from "@/pages/parcelas/form";
 import { formatPercentage } from "@/functions/functions";
 import { Toaster, toast } from "sonner";
@@ -56,19 +30,10 @@ interface condicaoPaamentoFormProps {
   condicaoPagamento: ICondicaoPagamento | null;
 }
 
-const CondicaoPagamentoForm = ({
-  action,
-  isOpen,
-  onOpenChange,
-  condicaoPagamento,
-}: condicaoPaamentoFormProps) => {
+const CondicaoPagamentoForm = ({ action, isOpen, onOpenChange, condicaoPagamento }: condicaoPaamentoFormProps) => {
   const [openParcelasForm, setOpenParcelasForm] = useState<boolean>(false);
-  const [parcelasData, setParcelasData] = useState<IParcela[] | undefined>(
-    condicaoPagamento?.parcelas || []
-  );
-  const [formaPagamento, setFormaPagamento] = useState<
-    IFormaPagamento | undefined
-  >();
+  const [parcelasData, setParcelasData] = useState<IParcela[] | undefined>(condicaoPagamento?.parcelas || []);
+  const [formaPagamento, setFormaPagamento] = useState<IFormaPagamento | undefined>();
   const putCondicaoPagamento = PutCondicaoPagamento(onOpenChange);
   const postCondicaoPagamento = PostCondicaoPagamento(onOpenChange);
   const form = useForm<CondicaoPagamentoFormData>({
@@ -95,9 +60,7 @@ const CondicaoPagamentoForm = ({
     if (action === "Edit") {
       form.reset({
         ...condicaoPagamento,
-        desconto: parseFloat(
-          String(condicaoPagamento?.desconto ?? "0")
-        ).toFixed(2),
+        desconto: parseFloat(String(condicaoPagamento?.desconto ?? "0")).toFixed(2),
         multa: parseFloat(String(condicaoPagamento?.multa ?? "0")).toFixed(2),
         juros: parseFloat(String(condicaoPagamento?.juros ?? "0")).toFixed(2),
         parcelas: condicaoPagamento?.parcelas,
@@ -110,13 +73,9 @@ const CondicaoPagamentoForm = ({
 
   const onSubmit = (data: ICondicaoPagamento) => {
     if (openParcelasForm === false) {
-      const sumParcelas = form
-        .watch("parcelas")
-        .reduce((total, value) => total + Number(value.porcentagem), 0);
+      const sumParcelas = form.watch("parcelas").reduce((total, value) => total + Number(value.porcentagem), 0);
       if (sumParcelas !== 100) {
-        toast.error(
-          "A porcentagem da(s) parcela(s) deve(m) ser equivalente a 100%."
-        );
+        toast.error("A porcentagem da(s) parcela(s) deve(m) ser equivalente a 100%.");
       } else {
         if (action === "Edit") {
           putCondicaoPagamento.mutate(data);
@@ -137,16 +96,11 @@ const CondicaoPagamentoForm = ({
       >
         <DialogHeader>
           <DialogTitle>
-            {condicaoPagamento
-              ? "Atualizar a condição de pagamento"
-              : "Adicionar nova condição de pagamento"}
+            {condicaoPagamento ? "Atualizar a condição de pagamento" : "Adicionar nova condição de pagamento"}
           </DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            className="space-y-4 flex flex-col"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form className="space-y-4 flex flex-col" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-4">
               <div className="flex flex-row justify-between col-span-9">
                 <FormFieldInput
@@ -168,10 +122,7 @@ const CondicaoPagamentoForm = ({
                     <FormItem className="flex flex-col gap-2 items-center justify-center">
                       <FormLabel>Ativo</FormLabel>
                       <FormControl>
-                        <Switch
-                          defaultChecked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -182,9 +133,7 @@ const CondicaoPagamentoForm = ({
                   label="Condição de Pagamento*"
                   name="condicaoPagamento"
                   control={form.control}
-                  errorMessage={
-                    form.formState.errors.condicaoPagamento?.message
-                  }
+                  errorMessage={form.formState.errors.condicaoPagamento?.message}
                   className="col-span-4"
                 />
 
@@ -216,10 +165,7 @@ const CondicaoPagamentoForm = ({
               <div>
                 <Label className="flex flex-col items-center">Parcelas</Label>
                 <div>
-                  <Button
-                    type="button"
-                    onClick={() => setOpenParcelasForm(!openParcelasForm)}
-                  >
+                  <Button type="button" onClick={() => setOpenParcelasForm(!openParcelasForm)}>
                     Adicionar
                   </Button>
                   <ParcelaForm
@@ -242,19 +188,12 @@ const CondicaoPagamentoForm = ({
                   <TableBody>
                     {parcelasData?.map((parcela, index) => (
                       <TableRow key={parcela.numParcela}>
-                        <TableCell className="font-medium">
-                          {parcela.numParcela}
-                        </TableCell>
+                        <TableCell className="font-medium">{parcela.numParcela}</TableCell>
                         <TableCell>{parcela.dias}</TableCell>
                         <TableCell>{parcela.porcentagem}</TableCell>
+                        <TableCell>{parcela?.formaPagamento?.formaPagamento}</TableCell>
                         <TableCell>
-                          {parcela?.formaPagamento?.formaPagamento}
-                        </TableCell>
-                        <TableCell>
-                          <Trash2
-                            color="red"
-                            onClick={() => handleRemoveParcela(index)}
-                          />
+                          <Trash2 color="red" onClick={() => handleRemoveParcela(index)} />
                         </TableCell>
                       </TableRow>
                     ))}
@@ -283,7 +222,7 @@ const CondicaoPagamentoForm = ({
                   className="flex flex-col"
                 />
               </div>
-              <Button type="submit" variant="default">
+              <Button variant="default" onClick={() => onSubmit}>
                 Salvar
               </Button>
             </div>

@@ -1,13 +1,5 @@
 import { CSSProperties, useMemo, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "../ui/table";
 import {
   ColumnDef,
   PaginationState,
@@ -24,15 +16,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Switch } from "../ui/switch";
 import { Label } from "../ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import {
   Pagination,
   PaginationContent,
@@ -48,9 +32,10 @@ const DEFAULT_REACT_TABLE_COLUMN_WIDTH = 150;
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[] | undefined;
-  onAdd: () => void;
+  onAdd?: () => void;
   onGet?: () => void;
-  ativos: boolean;
+  ativos?: boolean;
+  hidden?: boolean;
   setObj?: (obj: any) => void;
 }
 
@@ -61,6 +46,7 @@ const DataTable = <TData, TValue>({
   onGet,
   ativos,
   setObj,
+  hidden,
 }: DataTableProps<TData, TValue>) => {
   const [filtering, setFiltering] = useState<string>("");
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -96,35 +82,29 @@ const DataTable = <TData, TValue>({
     const rowElement = cell.parentNode;
     const cells = Array.from(rowElement.children);
     const cellIndex = cells.indexOf(cell);
-    console.log(`CellIndex: ${cellIndex}`);
 
     if (cellIndex === cells.length - 1) {
       // Clicado na última coluna (coluna de ações)
       return;
     }
 
-    console.log(row);
     setObj && setObj({ ...row.original });
   };
 
   return (
     <div>
-      <div className="flex flex-row justify-between">
+      <div className={`${hidden === true ? "hidden" : "visible"} flex flex-row justify-between`}>
         <div className="flex flex-row gap-2">
-          <div className="flex flex-col gap-2">
+          <div className={`${hidden === true ? "hidden" : "visible"} flex flex-col gap-2`}>
             <Label>Pesquisar</Label>
-            <Input
-              className="w-50"
-              value={filtering}
-              onChange={(e) => setFiltering(e.target.value)}
-            />
+            <Input className="w-50" value={filtering} onChange={(e) => setFiltering(e.target.value)} />
           </div>
         </div>
-        <div className="flex flex-col gap-4">
+        <div className={`${ativos !== undefined ? "visible" : "hidden"} flex flex-col gap-4`}>
           <Label>Ativos</Label>
           <Switch defaultChecked={ativos} onCheckedChange={onGet} />
         </div>
-        <Button onClick={() => onAdd()}>Adicionar</Button>
+        <Button onClick={() => (onAdd !== undefined ? onAdd() : "")}>Adicionar</Button>
       </div>
       <Table>
         <TableHeader>
@@ -133,15 +113,10 @@ const DataTable = <TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   const styles: CSSProperties =
-                    header.getSize() !== DEFAULT_REACT_TABLE_COLUMN_WIDTH
-                      ? { width: `${header.getSize()}px` }
-                      : {};
+                    header.getSize() !== DEFAULT_REACT_TABLE_COLUMN_WIDTH ? { width: `${header.getSize()}px` } : {};
                   return (
                     <TableHead key={header.id} style={styles}>
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      {flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
                 })}
@@ -153,15 +128,13 @@ const DataTable = <TData, TValue>({
           {table.getRowModel().rows.map((row) => (
             <TableRow key={row.id} onClick={(event) => selectedRow(row, event)}>
               {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
+                <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
               ))}
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <div className="flex flex-row justify-between">
+      <div className={`${hidden === true ? "hidden" : "visible"} flex flex-row justify-between`}>
         <div className="w-full">
           <select
             value={table.getState().pagination.pageSize}

@@ -6,8 +6,8 @@ import { z } from "zod";
 export const ClienteFormSchema = z
   .object({
     id: z.number(),
-    tpCliente: z.string(),
-    clienteRazaoSocial: z
+    tpPessoa: z.string(),
+    pessoaRazaoSocial: z
       .string({ message: "Esse campo é obrigatório" })
       .nonempty("Esse campo é obrigatório")
       .regex(
@@ -40,7 +40,7 @@ export const ClienteFormSchema = z
       .min(0, "Esse campo é obrigatório")
       .email("Email inválido"),
     cep: z.string({ message: "Esse campo é obrigatório" }).nonempty(),
-    endereco: z.string({ message: "Esse campo é obrigatório" }).nonempty(),
+    logradouro: z.string({ message: "Esse campo é obrigatório" }).nonempty(),
     numero: z
       .number()
       .refine((e) => e > 0, {
@@ -72,7 +72,7 @@ export const ClienteFormSchema = z
   })
   .superRefine((data, ctx) => {
     if (
-      data.tpCliente === "F" &&
+      data.tpPessoa === "F" &&
       (!data.sexo || (data.sexo !== "F" && data.sexo !== "M"))
     ) {
       ctx.addIssue({
@@ -83,7 +83,7 @@ export const ClienteFormSchema = z
     }
 
     //Validação de CPF e CNPJ
-    if (data.tpCliente === "F") {
+    if (data.tpPessoa === "F") {
       if (!validarCPF(String(data.cpfCnpj))) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,

@@ -39,19 +39,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import FormFieldInput from "@/components/form/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { ICidade } from "@/interfaces/cidade.interfaces";
-import { Calendar } from "@/components/calendar";
 import { IFuncionario } from "@/interfaces/funcionario.interfaces";
 import { CidadesPage } from "@/pages/cidadesPage";
 import { Search } from "lucide-react";
