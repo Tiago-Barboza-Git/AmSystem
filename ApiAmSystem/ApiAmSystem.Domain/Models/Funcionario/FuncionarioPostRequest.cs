@@ -207,5 +207,11 @@ namespace ApiAmSystem.Domain.Models.Funcionario
             get { return this.DtDemissao; }
             set { this.DtDemissao = value; }
         }
+        
+        public CidadeModel cidade
+        {
+            get { return this.Cidade; }
+            set { this.Cidade = value; }
+        }
     }
 }

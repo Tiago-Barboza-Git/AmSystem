@@ -161,7 +161,7 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@Desconto", SqlDbType.Decimal).Value = pCondicaoPagamento.desconto;
                     cmd.Parameters.Add("@Juros", SqlDbType.Decimal).Value = pCondicaoPagamento.juros;
                     cmd.Parameters.Add("@Multa", SqlDbType.Decimal).Value = pCondicaoPagamento.multa;
-                    cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pCondicaoPagamento.ativo;
+                    cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pCondicaoPagamento.ativo ? true : false;
                     cmd.Parameters.Add("@DtCadastro", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();

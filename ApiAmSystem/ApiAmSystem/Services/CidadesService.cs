@@ -4,17 +4,18 @@ using ApiAmSystem.Domain.Models.Pais;
 using ApiAmSystem.Interfaces;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.IO.Pipelines;
 
 namespace ApiAmSystem.Services
 {
     public class CidadesService: ICidadesService
     {
         private readonly SqlConnection sqlConnection;
-        private readonly IMappings mappings;
-        public CidadesService(SqlConnection pSqlConnection, IMappings pMappings)
+        private readonly IEstadosService estadosService;
+        public CidadesService(SqlConnection pSqlConnection, IEstadosService pIEstadosService)
         {
             this.sqlConnection = pSqlConnection;
-            this.mappings = pMappings;
+            this.estadosService = pIEstadosService;
         }
 
         public CidadeModel GetCidade(int pId)
@@ -34,9 +35,14 @@ namespace ApiAmSystem.Services
 	                        c.DtAlteracao AS 'DtAlteracao',
 	                        e.Id AS 'IdEstado',
 	                        e.Estado AS 'Estado'
+                            e.Uf,
+                            e.IdPais,
+                            p.Pais,
+                            p.Sigla
                         FROM TbCidades c
                         INNER JOIN TbEstados e ON
 	                        c.IdEstado = e.Id
+                        inner join TbPaises p on p.Id = e.IdPais
                         WHERE c.Id = @Id;
                     ";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
@@ -58,7 +64,14 @@ namespace ApiAmSystem.Services
                             estado = new EstadoModel
                             {
                                 id = reader.GetInt32("IdEstado"),
-                                estado = reader.GetString("Estado")
+                                estado = reader.GetString("Estado"),
+                                uf = reader.GetString("Uf"),
+                                pais = new PaisModel
+                                {
+                                    id = reader.GetInt32("IdPais"),
+                                    pais = reader.GetString("Pais"),
+                                    sigla = reader.GetString("Sigla")
+                                }
                             }
                         };
                     }
@@ -93,17 +106,15 @@ namespace ApiAmSystem.Services
                             c.Ativo AS 'Ativo',
                             c.DtCadastro AS 'DtCadastro',
                             c.DtAlteracao AS 'DtAlteracao',
-                            e.Id AS 'IdEstado',
-                            e.Estado AS 'Estado',
-                            e.Uf AS 'UF',
-                            tp.Id AS 'IdPais',
-                            tp.Pais AS 'Pais',
-                            tp.Sigla AS 'Sigla'
-                        FROM TbCidades c
-                        INNER JOIN TbEstados e ON
-                            c.IdEstado = e.Id
-                        INNER JOIN TbPaises tp ON
-	                        e.IdPais = tp.Id 
+                            c.IdEstado AS 'IdEstado',
+                            e.Estado,
+                            e.Uf,
+                            e.IdPais,
+                            p.Pais,
+                            p.Sigla
+                        FROM TbCidades c 
+                        inner join TbEstados e on e.Id = c.IdEstado
+                        inner join TbPaises p on p.Id = e.IdPais
                         WHERE c.Ativo = @Ativo;
                     ";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
@@ -128,7 +139,7 @@ namespace ApiAmSystem.Services
                                     {
                                         id = reader.GetInt32("IdEstado"),
                                         estado = reader.GetString("Estado"),
-                                        uf = reader.GetString("UF"),
+                                        uf = reader.GetString("Uf"),
                                         pais = new PaisModel
                                         {
                                             id = reader.GetInt32("IdPais"),

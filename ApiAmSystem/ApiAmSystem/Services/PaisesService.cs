@@ -17,18 +17,18 @@ namespace ApiAmSystem.Services
             this.mappings = pMappings;
         }
 
-        public PaisModel GetPais(int pId)
+        public async Task<PaisModel> GetPais(int pId)
         {
             using (sqlConnection)
             {
                 try
                 {
-                    sqlConnection.Open();
+                    sqlConnection.OpenAsync();
                     string query = "SELECT * FROM TbPaises WHERE Id = @Id";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pId;
-                    SqlDataReader reader = cmd.ExecuteReader();
+                    SqlDataReader reader = await cmd.ExecuteReaderAsync();
                     if (reader.HasRows)
                     {
                         reader.Read();
@@ -43,7 +43,7 @@ namespace ApiAmSystem.Services
                 }
                 finally
                 {
-                    sqlConnection.Close();
+                    sqlConnection.CloseAsync();
                 }
             }
         }

@@ -10,20 +10,20 @@ namespace ApiAmSystem.Services
     public class EstadosService: IEstadosService
     {
         private readonly SqlConnection sqlConnection;
-        private readonly IMappings mappings;
-        public EstadosService(SqlConnection pSqlConnection, IMappings pMappings) 
+        private readonly IPaisesService paisesService;
+        public EstadosService(SqlConnection pSqlConnection, IPaisesService pIPaisesService) 
         {
             this.sqlConnection = pSqlConnection;
-            this.mappings = pMappings;
+            this.paisesService = pIPaisesService;
         }
         
         public EstadoModel GetEstado(int pId)
         {
-            using (sqlConnection)
+            using (SqlConnection connection = new SqlConnection("Server=DESKTOP-JPC14RO;Database=AmSystem;Trusted_Connection=True;Integrated Security=true;TrustServerCertificate=True"))
             {
                 try
                 {
-                    sqlConnection.Open();
+                    connection.Open();
                     string query = @"
                         SELECT 
 	                        e.Id AS 'Id',
@@ -32,14 +32,15 @@ namespace ApiAmSystem.Services
 	                        e.Ativo AS 'Ativo',
 	                        e.DtCadastro AS 'DtCadastro',
 	                        e.DtAlteracao AS 'DtAlteracao',
-	                        p.Id AS 'IdPais',
-	                        p.Pais AS 'Pais'
+	                        e.IdPais,
+	                        p.Pais,
+                            p.Sigla
                         FROM TbEstados e
                         INNER JOIN TbPaises p on
 	                        p.Id = e.IdPais
                         WHERE e.Id = @Id
                     ";
-                    SqlCommand cmd = new SqlCommand(query, sqlConnection);
+                    SqlCommand cmd = new SqlCommand(query, connection);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pId;
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -57,8 +58,9 @@ namespace ApiAmSystem.Services
                             idPais = reader.GetInt32(reader.GetOrdinal("IdPais")),
                             pais = new PaisModel
                             {
-                                id = reader.GetInt32(reader.GetOrdinal("IdPais")),
-                                pais = reader.GetString(reader.GetOrdinal("Pais"))
+                                id = reader.GetInt32("IdPais"),
+                                pais = reader.GetString("Pais"),
+                                sigla = reader.GetString("Sigla")
                             }
                         };
                     }
@@ -92,11 +94,11 @@ namespace ApiAmSystem.Services
                             e.Ativo AS 'Ativo',
                             e.DtCadastro AS 'DtCadastro',
                             e.DtAlteracao AS 'DtAlteracao',
-                            p.Id AS 'IdPais',
-                            p.Pais AS 'Pais'
+                            e.IdPais AS 'IdPais'
+                        	p.Pais,
+	                        p.Sigla
                         FROM TbEstados e
-                        INNER JOIN TbPaises p on
-                            p.Id = e.IdPais
+                        inner join TbPaises p on e.IdPais = p.Id
                         WHERE e.Ativo = @Ativo
                     ";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
@@ -119,8 +121,9 @@ namespace ApiAmSystem.Services
                                     idPais = reader.GetInt32(reader.GetOrdinal("IdPais")),
                                     pais = new PaisModel
                                     {
-                                        id = reader.GetInt32(reader.GetOrdinal("IdPais")),
-                                        pais = reader.GetString(reader.GetOrdinal("Pais"))
+                                        id = reader.GetInt32("IdPais"),
+                                        pais = reader.GetString("Pais"),
+                                        sigla = reader.GetString("Sigla")
                                     }
                                 });
                         }
@@ -133,7 +136,7 @@ namespace ApiAmSystem.Services
                 }
                 finally 
                 { 
-                    sqlConnection.Close();
+                    sqlConnection.CloseAsync();
                 }
             }
         }

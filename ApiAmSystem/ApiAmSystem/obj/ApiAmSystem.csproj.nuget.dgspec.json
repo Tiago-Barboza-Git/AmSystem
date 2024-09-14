@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\AM_System\\ApiAmSystem\\ApiAmSystem\\ApiAmSystem.csproj": {}
+    "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\ApiAmSystem.csproj": {}
   },
   "projects": {
-    "C:\\AM_System\\ApiAmSystem\\ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj": {
+    "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\AM_System\\ApiAmSystem\\ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj",
+        "projectUniqueName": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj",
         "projectName": "ApiAmSystem.Domain",
-        "projectPath": "C:\\AM_System\\ApiAmSystem\\ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj",
+        "projectPath": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj",
         "packagesPath": "C:\\Users\\tiago\\.nuget\\packages\\",
-        "outputPath": "C:\\AM_System\\ApiAmSystem\\ApiAmSystem.Domain\\obj\\",
+        "outputPath": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -75,14 +75,14 @@
         }
       }
     },
-    "C:\\AM_System\\ApiAmSystem\\ApiAmSystem\\ApiAmSystem.csproj": {
+    "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\ApiAmSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\AM_System\\ApiAmSystem\\ApiAmSystem\\ApiAmSystem.csproj",
+        "projectUniqueName": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\ApiAmSystem.csproj",
         "projectName": "ApiAmSystem",
-        "projectPath": "C:\\AM_System\\ApiAmSystem\\ApiAmSystem\\ApiAmSystem.csproj",
+        "projectPath": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\ApiAmSystem.csproj",
         "packagesPath": "C:\\Users\\tiago\\.nuget\\packages\\",
-        "outputPath": "C:\\AM_System\\ApiAmSystem\\ApiAmSystem\\obj\\",
+        "outputPath": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -104,8 +104,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\AM_System\\ApiAmSystem\\ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj": {
-                "projectPath": "C:\\AM_System\\ApiAmSystem\\ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj"
+              "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj": {
+                "projectPath": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj"
               }
             }
           }

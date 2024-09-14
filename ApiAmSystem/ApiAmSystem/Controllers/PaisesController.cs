@@ -23,7 +23,7 @@ namespace ApiAmSystem.Controllers
         [ProducesResponseType(typeof(BadRequest), 400)]
         public IActionResult GetPais(int pId)
         {
-            PaisModel result = paisesService.GetPais(pId);
+            Task<PaisModel> result = paisesService.GetPais(pId);
             if (result != null)
                 return Ok(result);
             else

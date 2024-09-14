@@ -15,9 +15,13 @@ namespace ApiAmSystem.Services
     public class ProdutosService: IProdutosService
     {
         private readonly SqlConnection sqlConnection;
-        public ProdutosService(SqlConnection pSqlConnection)
+        private readonly IFornecedoresService fornecedoresService;
+        private readonly IUnidadeMedidaService unidadeMedidaService;
+        public ProdutosService(SqlConnection pSqlConnection, IFornecedoresService pIFornecedorService, IUnidadeMedidaService pIUnidadeMedidaService)
         {
             this.sqlConnection = pSqlConnection;
+            this.fornecedoresService = pIFornecedorService;
+            this.unidadeMedidaService = pIUnidadeMedidaService;
         }
 
         public ProdutoModel GetProduto(int pId)
@@ -31,7 +35,7 @@ namespace ApiAmSystem.Services
                         select
                             p.Id,
                             p.Produto,
-                            p.UnidadeMedida,
+                            p.IdUnidadeMedida,
                             p.Quantidade,
                             p.PrecoVenda,
                             p.PrecoUltCompra,
@@ -70,11 +74,7 @@ namespace ApiAmSystem.Services
                             ativo = reader.GetBoolean("Ativo"),
                             dtCadastro = reader.GetDateTime("DtCadastro"),
                             dtAlteracao = reader.GetDateTime("DtAlteracao"),
-                            fornecedor = reader.IsDBNull("IdFornecedor") ? null : new FornecedorModel
-                            {
-                                id = reader.GetInt32("IdFornecedor"),
-                                fornecedorRazaoSocial = reader.GetString("FornecedorRazaoSocial")
-                            }
+                            fornecedor = reader.IsDBNull("IdFornecedor") ? null : fornecedoresService.GetFornecedor(reader.GetInt32("IdFornecedor")),
                         };
                     }
                     else
@@ -169,7 +169,7 @@ namespace ApiAmSystem.Services
                                     fornecedor = reader.IsDBNull("IdFornecedor") ? null : new FornecedorModel
                                     {
                                         id = reader.GetInt32("IdFornecedor"),
-                                        fornecedorRazaoSocial = reader.GetString("FornecedorRazaoSocial")
+                                        pessoaRazaoSocial = reader.GetString("FornecedorRazaoSocial")
                                     },
 
                                 });

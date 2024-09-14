@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "9WbulG0IwNdsLRvrChyzelzhFy3iEMECshDg18qQqhysUrVecxp3CFvP0UXLAlDknjRD84ynSpDPMbEIwclV/w==",
+  "dgSpecHash": "7vUCBZJ+qtPj4jpBTFUfBLxd7sT52dvI/M2SHGulH0P8kk6xsId3XDuj/QUgfKkOWCMtEq8dTAaNyGj3mpJJ3Q==",
   "success": true,
-  "projectFilePath": "C:\\AM_System\\ApiAmSystem\\ApiAmSystem\\ApiAmSystem.csproj",
+  "projectFilePath": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\ApiAmSystem.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\tiago\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\tiago\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

@@ -111,6 +111,7 @@ namespace ApiAmSystem.Services
                     string query = @"update TbCategorias set Categoria = @Categoria, Descricao = @Descricao, Ativo = @Ativo, DtAlteracao = @DtAlteracao where Id = @Id";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
+                    cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pCategoria.id;
                     cmd.Parameters.Add("@Categoria", SqlDbType.VarChar).Value = pCategoria.categoria;
                     cmd.Parameters.Add("@Descricao", SqlDbType.VarChar).Value = pCategoria.descricao == null ? "" : pCategoria.descricao;
                     cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pCategoria.ativo;

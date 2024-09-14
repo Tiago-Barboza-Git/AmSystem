@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
     );
 });
 
-string connectionStr = "Server=DESKTOP-JPC14RO;Database=AmSystem;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True";
+string connectionStr = "Server=DESKTOP-JPC14RO;Database=AmSystem;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True;";
 builder.Services.AddTransient<SqlConnection>(sc => new SqlConnection(connectionStr));
 builder.Services.AddTransient<IPaisesService, PaisesService>();
 builder.Services.AddTransient<IEstadosService, EstadosService>();
@@ -36,6 +36,9 @@ builder.Services.AddTransient<ICondicaoPagamentoService, CondicaoPagamentoServic
 builder.Services.AddTransient<IParcelaService, ParcelaService>();
 builder.Services.AddTransient<ICategoriaService, CategoriaService>();
 builder.Services.AddTransient<IUnidadeMedidaService, UnidadeMedidaService>();
+builder.Services.AddTransient<IProdutoCompraService, ProdutoCompraService>();
+builder.Services.AddTransient<ICompraService, CompraService>();
+builder.Services.AddTransient<IContaPagarService, ContaPagarService>();
 builder.Services.AddTransient<IMappings, Mappings>();
 
 var app = builder.Build();

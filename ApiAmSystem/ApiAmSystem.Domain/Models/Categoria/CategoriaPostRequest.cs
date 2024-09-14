@@ -11,13 +11,13 @@ namespace ApiAmSystem.Domain.Models.Categoria
         private string Categoria;
         private string? Descricao;
 
-        public CategoriaPostRequest()
+        public CategoriaPostRequest(): base()
         {
             this.Categoria = string.Empty;
             this.Descricao = string.Empty;
         }
 
-        public CategoriaPostRequest(string pCategoria, string? pDescricao)
+        public CategoriaPostRequest(string pCategoria, string? pDescricao, bool pAtivo): base(pAtivo)
         {
             this.Categoria = pCategoria;
             this.Descricao = pDescricao;

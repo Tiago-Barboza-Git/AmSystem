@@ -6,26 +6,23 @@ using System.Threading.Tasks;
 
 namespace ApiAmSystem.Domain.Models.Cidade
 {
-    public class CidadePostRequest
+    public class CidadePostRequest: PaiPostRequest
     {
         private string Cidade;
         private int DDD;
-        private bool Ativo;
         private int IdEstado;
 
-        public CidadePostRequest()
+        public CidadePostRequest(): base()
         {
             Cidade = String.Empty;
             DDD = 0;
-            Ativo = true;
             IdEstado = 0;
         }
 
-        public CidadePostRequest(string pCidade, int pDDD, bool pAtivo, int pIdEstado)
+        public CidadePostRequest(string pCidade, int pDDD, bool pAtivo, int pIdEstado): base(pAtivo)
         {
             this.Cidade = pCidade;
             this.DDD = pDDD;
-            this.Ativo = pAtivo;
             this.IdEstado = pIdEstado;
         }
 
@@ -39,12 +36,6 @@ namespace ApiAmSystem.Domain.Models.Cidade
         {
             get { return this.DDD; }
             set { this.DDD = value; }
-        }
-
-        public bool ativo
-        {
-            get { return this.Ativo; }
-            set { this.Ativo = value; }
         }
 
         public int idEstado
