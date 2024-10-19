@@ -5,10 +5,10 @@ import { z } from "zod";
 export const CondicaoPagamentoFormSchema = z
   .object({
     id: z.number(),
-    condicaoPagamento: z.string().min(1, "Esse campo é obrigatório!"),
-    desconto: z.union([z.string(), z.number()]).optional(),
-    juros: z.union([z.string(), z.number()]).optional(),
-    multa: z.union([z.string(), z.number()]).optional(),
+    condicaoPagamento: z.string({ message: "Obrigatório" }),
+    desconto: z.union([z.string(), z.number()]).default(0),
+    juros: z.union([z.string(), z.number()]).default(0),
+    multa: z.union([z.string(), z.number()]).default(0),
     ativo: z.boolean(),
     dtCadastro: z.custom<Date>(),
     dtAlteracao: z.custom<Date>(),
@@ -16,9 +16,7 @@ export const CondicaoPagamentoFormSchema = z
   })
   .superRefine((data, ctx) => {});
 
-export type CondicaoPagamentoFormData = z.infer<
-  typeof CondicaoPagamentoFormSchema
->;
+export type CondicaoPagamentoFormData = z.infer<typeof CondicaoPagamentoFormSchema>;
 
 export const defaultValues = {
   id: 0,

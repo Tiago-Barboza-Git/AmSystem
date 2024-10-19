@@ -1,34 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PostFornecedor, PutFornecedor } from "../services/queries";
-import {
-  FornecedorFormData,
-  FornecedorFormSchema,
-  defaultValues,
-} from "./schema";
+import { FornecedorFormData, FornecedorFormSchema, defaultValues } from "./schema";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { formatDate, removeSpecialCharacters } from "@/functions/functions";
-import {
-  insertMaskCEP,
-  insertMaskCNPJ,
-  insertMaskCPF,
-  insertMaskCel,
-  insertMaskRG,
-} from "@/functions/masks";
-import {
-  Dialog,
-  DialogHeader,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { insertMaskCEP, insertMaskCNPJ, insertMaskCPF, insertMaskCel, insertMaskRG } from "@/functions/masks";
+import { Dialog, DialogHeader, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -58,12 +36,8 @@ interface fornecedorFormProps {
   onOpenChange: (value: boolean) => void;
 }
 
-const FornecedorForm = ({
-  action,
-  isOpen,
-  fornecedor,
-  onOpenChange,
-}: fornecedorFormProps) => {
+const FornecedorForm = ({ action, isOpen, fornecedor, onOpenChange }: fornecedorFormProps) => {
+  const [disabled, setDisabled] = useState<boolean>();
   const [openCidades, setOpenCidades] = useState<boolean>(false);
   const [cidade, setCidade] = useState<ICidade | undefined>(fornecedor?.cidade);
   const putFornecedor = PutFornecedor(onOpenChange);
@@ -75,11 +49,13 @@ const FornecedorForm = ({
   });
 
   useEffect(() => {
-    if (action === "Edit") {
+    if (action === "Edit" || action === "View") {
+      action === "View" ? setDisabled(true) : setDisabled(false);
       form.reset({
         ...fornecedor,
       });
     } else {
+      setDisabled(false);
       form.reset(defaultValues);
     }
   }, [isOpen]);
@@ -91,11 +67,13 @@ const FornecedorForm = ({
   }, [cidade]);
 
   useEffect(() => {
-    const tpPessoa = form.getValues("tpPessoa");
-    form.reset({
-      ...defaultValues,
-      tpPessoa: tpPessoa,
-    });
+    if (action === "Add") {
+      const tpPessoa = form.getValues("tpPessoa");
+      form.reset({
+        ...defaultValues,
+        tpPessoa: tpPessoa,
+      });
+    }
   }, [form.watch("tpPessoa")]);
 
   const onSubmit = (data: IFornecedor) => {
@@ -118,17 +96,10 @@ const FornecedorForm = ({
         }}
       >
         <DialogHeader>
-          <DialogTitle>
-            {fornecedor
-              ? "Atualizar o fornecedor"
-              : "Adicionar novo fornecedor"}
-          </DialogTitle>
+          <DialogTitle>{fornecedor ? "Atualizar o fornecedor" : "Adicionar novo fornecedor"}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            className="space-y-4 flex flex-col"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form className="space-y-4 flex flex-col" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-row justify-between">
               <div className="flex flex-row gap-4">
                 <FormFieldInput
@@ -149,7 +120,7 @@ const FornecedorForm = ({
                         <FormLabel>Tipo de Pessoa:</FormLabel>
                         <FormControl>
                           <RadioGroup
-                            disabled={action === "Edit"}
+                            disabled={action === "Edit" || action === "View"}
                             defaultValue={field.value}
                             onValueChange={field.onChange}
                           >
@@ -176,67 +147,48 @@ const FornecedorForm = ({
                   <FormItem className="flex flex-col gap-2 items-center justify-center">
                     <FormLabel>Ativo</FormLabel>
                     <FormControl>
-                      <Switch
-                        defaultChecked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Switch defaultChecked={field.value} onCheckedChange={field.onChange} disabled={disabled} />
                     </FormControl>
                   </FormItem>
                 )}
               />
             </div>
-            {form.watch("tpPessoa") === "F" ||
-            form.watch("tpPessoa") === "J" ? (
+            {form.watch("tpPessoa") === "F" || form.watch("tpPessoa") === "J" ? (
               <>
                 <Separator className="!mt-10 !mb-9" />
                 <div className="!m-0">
                   <Label>Dados Pessoais</Label>
                   <div className="grid grid-cols-9 gap-4">
                     <FormFieldInput<FornecedorFormData>
-                      errorMessage={
-                        form.formState.errors.pessoaRazaoSocial?.message
-                      }
-                      label={
-                        form.watch("tpPessoa") === "F"
-                          ? "Cliente*"
-                          : "Razão Social*"
-                      }
+                      errorMessage={form.formState.errors.pessoaRazaoSocial?.message}
+                      label={form.watch("tpPessoa") === "F" ? "Cliente*" : "Razão Social*"}
                       name="pessoaRazaoSocial"
                       control={form.control}
+                      disabled={disabled}
                       className="col-span-4"
                     />
 
                     <FormFieldInput
-                      label={
-                        form.watch("tpPessoa") === "F"
-                          ? "Apelido"
-                          : "Nome Fantasia"
-                      }
+                      label={form.watch("tpPessoa") === "F" ? "Apelido" : "Nome Fantasia"}
                       name="apelidoNomeFantasia"
                       control={form.control}
+                      disabled={disabled}
                       className="col-span-3"
-                      errorMessage={
-                        form.formState.errors.apelidoNomeFantasia?.message
-                      }
+                      errorMessage={form.formState.errors.apelidoNomeFantasia?.message}
                     />
 
                     <FormField
                       name="sexo"
                       control={form.control}
                       render={({ field }) => (
-                        <FormItem
-                          className={`col-span-2 ${
-                            form.watch("tpPessoa") === "F"
-                              ? "visible"
-                              : "hidden"
-                          }`}
-                        >
+                        <FormItem className={`col-span-2 ${form.watch("tpPessoa") === "F" ? "visible" : "hidden"}`}>
                           <FormLabel>Sexo</FormLabel>
                           <FormControl {...field}>
                             <Select
                               onValueChange={(value) => {
                                 field.onChange(value);
                               }}
+                              disabled={disabled}
                             >
                               <SelectTrigger className="">
                                 <SelectValue>
@@ -256,9 +208,7 @@ const FornecedorForm = ({
                               </SelectContent>
                             </Select>
                           </FormControl>
-                          <FormLabel className="text-xs">
-                            {form.formState.errors.sexo?.message}
-                          </FormLabel>
+                          <FormLabel className="text-xs">{form.formState.errors.sexo?.message}</FormLabel>
                         </FormItem>
                       )}
                     />
@@ -268,12 +218,14 @@ const FornecedorForm = ({
                       name="telefone"
                       control={form.control}
                       className="col-span-2"
+                      disabled={disabled}
                     />
 
                     <FormFieldInput
                       label="Celular*"
                       name="celular"
                       control={form.control}
+                      disabled={disabled}
                       className="col-span-2"
                       errorMessage={form.formState.errors.celular?.message}
                       maskFunction={insertMaskCel}
@@ -283,6 +235,7 @@ const FornecedorForm = ({
                       label="Email*"
                       name="email"
                       control={form.control}
+                      disabled={disabled}
                       className="col-span-4"
                       errorMessage={form.formState.errors.email?.message}
                     />
@@ -291,60 +244,45 @@ const FornecedorForm = ({
                       label="Representante"
                       name="representante"
                       control={form.control}
-                      className={`col-span-4 ${
-                        form.watch("tpPessoa") === "F" ? "hidden" : "block"
-                      }`}
-                      errorMessage={
-                        form.formState.errors.representante?.message
-                      }
+                      disabled={disabled}
+                      className={`col-span-4 ${form.watch("tpPessoa") === "F" ? "hidden" : "block"}`}
+                      errorMessage={form.formState.errors.representante?.message}
                     />
 
                     <FormFieldInput
                       label="Celular Representante"
                       name="celularRepresentante"
                       control={form.control}
+                      disabled={disabled}
                       maskFunction={insertMaskCel}
-                      className={`col-span-4 ${
-                        form.watch("tpPessoa") === "F" ? "hidden" : "block"
-                      }`}
-                      errorMessage={
-                        form.formState.errors.celularRepresentante?.message
-                      }
+                      className={`col-span-4 ${form.watch("tpPessoa") === "F" ? "hidden" : "block"}`}
+                      errorMessage={form.formState.errors.celularRepresentante?.message}
                     />
 
                     <FormFieldInput
-                      label={form.watch("tpPessoa") === "F" ? "CPF*" : "CNPJ*"}
+                      label={form.watch("tpPessoa") === "F" ? "CPF" : "CNPJ"}
                       name="cpfCnpj"
                       control={form.control}
+                      disabled={disabled}
                       className="col-span-2"
                       errorMessage={form.formState.errors.cpfCnpj?.message}
-                      maskFunction={
-                        form.watch("tpPessoa") === "F"
-                          ? insertMaskCPF
-                          : insertMaskCNPJ
-                      }
+                      maskFunction={form.watch("tpPessoa") === "F" ? insertMaskCPF : insertMaskCNPJ}
                     />
 
                     <FormFieldInput
-                      label={
-                        form.watch("tpPessoa") === "F"
-                          ? "RG"
-                          : "Inscrição Estadual"
-                      }
+                      label={form.watch("tpPessoa") === "F" ? "RG" : "Inscrição Estadual"}
                       name="ieRg"
                       control={form.control}
+                      disabled={disabled}
                       className="col-span-2"
                       errorMessage={form.formState.errors.ieRg?.message}
-                      maskFunction={
-                        form.watch("tpPessoa") === "F"
-                          ? insertMaskRG
-                          : undefined
-                      }
+                      maskFunction={form.watch("tpPessoa") === "F" ? insertMaskRG : undefined}
                     />
 
                     <InputCalendar
-                      label="Dt. Nascimento"
+                      label={form.watch("tpPessoa") === "F" ? "Dt. Nascimento" : "Dt. Fundação"}
                       name="dtNascimento"
+                      disabled={disabled}
                       control={form.control}
                       setValue={form.setValue}
                       value={form.watch("dtNascimento")}
@@ -360,6 +298,7 @@ const FornecedorForm = ({
                       label="CEP*"
                       name="cep"
                       control={form.control}
+                      disabled={disabled}
                       className="col-span-3"
                       errorMessage={form.formState.errors.cep?.message}
                       maskFunction={insertMaskCEP}
@@ -369,6 +308,7 @@ const FornecedorForm = ({
                       label="Logradouro*"
                       name="logradouro"
                       control={form.control}
+                      disabled={disabled}
                       className="col-span-3"
                       errorMessage={form.formState.errors.logradouro?.message}
                     />
@@ -377,6 +317,7 @@ const FornecedorForm = ({
                       label="Número*"
                       name="numero"
                       control={form.control}
+                      disabled={disabled}
                       className="col-span-1"
                       isNumber={true}
                       errorMessage={form.formState.errors.numero?.message}
@@ -386,6 +327,7 @@ const FornecedorForm = ({
                       label="Complemento"
                       name="complemento"
                       control={form.control}
+                      disabled={disabled}
                       className="col-span-3"
                     />
 
@@ -393,17 +335,19 @@ const FornecedorForm = ({
                       label="Bairro*"
                       name="bairro"
                       control={form.control}
+                      disabled={disabled}
                       className="col-span-3"
                       errorMessage={form.formState.errors.bairro?.message}
                     />
 
                     <FormFieldInput
-                      label="Cód. Cidade"
+                      label="Cód. Cidade*"
                       name="idCidade"
                       control={form.control}
                       isNumber={true}
                       disabled={true}
-                      className="col-span-2 row-start-3 col-span-1"
+                      errorMessage={form.formState.errors.idCidade?.message}
+                      className="col-span-2 row-start-3"
                     />
 
                     <FormFieldInput
@@ -411,6 +355,7 @@ const FornecedorForm = ({
                       name="cidade.cidade"
                       control={form.control}
                       disabled={true}
+                      errorMessage={form.formState.errors.cidade?.cidade?.message}
                       className="row-start-3 col-span-2"
                     />
 
@@ -471,7 +416,7 @@ const FornecedorForm = ({
                     className="col-span-2"
                   />
                 </div>
-                <Button type="submit" variant="default">
+                <Button type="submit" variant="default" className={`${action === "View" ? "hidden" : "visible"}`}>
                   Salvar
                 </Button>
               </>

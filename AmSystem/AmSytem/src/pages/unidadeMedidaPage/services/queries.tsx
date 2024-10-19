@@ -5,10 +5,7 @@ import {
   PostUnidadeMedidaRequest,
   PutUnidadeMedidaRequest,
 } from "./api";
-import {
-  IPostUnidadeMedida,
-  IPutUnidadeMedida,
-} from "@/interfaces/unidadeMedida.interfaces";
+import { IPostUnidadeMedida, IPutUnidadeMedida } from "@/interfaces/unidadeMedida.interfaces";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
@@ -24,15 +21,13 @@ export function PutUnidadeMedida(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPutUnidadeMedida) => PutUnidadeMedidaRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetUnidadesMedidas"] });
       onOpenChange(false);
-      toast.success("Unidade de Medida atualizada com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(
-        `Erro ao atualizar unidade de medida. Erro: ${error.response?.data}`
-      );
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -42,15 +37,13 @@ export function PostUnidadeMedida(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPostUnidadeMedida) => PostUnidadeMedidaRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetUnidadesMedidas"] });
       onOpenChange(false);
-      toast.success("Unidade de medida adicionada com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(
-        `Erro ao adicionar unidade de medida. Erro: ${error.response?.data}`
-      );
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -58,16 +51,13 @@ export function PostUnidadeMedida(onOpenChange: (open: boolean) => void) {
 export function DeleteUnidadeMedida() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (idUnidadeMedida: Number) =>
-      DeleteUnidadeMedidaRequest(idUnidadeMedida),
-    onSuccess: () => {
+    mutationFn: (idUnidadeMedida: number) => DeleteUnidadeMedidaRequest(idUnidadeMedida),
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetUnidadesMedidas"] });
-      toast.success("Unidade de medida deletada com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(
-        `Erro ao deletar unidade de medida. Erro: ${error.response?.data}`
-      );
+      toast.error(`${error.response?.data}`);
     },
   });
 }

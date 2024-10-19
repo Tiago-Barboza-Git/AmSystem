@@ -11,9 +11,9 @@ namespace ApiAmSystem.Domain.Models.CondicaoPagamento
     {
         private int Id;
         private string CondicaoPagamento;
-        private decimal? Desconto;
-        private decimal? Juros;
-        private decimal? Multa;
+        private decimal Desconto;
+        private decimal Juros;
+        private decimal Multa;
         private bool Ativo;
         private DateTime DtCadastro;
         private DateTime DtAlteracao;
@@ -32,7 +32,7 @@ namespace ApiAmSystem.Domain.Models.CondicaoPagamento
             this.Parcelas = new List<ParcelaModel>();
         }
 
-        public CondicaoPagamentoModel(int pId, string pCondicaoPagamento, decimal? pDesconto, decimal? pJuros, decimal? pMulta, bool pAtivo, DateTime pDtCadastro, DateTime pDtAlteracao, IEnumerable<ParcelaModel> pParcelas)
+        public CondicaoPagamentoModel(int pId, string pCondicaoPagamento, decimal pDesconto, decimal pJuros, decimal pMulta, bool pAtivo, DateTime pDtCadastro, DateTime pDtAlteracao, IEnumerable<ParcelaModel> pParcelas)
         {
             this.Id = pId;
             this.CondicaoPagamento = pCondicaoPagamento;
@@ -57,19 +57,19 @@ namespace ApiAmSystem.Domain.Models.CondicaoPagamento
             set { this.CondicaoPagamento = value; }
         }
 
-        public decimal? desconto
+        public decimal desconto
         {
             get { return this.Desconto; }
             set { this.Desconto = value; }
         }
 
-        public decimal? juros
+        public decimal juros
         {
             get { return this.Juros; }
             set { this.Juros = value; }
         }
 
-        public decimal? multa
+        public decimal multa
         {
             get { return this.Multa; }
             set { this.Multa = value; }
@@ -98,5 +98,11 @@ namespace ApiAmSystem.Domain.Models.CondicaoPagamento
             get { return this.Parcelas;}
             set { this.Parcelas = value;}
         }
+    }
+
+    public class CondicaoPagamentoRef
+    {
+        public int Id { get; set; }
+        public string CondicaoPagamento { get; set; }
     }
 }

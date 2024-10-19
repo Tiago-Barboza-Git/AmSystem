@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogHeader, DialogContent, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { AxiosError } from "axios";
 import { CircleX } from "lucide-react";
 import { UseMutationResult } from "react-query";
 
@@ -7,7 +8,8 @@ interface DeleteDialogProps {
   isOpen: boolean;
   registerId: number;
   onOpenChange: (value: boolean) => void;
-  deleteFunction?: UseMutationResult<number, unknown, Number, unknown>;
+  // deleteFunction?: UseMutationResult<number, unknown, number, unknown>;
+  deleteFunction?: UseMutationResult<number, AxiosError<unknown, any>, number, unknown>;
   handleDelete?: (value: number) => void;
 }
 

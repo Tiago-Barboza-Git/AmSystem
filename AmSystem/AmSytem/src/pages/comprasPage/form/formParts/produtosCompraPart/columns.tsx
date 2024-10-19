@@ -4,20 +4,22 @@ import { DataTableRowActions } from "@/components/datatable/dataTableRowActions"
 import { formatDate } from "@/functions/functions";
 import { ICondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
 import { IProdutoCompra } from "@/interfaces/produtoCompra.interfaces";
-import { CurrencyInput } from "react-currency-mask";
 import { Input } from "@/components/ui/input";
 import { formatCurrency } from "@/functions/masks";
+import CurrencyInput from "react-currency-input-field";
 
 interface produtosCompraColumnsProps {
-  onEdit: (produtoCompra: IProdutoCompra) => void;
+  onEdit?: (produtoCompra: IProdutoCompra) => void;
   onDelete: (produtoCompra: IProdutoCompra, index: number) => void;
-  action?: string;
+  actionPai?: string;
+  activedStep?: number;
 }
 
 export const getProdutosCompraColumns = ({
   onEdit,
   onDelete,
-  action,
+  actionPai,
+  activedStep,
 }: produtosCompraColumnsProps): ColumnDef<IProdutoCompra>[] => {
   const columns: ColumnDef<IProdutoCompra>[] = [
     {
@@ -57,9 +59,13 @@ export const getProdutosCompraColumns = ({
         <div>
           {
             <CurrencyInput
-              value={row.original.precoUnit as string}
-              onChangeValue={() => ""}
-              InputElement={<Input disabled className="bg-transparent border-none shadow-none disabled:!text-red" />}
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              prefix="R$ "
+              decimalScale={2}
+              allowDecimals={true}
+              allowNegativeValue={false}
+              disabled={true}
+              value={row.original.precoUnit}
             />
           }
         </div>
@@ -76,9 +82,13 @@ export const getProdutosCompraColumns = ({
           <div>
             {
               <CurrencyInput
+                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                prefix="R$ "
+                decimalScale={2}
+                allowDecimals={true}
+                allowNegativeValue={false}
+                disabled={true}
                 value={precoTotal}
-                onChangeValue={() => ""}
-                InputElement={<Input disabled className="bg-transparent border-none shadow-none disabled:!text-red" />}
               />
             }
           </div>
@@ -89,7 +99,7 @@ export const getProdutosCompraColumns = ({
   ];
 
   // Adiciona a coluna de ações se `disabled` for falso
-  if (action !== "View") {
+  if (activedStep === 1) {
     columns.push({
       header: "Ações",
       id: "100",

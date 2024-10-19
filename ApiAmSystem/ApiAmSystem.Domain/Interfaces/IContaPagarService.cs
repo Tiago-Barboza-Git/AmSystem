@@ -1,4 +1,5 @@
-﻿using ApiAmSystem.Domain.Models.ContaPagar;
+﻿using ApiAmSystem.Domain.Models.Compra.ContaPagar;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace ApiAmSystem.Domain.Interfaces
     {
         IEnumerable<ContaPagarModel> GetContasPagar(bool pAtivo);
         IEnumerable<ContaPagarModel> GetContasPagarByCompra(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor);
+        string PutContaPagar(ContaPagarPutRequest pContaPagar);
     }
 }

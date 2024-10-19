@@ -1,5 +1,5 @@
 ﻿using ApiAmSystem.Domain.Interfaces;
-using ApiAmSystem.Domain.Models.ContaPagar;
+using ApiAmSystem.Domain.Models.Compra.ContaPagar;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiAmSystem.Controllers
@@ -20,6 +20,17 @@ namespace ApiAmSystem.Controllers
         {
             IEnumerable<ContaPagarModel> result = contaPagarService.GetContasPagar(pAtivo);
             if (result != null)
+                return Ok(result);
+            else
+                return BadRequest();
+        }
+
+        [HttpPut]
+        [Route("/PutContaPagar")]
+        public IActionResult PutContaPagar(ContaPagarPutRequest pContaPagar)
+        {
+            string result = contaPagarService.PutContaPagar(pContaPagar);
+            if (result == "Sucesso")
                 return Ok(result);
             else
                 return BadRequest();

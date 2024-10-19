@@ -119,7 +119,7 @@ namespace ApiAmSystem.Services
                     sqlConnection.Open();
                     string query = @"
                         insert into TBFormasPagamentos(FormaPagamento, Ativo, DtCadastro, DtAlteracao)
-                        values(@FormaPagamento, @Ativo, @DtCadastro, @DtAlteracao);";
+                        values(dbo.fn_RemSpaceFromStr(@FormaPagamento), @Ativo, @DtCadastro, @DtAlteracao);";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@FormaPagamento", SqlDbType.VarChar).Value = pFormaPagamento.formaPagamento;
@@ -131,7 +131,11 @@ namespace ApiAmSystem.Services
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "Forma de pagamento já existente";
+                    }
+                    return ex.Message;
                 }
                 finally
                 {
@@ -149,7 +153,7 @@ namespace ApiAmSystem.Services
                     sqlConnection.Open();
                     string query = @"
                         update TbFormasPagamentos set
-                            FormaPagamento = @FormaPagamento, Ativo = @Ativo, DtAlteracao = @DtAlteracao
+                            FormaPagamento = dbo.fn_RemSpaceFromStr(@FormaPagamento), Ativo = @Ativo, DtAlteracao = @DtAlteracao
                         where Id = @Id;";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
@@ -162,7 +166,11 @@ namespace ApiAmSystem.Services
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "Forma de pagamento já existente";
+                    }
+                    return ex.Message;
                 }
                 finally
                 {

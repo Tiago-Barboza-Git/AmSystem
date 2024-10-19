@@ -9,19 +9,19 @@ import { ICategoria } from "@/interfaces/categoria.interfaces";
 import { IUnidadeMedida } from "@/interfaces/unidadeMedida.interfaces";
 
 interface unidadesMedidasColumnsProps {
-  onEdit: (categoria: IUnidadeMedida) => void;
-  onDelete: (categoria: IUnidadeMedida) => void;
+  onEdit: (unidadeMedida: IUnidadeMedida) => void;
+  onDelete: (unidadeMedida: IUnidadeMedida) => void;
+  onView: (unidadeMedida: IUnidadeMedida) => void;
 }
 
 export const getUnidadesMedidasColumns = ({
   onEdit,
   onDelete,
+  onView,
 }: unidadesMedidasColumnsProps): ColumnDef<IUnidadeMedida>[] => [
   {
     accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cód. " />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Cód. " />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.id}</span>
@@ -31,9 +31,7 @@ export const getUnidadesMedidasColumns = ({
   },
   {
     accessorKey: "unidadeMedida",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Unidade de Medida" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Unidade de Medida" />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.unidadeMedida}</span>
@@ -43,9 +41,7 @@ export const getUnidadesMedidasColumns = ({
   },
   {
     accessorKey: "simbolo",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Símbolo" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Símbolo" />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.simbolo}</span>
@@ -63,14 +59,10 @@ export const getUnidadesMedidasColumns = ({
     accessorKey: "dtAlteracao",
     header: "Dt. Alteração",
     enableColumnFilter: false,
-    cell: ({ row }) => (
-      <div>{formatDate(String(row.original.dtAlteracao))}</div>
-    ),
+    cell: ({ row }) => <div>{formatDate(String(row.original.dtAlteracao))}</div>,
   },
   {
     header: "Ações",
-    cell: ({ row }) => (
-      <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />
-    ),
+    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} onView={onView} />,
   },
 ];

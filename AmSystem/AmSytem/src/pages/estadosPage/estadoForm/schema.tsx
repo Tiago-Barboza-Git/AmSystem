@@ -5,20 +5,13 @@ import { z } from "zod";
 export const EstadoFormSchema = z.object({
   id: z.number(),
   estado: z
-    .string()
-    .min(1, "Esse campo é obrigatório")
-    .regex(
-      /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/,
-      "É permitido apenas letras, acentos e espaços"
-    ),
+    .string({ message: "Obrigatório" })
+    .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/, "É permitido apenas letras, acentos e espaços"),
   uf: z
-    .string()
-    .min(1, "Esse campo é obrigatório")
-    .regex(
-      /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/,
-      "É permitido apenas letras, acentos e espaços"
-    ),
-  idPais: z.number().refine((value) => value !== 0, {
+    .string({ message: "Obrigatório" })
+    .max(5, "Só é permitido 5 caracteres")
+    .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/, "É permitido apenas letras, acentos e espaços"),
+  idPais: z.number({ message: "Obrigatório" }).refine((value) => value !== 0, {
     message: "Selecione um País",
   }),
   pais: z.custom<IPais>(),

@@ -3,13 +3,8 @@ import { getFuncionariosColumns } from "./funcionariosColumns";
 import { DeleteFuncionario, GetFuncionarios } from "./services/queries";
 import { useCallback, useMemo, useState } from "react";
 import { useQueryClient } from "react-query";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
-import DeleteDialog from "@/components/dialog/deleteDialog/index.tsx";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
+import DeleteDialog from "@/components/dialog/deleteDialog";
 import { IFuncionario } from "@/interfaces/funcionario.interfaces";
 import FuncionarioForm from "./funcionarioForm";
 
@@ -19,8 +14,7 @@ export function FuncionariosPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
   const [ativos, setAtivos] = useState<boolean>(true);
-  const [selectedFuncionario, setSelectedFuncionario] =
-    useState<IFuncionario | null>(null);
+  const [selectedFuncionario, setSelectedFuncionario] = useState<IFuncionario | null>(null);
   const deleteFuncionario = DeleteFuncionario();
 
   const onGet = useCallback(async () => {
@@ -46,6 +40,12 @@ export function FuncionariosPage() {
   const onAdd = useCallback(() => {
     setAction("Add");
     setSelectedFuncionario(null);
+    setOpen(true);
+  }, []);
+
+  const onView = useCallback((funcionario: IFuncionario) => {
+    setAction("View");
+    setSelectedFuncionario(funcionario);
     setOpen(true);
   }, []);
 
@@ -82,10 +82,7 @@ export function FuncionariosPage() {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(
-            () => getFuncionariosColumns({ onEdit, onDelete }),
-            []
-          )}
+          columns={useMemo(() => getFuncionariosColumns({ onEdit, onDelete, onView }), [])}
           data={funcionarios}
           onAdd={onAdd}
           onGet={onGet}

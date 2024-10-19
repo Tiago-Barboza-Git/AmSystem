@@ -1,25 +1,12 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { IPais } from "@/interfaces/pais.interfaces";
 import { PaisFormData, PaisFormSchema, defaultValues } from "./schema.tsx";
 import { SubmitHandler, useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form.tsx";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch.tsx";
 import { formatDate } from "@/functions/functions.tsx";
 import { DeletePais, PostPais, PutPais } from "../services/queries.tsx";
@@ -35,13 +22,8 @@ interface paisFormProps {
   onOpenChange: (value: boolean) => void;
 }
 
-const PaisForm = ({
-  action,
-  setOpen,
-  pais,
-  isOpen,
-  onOpenChange,
-}: paisFormProps) => {
+const PaisForm = ({ action, setOpen, pais, isOpen, onOpenChange }: paisFormProps) => {
+  const [disabled, setDisabled] = useState<boolean>(action === "View" ? true : false);
   const putPais = PutPais(onOpenChange);
   const postPais = PostPais(onOpenChange);
   const form = useForm<PaisFormData>({
@@ -51,7 +33,8 @@ const PaisForm = ({
   });
 
   useEffect(() => {
-    if (action === "Edit") {
+    if (action === "Edit" || action === "View") {
+      action === "View" ? setDisabled(true) : setDisabled(false);
       form.reset({
         ...pais,
       });
@@ -71,27 +54,19 @@ const PaisForm = ({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent
-        className="!max-w-screen-xs overflow-y-auto"
+        className="!min-w-max overflow-y-auto"
         onInteractOutside={(e) => {
           e.preventDefault();
         }}
       >
         <DialogHeader>
-          <DialogTitle>
-            {pais ? "Atualizar o país" : "Adicionar novo país"}
-          </DialogTitle>
+          <DialogTitle>{pais ? "Atualizar o país" : "Adicionar novo país"}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
           <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-4">
               <div className="flex flex-row justify-between">
-                <FormFieldInput
-                  control={form.control}
-                  label="Cód."
-                  name="id"
-                  disabled={true}
-                  isNumber={true}
-                />
+                <FormFieldInput control={form.control} label="Cód." name="id" disabled={true} isNumber={true} />
 
                 <FormField
                   name="ativo"
@@ -101,10 +76,7 @@ const PaisForm = ({
                     <FormItem className="flex flex-col gap-2 items-center justify-center">
                       <FormLabel>Ativo</FormLabel>
                       <FormControl>
-                        <Switch
-                          defaultChecked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} disabled={disabled} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -117,6 +89,7 @@ const PaisForm = ({
                   control={form.control}
                   label="País"
                   errorMessage={form.formState.errors.pais?.message}
+                  disabled={disabled}
                   className="col-span-3"
                 />
 
@@ -126,6 +99,7 @@ const PaisForm = ({
                   label="DDI"
                   errorMessage={form.formState.errors.ddi?.message}
                   isNumber={true}
+                  disabled={disabled}
                   className="col-span-2"
                 />
 
@@ -134,6 +108,7 @@ const PaisForm = ({
                   control={form.control}
                   label="Sigla"
                   errorMessage={form.formState.errors.sigla?.message}
+                  disabled={disabled}
                   className="col-span-2"
                 />
               </div>
@@ -145,7 +120,7 @@ const PaisForm = ({
                   control={form.control}
                   setValue={form.setValue}
                   value={form.watch("dtCadastro")}
-                  disabled={true}
+                  disabled={disabled}
                   className="col-span-2 w-50"
                 />
 
@@ -155,12 +130,12 @@ const PaisForm = ({
                   control={form.control}
                   setValue={form.setValue}
                   value={form.watch("dtAlteracao")}
-                  disabled={true}
+                  disabled={disabled}
                   className="col-span-2"
                 />
               </div>
 
-              <Button type="submit" variant="default">
+              <Button type="submit" variant="default" className={`${action === "View" ? "hidden" : "visible"}`}>
                 Salvar
               </Button>
             </div>

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import {
+  CancelCompraRequest,
   DeleteCompraRequest,
-  GetCompraRequest,
   GetComprasRequest,
   GetVerificaExistenciaCompraRequest,
   PostCompraRequest,
@@ -10,18 +10,13 @@ import {
 import { IPostCompra, IPutCompra } from "@/interfaces/compra.interfaces";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import { number } from "zod";
+import { IPutCompraPai } from "@/interfaces/compraPai.interfaces";
 
-export function GetCompra(nrNota?: number, nrModelo?: number, nrSerie?: number, idFornecedor?: number) {
+export function GetCompras(pCanceladas: boolean) {
   return useQuery({
-    queryKey: ["GetCompra"],
-    queryFn: () => GetCompraRequest(nrNota, nrModelo, nrSerie, idFornecedor),
-  });
-}
-
-export function GetCompras() {
-  return useQuery({
-    queryKey: ["GetCompras"],
-    queryFn: () => GetComprasRequest(),
+    queryKey: ["GetCompras", pCanceladas],
+    queryFn: ({ queryKey }) => GetComprasRequest(Boolean(queryKey[1])),
   });
 }
 
@@ -30,13 +25,13 @@ export function PutCompra(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPutCompra) => PutCompraRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetCompras"] });
       onOpenChange(false);
-      toast.success("Compra atualizada com sucesso.");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao atualizar a compra. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -46,13 +41,13 @@ export function PostCompra(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPostCompra) => PostCompraRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetCompras"] });
       onOpenChange(false);
-      toast.success("Compra adicionada com sucesso");
+      toast.success(`${response}`);
     },
-    onError: (response) => {
-      toast.error(`Erro ao adicionar a compra. ${response}`);
+    onError: (error: AxiosError) => {
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -63,6 +58,21 @@ export function DeleteCompra() {
     mutationFn: (idCompra: number) => DeleteCompraRequest(idCompra),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["GetCompras"] });
+    },
+  });
+}
+
+export function CancelCompra(onOpenChange: (open: boolean) => void) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: IPutCompraPai) => CancelCompraRequest(data),
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["GetCompras"] });
+      onOpenChange(false);
+      toast.success(`${response}`);
+    },
+    onError: (error: AxiosError) => {
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -86,11 +96,4 @@ export function GetVerificaExistenciaCompra(
       idFornecedor: number;
     }) => GetVerificaExistenciaCompraRequest(nrNota, nrModelo, nrSerie, idFornecedor),
   );
-  // return useQuery({
-  //   queryKey: ["GetVerificaExistenciaCompra"],
-  //   queryFn: () =>
-  //     GetVerificaExistenciaCompraRequest(Number(nrNota), Number(nrModelo), Number(nrSerie), Number(idFornecedor)).then(
-  //       (response) => response,
-  //     ),
-  // });
 }

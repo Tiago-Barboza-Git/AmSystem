@@ -56,7 +56,7 @@ namespace ApiAmSystem.Services
                 try
                 {
                     sqlConnection.Open();
-                    string query = pAtivo == true ? "SELECT * FROM TbPaises WHERE Ativo = 1" : "SELECT * FROM TbPaises WHERE Ativo = 0";
+                    string query = pAtivo == true ? "SELECT Id, Pais, DDI, Sigla, Ativo, DtCadastro, DtAlteracao FROM TbPaises WHERE Ativo = 1" : "SELECT * FROM TbPaises WHERE Ativo = 0";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     SqlDataReader reader = cmd.ExecuteReader();
                     PaisModel Pais = new PaisModel();
@@ -88,21 +88,25 @@ namespace ApiAmSystem.Services
                 try
                 {
                     sqlConnection.Open();
-                    string query = "INSERT INTO TbPaises(Pais, DDI, Sigla, Ativo, DtCadastro, DtAlteracao) values(@Pais, @DDI, @Sigla, @Ativo, @DtCadastro, @DtAlteracao);";
+                    string query = "INSERT INTO TbPaises(Pais, DDI, Sigla, Ativo, DtCadastro, DtAlteracao) values(dbo.fn_RemSpaceFromStr(@Pais), @DDI, dbo.fn_RemSpaceFromStr(@Sigla), @Ativo, @DtCadastro, @DtAlteracao);";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
-                    cmd.Parameters.Add("@Pais", SqlDbType.VarChar).Value = pPais.pais;
+                    cmd.Parameters.Add("@Pais", SqlDbType.VarChar).Value = pPais.pais.Trim();
                     cmd.Parameters.Add("@DDI", SqlDbType.Int).Value = pPais.ddi;
                     cmd.Parameters.Add("@Sigla", SqlDbType.VarChar).Value = pPais.sigla;
                     cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pPais.ativo;
                     cmd.Parameters.Add("@DtCadastro", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "País adicionado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "País já cadastrado";
+                    }
+                    return "Erro ao adicionar país";
                 }
                 finally
                 {
@@ -118,7 +122,7 @@ namespace ApiAmSystem.Services
                 try
                 {
                     sqlConnection.Open();
-                    string query = "UPDATE TbPaises SET Pais = @Pais, DDI = @DDI, Sigla = @Sigla, Ativo = @Ativo, DtAlteracao = @DtAlteracao WHERE Id = @Id";
+                    string query = "UPDATE TbPaises SET Pais = dbo.fn_RemSpaceFromStr(@Pais), DDI = @DDI, Sigla = dbo.fn_RemSpaceFromStr(@Sigla), Ativo = @Ativo, DtAlteracao = @DtAlteracao WHERE Id = @Id";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pPais.id;
@@ -128,11 +132,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pPais.ativo;
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "País editado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "País já cadastrado!";
+                    }
+                    return "Erro ao alterar país!";
                 }
                 finally
                 {
@@ -153,11 +161,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pId;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "País deletado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 547)
+                    {
+                        return "País está vinculado a outros registros!";
+                    }
+                    return "Erro ao deletar país!";
                 }
                 finally
                 {

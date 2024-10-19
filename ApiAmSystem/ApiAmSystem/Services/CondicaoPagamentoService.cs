@@ -137,7 +137,7 @@ namespace ApiAmSystem.Services
                 try
                 {
                     string query = "declare @IdCondPag int;\n\n";
-                    query += "insert into TbCondicoesPagamentos (CondicaoPagamento, Desconto, Juros, Multa, Ativo, DtCadastro, DtAlteracao) values(@CondicaoPagamento, @Desconto, @Juros, @Multa, @Ativo, @DtCadastro, @DtAlteracao);\n\n";
+                    query += "insert into TbCondicoesPagamentos (CondicaoPagamento, Desconto, Juros, Multa, Ativo, DtCadastro, DtAlteracao) values(dbo.fn_RemSpaceFromStr(@CondicaoPagamento), @Desconto, @Juros, @Multa, @Ativo, @DtCadastro, @DtAlteracao);\n\n";
 	                query += "set @IdCondPag = SCOPE_IDENTITY();\n\n";
 
                     string valuesParcelas = "";
@@ -169,7 +169,11 @@ namespace ApiAmSystem.Services
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "Condição de pagamento já existente";
+                    }
+                    return ex.Message;
                 }
                 finally
                 {
@@ -186,7 +190,7 @@ namespace ApiAmSystem.Services
                 {
                     string query = @"
                             update TbCondicoesPagamentos
-                            set CondicaoPagamento = @CondicaoPagamento,
+                            set CondicaoPagamento = dbo.fn_RemSpaceFromStr(@CondicaoPagamento),
                                 Desconto = @Desconto,
                                 Juros = @Juros,
                                 Multa = @Multa,
@@ -286,7 +290,11 @@ namespace ApiAmSystem.Services
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "Condição de pagamento já existente";
+                    }
+                    return ex.Message;
                 }
                 finally
                 {

@@ -102,8 +102,10 @@ namespace ApiAmSystem.Services
                             e.Id = c.IdEstado
                         inner join TbPaises p on
                             p.Id = e.IdPais
-                        where f.Ativo = 1";
+                        where f.Ativo = @Ativo";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pAtivo;
                     SqlDataReader reader = cmd.ExecuteReader();
                     if (reader != null)
                     {
@@ -114,7 +116,7 @@ namespace ApiAmSystem.Services
                                 id = reader.GetInt32("Id"),
                                 funcionario = reader.GetString("Funcionario"),
                                 apelido = reader.IsDBNull("Apelido") ? "" : reader.GetString("Apelido"),
-                                cpf = reader.GetString("Cpf"),
+                                cpf = reader.IsDBNull("Cpf") ? "" : reader.GetString("Cpf"),
                                 rg = reader.IsDBNull("Rg") ? "" : reader.GetString("Rg"),
                                 dtNascimento = reader.IsDBNull("DtNascimento") ? null : reader.GetDateTime("DtNascimento"),
                                 email = reader.GetString("Email"),
@@ -192,14 +194,14 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Funcionario", SqlDbType.VarChar).Value = pFuncionario.funcionario;
                     cmd.Parameters.Add("@Apelido", SqlDbType.VarChar).Value = pFuncionario.apelido == null ? "" : pFuncionario.apelido;
-                    cmd.Parameters.Add("@Cpf", SqlDbType.VarChar).Value = pFuncionario.cpf;
+                    cmd.Parameters.Add("@Cpf", SqlDbType.VarChar).Value = pFuncionario.cpf.Length == 0 ? DBNull.Value : pFuncionario.cpf;
                     cmd.Parameters.Add("@Rg", SqlDbType.VarChar).Value = pFuncionario.rg == null ? "" : pFuncionario.rg;
                     cmd.Parameters.Add("@DtNascimento", SqlDbType.Date).Value = pFuncionario.dtNascimento == null ? DBNull.Value : pFuncionario.dtNascimento?.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add("@Email", SqlDbType.VarChar).Value = pFuncionario.email;
                     cmd.Parameters.Add("@Telefone", SqlDbType.VarChar).Value = pFuncionario.telefone;
                     cmd.Parameters.Add("@Celular", SqlDbType.VarChar).Value = pFuncionario.celular;
                     cmd.Parameters.Add("@Salario", SqlDbType.VarChar).Value = pFuncionario.salario;
-                    cmd.Parameters.Add("@Pis", SqlDbType.VarChar).Value = pFuncionario.pis == null ? "" : pFuncionario.pis;
+                    cmd.Parameters.Add("@Pis", SqlDbType.VarChar).Value = pFuncionario.pis.Length == 0 ? DBNull.Value : pFuncionario.pis;
                     cmd.Parameters.Add("@CEP", SqlDbType.VarChar).Value = pFuncionario.cep;
                     cmd.Parameters.Add("@Logradouro", SqlDbType.VarChar).Value = pFuncionario.logradouro;
                     cmd.Parameters.Add("@Bairro", SqlDbType.VarChar).Value = pFuncionario.bairro;
@@ -218,7 +220,11 @@ namespace ApiAmSystem.Services
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "CPF ou PIS já cadastrado";
+                    }
+                    return ex.Message;
                 }
                 finally
                 {
@@ -246,14 +252,14 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pFuncionario.id;
                     cmd.Parameters.Add("@Funcionario", SqlDbType.VarChar).Value = pFuncionario.funcionario;
                     cmd.Parameters.Add("@Apelido", SqlDbType.VarChar).Value = pFuncionario.apelido == null ? "" : pFuncionario.apelido;
-                    cmd.Parameters.Add("@Cpf", SqlDbType.VarChar).Value = pFuncionario.cpf;
+                    cmd.Parameters.Add("@Cpf", SqlDbType.VarChar).Value = pFuncionario.cpf.Length == 0 ? DBNull.Value : pFuncionario.cpf;
                     cmd.Parameters.Add("@Rg", SqlDbType.VarChar).Value = pFuncionario.rg == null ? "" : pFuncionario.rg;
                     cmd.Parameters.Add("@DtNascimento", SqlDbType.Date).Value = pFuncionario.dtNascimento == null ? DBNull.Value : pFuncionario.dtNascimento?.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add("@Email", SqlDbType.VarChar).Value = pFuncionario.email;
                     cmd.Parameters.Add("@Telefone", SqlDbType.VarChar).Value = pFuncionario.telefone == null ? "" : pFuncionario.telefone;
                     cmd.Parameters.Add("@Celular", SqlDbType.VarChar).Value = pFuncionario.celular;
                     cmd.Parameters.Add("@Salario", SqlDbType.VarChar).Value = pFuncionario.salario;
-                    cmd.Parameters.Add("@Pis", SqlDbType.VarChar).Value = pFuncionario.pis == null ? "" : pFuncionario.pis;
+                    cmd.Parameters.Add("@Pis", SqlDbType.VarChar).Value = pFuncionario.pis.Length == 0 ? DBNull.Value : pFuncionario.pis;
                     cmd.Parameters.Add("@Logradouro", SqlDbType.VarChar).Value = pFuncionario.logradouro;
                     cmd.Parameters.Add("@Bairro", SqlDbType.VarChar).Value = pFuncionario.bairro;
                     cmd.Parameters.Add("@Numero", SqlDbType.VarChar).Value = pFuncionario.numero;
@@ -270,7 +276,11 @@ namespace ApiAmSystem.Services
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "CPF ou PIS já cadastrado";
+                    }
+                    return ex.Message;
                 }
                 finally
                 {

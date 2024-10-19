@@ -1,4 +1,5 @@
 export const insertMaskCPF = (cpf?: string) => {
+  if (cpf === null || cpf === undefined) return "";
   if (!cpf) return "";
   return cpf
     ?.replace(/\D/g, "") // substitui qualquer caracter que nao seja numero por nada
@@ -9,6 +10,7 @@ export const insertMaskCPF = (cpf?: string) => {
 };
 
 export const insertMaskCNPJ = (cnpj?: string) => {
+  if (cnpj === null || cnpj === undefined) return "";
   if (!cnpj) return "";
   return cnpj
     .replace(/\D/g, "")
@@ -62,7 +64,6 @@ export function formatCurrency(input: string): number {
     const value = input.substring(3); // Remove "R$ "
     // Remove pontos e vírgulas para obter apenas os dígitos
     const cleanValue = value.replace(/[\.,]/g, "");
-    console.log("CleanValue", Number(cleanValue));
     // Verifica se há ao menos três caracteres no valor limpo
     if (cleanValue.length >= 3) {
       // Separa os últimos dois caracteres do restante

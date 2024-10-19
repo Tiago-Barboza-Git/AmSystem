@@ -3,15 +3,17 @@ import DataTableColumnHeader from "@/components/datatable/dataTableColumnHeader"
 import { DataTableRowActions } from "@/components/datatable/dataTableRowActions";
 import { formatDate } from "@/functions/functions";
 import { IContaPagar } from "@/interfaces/contasPagar";
-import { CurrencyInput } from "react-currency-mask";
+import CurrencyInput from "react-currency-input-field";
 import { Input } from "@/components/ui/input";
+import InputMoney from "@/components/form/inputMoney";
+import { Circle, CircleCheck, CircleX, X } from "lucide-react";
 
 interface contasPagarColumnsProps {
-  onEdit: (contaPagar: IContaPagar) => void;
+  onPagar: (contaPagar: IContaPagar) => void;
   onView: (contaPagar: IContaPagar) => void;
 }
 
-export const getContaPagarColumns = ({ onEdit, onView }: contasPagarColumnsProps): ColumnDef<IContaPagar>[] => [
+export const getContaPagarColumns = ({ onPagar, onView }: contasPagarColumnsProps): ColumnDef<IContaPagar>[] => [
   {
     accessorKey: "numParcela",
     header: "Parcela",
@@ -61,16 +63,66 @@ export const getContaPagarColumns = ({ onEdit, onView }: contasPagarColumnsProps
       <div>
         {
           <CurrencyInput
-            value={row.original.valorParcela as string}
-            onChangeValue={() => ""}
-            InputElement={<Input disabled className="bg-transparent border-none shadow-none disabled:!text-red" />}
+            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+            prefix="R$ "
+            decimalScale={2}
+            allowDecimals={true}
+            allowNegativeValue={false}
+            disabled={true}
+            value={row.original.valorParcela}
           />
         }
       </div>
     ),
   },
   {
+    accessorKey: "valorPago",
+    header: "Valor Pago",
+    enableGlobalFilter: false,
+    cell: ({ row }) => (
+      <div>
+        {
+          <CurrencyInput
+            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+            prefix="R$ "
+            decimalScale={2}
+            allowDecimals={true}
+            allowNegativeValue={false}
+            disabled={true}
+            value={row.original.valorPago}
+          />
+        }
+      </div>
+    ),
+  },
+  {
+    header: "Status",
+    cell: ({ row }) => (
+      <div>
+        {row.original.cancelada === false ? (
+          <span>
+            {Number(row.original.valorPago) > 0 ? (
+              <Circle color="green" fill="green" size={20} />
+            ) : (
+              <Circle color="orange" fill="orange" size={20} />
+            )}
+          </span>
+        ) : (
+          <span>
+            <Circle color="red" fill="red" size={20} />
+          </span>
+        )}
+      </div>
+    ),
+  },
+  {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onView={onView} />,
+    cell: ({ row }) => {
+      return row.original.cancelada ? (
+        <DataTableRowActions row={row} onView={onView} />
+      ) : (
+        <DataTableRowActions row={row} onPagar={onPagar} />
+      );
+    },
   },
 ];

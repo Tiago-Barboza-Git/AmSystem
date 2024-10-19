@@ -42,10 +42,10 @@ namespace ApiAmSystem.Controllers
         public IActionResult PostFormaPagamento(FormaPagamentoPostRequest pFormaPagamento)
         {
             string result = formasPagamentosService.PostFormaPagamento(pFormaPagamento);
-            if (result != null)
+            if (result == "Sucesso")
                 return Ok(result);
             else
-                return BadRequest();
+                return BadRequest(result);
         }
 
         [HttpPut]
@@ -53,10 +53,10 @@ namespace ApiAmSystem.Controllers
         public IActionResult PutFormaPagamento(FormaPagamentoPutRequest pFormaPagamento)
         {
             string result = formasPagamentosService.PutFormaPagamento(pFormaPagamento);
-            if (result != null)
+            if (result == "Sucesso")
                 return Ok(result);
             else
-                return BadRequest();
+                return BadRequest(result);
         }
 
         [HttpDelete]

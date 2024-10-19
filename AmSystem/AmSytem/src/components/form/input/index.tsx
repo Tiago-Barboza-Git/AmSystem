@@ -41,7 +41,7 @@ const FormFieldInput = <T extends FieldValues>({
 
   return (
     <FormItem className={className}>
-      <FormLabel className={`${hasError ? "text-red-500" : ""}`}>
+      <FormLabel>
         <Label>{label}</Label>
       </FormLabel>
       <FormControl>
@@ -73,7 +73,15 @@ const FormFieldInput = <T extends FieldValues>({
         />
       </FormControl>
       {/* {hasError && <FormMessage>{errorMessage}</FormMessage>} */}
-      {invalid && error && <FormMessage className="text-red-500">{error.message}</FormMessage>}
+      {hasError ? (
+        error?.message ? (
+          <FormMessage className="text-red-500"> {error?.message || "Obrigatório"}</FormMessage>
+        ) : (
+          <FormMessage className="text-red-500"> {"Obrigatório"}</FormMessage>
+        )
+      ) : (
+        <span></span>
+      )}
     </FormItem>
   );
 };

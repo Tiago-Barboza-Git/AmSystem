@@ -8,7 +8,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input.tsx";
 import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch.tsx";
-import { formatDate } from "@/functions/functions.tsx";
+import { formatDate, formatMoney } from "@/functions/functions.tsx";
 import { PostProduto, PutProduto } from "../services/queries.tsx";
 import FormFieldInput from "@/components/form/input/index.tsx";
 import {
@@ -30,6 +30,9 @@ import { UnidadesMedidasPage } from "@/pages/unidadeMedidaPage/index.tsx";
 import { Search } from "lucide-react";
 import { CategoriasPage } from "@/pages/categoriasPage/index.tsx";
 import FormFieldTextArea from "@/components/form/textarea/index.tsx";
+import InputMoney from "@/components/form/inputMoney/index.tsx";
+import { Label } from "@/components/ui/label.tsx";
+import SearchItem from "@/components/searchItem/index.tsx";
 
 interface produtoFormProps {
   action: string;
@@ -39,6 +42,7 @@ interface produtoFormProps {
 }
 
 const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps) => {
+  const [disabled, setDisabled] = useState<boolean>();
   const [openUnidadesMedidas, setOpenUnidadesMedidas] = useState<boolean>(false);
   const [unidadeMedida, setUnidadeMedida] = useState<IUnidadeMedida | undefined>(produto?.unidadeMedida);
   const [openCategorias, setOpenCategorias] = useState<boolean>(false);
@@ -47,18 +51,20 @@ const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps
   const putProduto = PutProduto(onOpenChange);
   const postProduto = PostProduto(onOpenChange);
   const form = useForm<ProdutoFormData>({
-    mode: "onChange",
+    mode: "onSubmit",
     resolver: zodResolver(ProdutoFormSchema),
     defaultValues: defaultValues,
   });
 
   useEffect(() => {
-    if (action === "Edit") {
+    if (action === "Edit" || action === "View") {
+      action === "View" ? setDisabled(true) : setDisabled(false);
       form.reset({
         ...produto,
       });
       form.setValue("idFornecedor", undefined);
     } else {
+      setDisabled(false);
       form.reset(defaultValues);
     }
   }, [isOpen]);
@@ -77,9 +83,9 @@ const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps
 
   const onSubmit = (data: IProduto) => {
     if (openUnidadesMedidas === false && openCategorias == false) {
-      data.precoVenda = formatCurrency(data.precoVenda as string);
-      data.precoUltCompra = formatCurrency(data.precoUltCompra as string);
-      data.custoMedio = formatCurrency(data.custoMedio as string);
+      data.precoVenda = formatMoney(data.precoVenda);
+      data.precoUltCompra = formatMoney(data.precoUltCompra);
+      data.custoMedio = formatMoney(data.custoMedio);
       if (action === "Edit") {
         putProduto.mutate(data);
       } else {
@@ -121,7 +127,7 @@ const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps
                     <FormItem className="flex flex-col gap-2 items-center justify-center">
                       <FormLabel>Ativo</FormLabel>
                       <FormControl>
-                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} />
+                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} disabled={disabled} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -133,6 +139,7 @@ const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps
                 name="produto"
                 control={form.control}
                 errorMessage={form.formState.errors.produto?.message}
+                disabled={disabled}
                 className="col-span-3"
               />
 
@@ -146,149 +153,111 @@ const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps
                 className="col-span-1"
               />
 
-              <FormField
-                name="precoVenda"
+              <InputMoney
                 control={form.control}
-                defaultValue={produto?.precoVenda}
-                render={({ field }) => (
-                  <FormItem className="flex flex-col gap-2 col-span-1">
-                    <FormLabel>Preço de Venda</FormLabel>
-                    <FormControl>
-                      <CurrencyInput
-                        defaultValue={field.value}
-                        onChangeValue={field.onChange}
-                        currency="BRL"
-                        locale="pt-BR"
-                        InputElement={<Input defaultValue={field.value} />}
-                      />
-                    </FormControl>
-                    <FormMessage>{form.formState.errors.quantidade?.message}</FormMessage>
-                  </FormItem>
-                )}
+                watch={form.watch}
+                labelName="Preço Venda"
+                nameValor="precoVenda"
+                disabled={disabled}
               />
 
-              <FormField
-                name="precoUltCompra"
+              <InputMoney
                 control={form.control}
-                disabled={true}
-                render={({ field }) => (
-                  <FormItem className="flex flex-col gap-2 col-span-1 row-start-3">
-                    <FormLabel>Preço Ult. Compra</FormLabel>
-                    <FormControl>
-                      <CurrencyInput
-                        defaultValue={field.value ? field.value : undefined}
-                        onChangeValue={field.onChange}
-                        currency="BRL"
-                        locale="pt-BR"
-                        InputElement={<Input disabled={true} defaultValue={field.value} />}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+                labelName="Desconto"
+                nameValor="desconto"
+                watch={form.watch}
+                disabled={disabled}
               />
 
-              <FormField
-                name="custoMedio"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="flex flex-col gap-2 col-span-1 row-start-3">
-                    <FormLabel>Custo Médio</FormLabel>
-                    <FormControl>
-                      <CurrencyInput
-                        defaultValue={field.value}
-                        onChangeValue={field.onChange}
-                        currency="BRL"
-                        locale="pt-BR"
-                        InputElement={<Input disabled={true} defaultValue={field.value} />}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <InputCalendar
-                label="Dt. Ult. Compra"
-                name="dtUltCompra"
-                control={form.control}
-                setValue={form.setValue}
-                value={form.watch("dtUltCompra")}
-                disabled={true}
-                className="col-span-2"
-              />
-
-              <FormFieldTextArea control={form.control} name="observacao" label="Observação" className="col-span-6" />
-
-              <div className="col-span-3 grid grid-cols-6 gap-4">
-                <FormFieldInput
-                  label="Cód. Un. de Med."
-                  name="idUnidadeMedida"
+              <div className="col-span-3">
+                <SearchItem
                   control={form.control}
-                  isNumber={true}
-                  disabled={true}
-                  className="col-span-2"
+                  getValue={form.getValues}
+                  setValue={form.setValue}
+                  watch={form.watch}
+                  obj={unidadeMedida}
+                  setObj={setUnidadeMedida}
+                  openSearch={openUnidadesMedidas}
+                  setOpenSearch={setOpenUnidadesMedidas}
+                  labelCod="Cód. Un. Medida*"
+                  nameCod="idUnidadeMedida"
+                  labelNome="Un. Medida*"
+                  nameNome="unidadeMedida.unidadeMedida"
+                  errorMessage={form.formState.errors?.idUnidadeMedida?.message}
+                  disabled={disabled}
+                  page={<UnidadesMedidasPage setUnidadeMedida={setUnidadeMedida} />}
+                  hiddenButton={disabled === true ? true : false}
+                  className="flex flex-row gap-4 flex-grow"
                 />
-
-                <FormFieldInput
-                  label="Un. de Medida"
-                  name="unidadeMedida.unidadeMedida"
-                  control={form.control}
-                  disabled={true}
-                  className="col-span-3"
-                />
-
-                <div className="relative">
-                  <Dialog open={openUnidadesMedidas} onOpenChange={(value) => setOpenUnidadesMedidas(value)}>
-                    <DialogTrigger asChild className="absolute bottom-0">
-                      <Button variant="default">
-                        <Search />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="!p-0">
-                      <UnidadesMedidasPage setUnidadeMedida={setUnidadeMedida} />
-                    </DialogContent>
-                  </Dialog>
-                </div>
               </div>
 
-              <div className="col-span-3 grid grid-cols-8 gap-4">
-                <FormFieldInput
-                  label="Cód. Categoria"
-                  name="idCategoria"
+              <div className="col-span-3">
+                <SearchItem
                   control={form.control}
-                  isNumber={true}
-                  disabled={true}
-                  className="col-span-2"
+                  getValue={form.getValues}
+                  setValue={form.setValue}
+                  watch={form.watch}
+                  obj={categoria}
+                  setObj={setCategoria}
+                  openSearch={openCategorias}
+                  setOpenSearch={setOpenCategorias}
+                  labelCod="Cód. Categoria*"
+                  nameCod="idCategoria"
+                  labelNome="Categoria*"
+                  nameNome="categoria.categoria"
+                  errorMessage={form.formState.errors?.idCategoria?.message}
+                  disabled={disabled}
+                  page={<CategoriasPage setCategoria={setCategoria} />}
+                  hiddenButton={disabled === true ? true : false}
+                  className="flex flex-row gap-4 flex-grow"
                 />
-
-                <FormFieldInput
-                  label="Categoria"
-                  name="categoria.categoria"
-                  control={form.control}
-                  disabled={true}
-                  className="col-span-4"
-                />
-
-                <div className="relative">
-                  <Dialog open={openCategorias} onOpenChange={(value) => setOpenCategorias(value)}>
-                    <DialogTrigger asChild className="absolute bottom-0">
-                      <Button variant="default">
-                        <Search />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="!p-0">
-                      <CategoriasPage setCategoria={setCategoria} />
-                    </DialogContent>
-                  </Dialog>
-                </div>
               </div>
 
-              <FormFieldInput
-                label="Principal Fornecedor"
-                name="fornecedor.pessoaRazaoSocial"
+              <FormFieldTextArea
                 control={form.control}
-                disabled={true}
-                className="col-span-3"
+                name="observacao"
+                label="Observação"
+                className="col-span-6"
+                disabled={disabled}
               />
+
+              <div className="col-span-6 border-2 border-gray-200 rounded-lg p-5 flex flex-col gap-4">
+                <h2 className="text-center">Última compra</h2>
+                <div className="flex flex-row gap-4 ">
+                  <InputMoney
+                    control={form.control}
+                    watch={form.watch}
+                    labelName="Preço Ult. Compra"
+                    nameValor="precoUltCompra"
+                    disabled={true}
+                  />
+
+                  <InputMoney
+                    control={form.control}
+                    watch={form.watch}
+                    labelName="Custo Unitário"
+                    nameValor="custoMedio"
+                    disabled={true}
+                  />
+
+                  <InputCalendar
+                    label="Dt. Ult. Compra"
+                    name="dtUltCompra"
+                    control={form.control}
+                    setValue={form.setValue}
+                    value={form.watch("dtUltCompra")}
+                    disabled={true}
+                  />
+
+                  <FormFieldInput
+                    label="Fornecedor"
+                    name="fornecedor.pessoaRazaoSocial"
+                    control={form.control}
+                    disabled={true}
+                    className="w-[30%]"
+                  />
+                </div>
+              </div>
 
               <div className="grid grid-cols-8 gap-4 !m-0 col-span-6">
                 <InputCalendar

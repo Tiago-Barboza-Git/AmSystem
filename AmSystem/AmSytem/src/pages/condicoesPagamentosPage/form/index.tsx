@@ -31,6 +31,7 @@ interface condicaoPaamentoFormProps {
 }
 
 const CondicaoPagamentoForm = ({ action, isOpen, onOpenChange, condicaoPagamento }: condicaoPaamentoFormProps) => {
+  const [disabled, setDisabled] = useState<boolean>();
   const [openParcelasForm, setOpenParcelasForm] = useState<boolean>(false);
   const [parcelasData, setParcelasData] = useState<IParcela[] | undefined>(condicaoPagamento?.parcelas || []);
   const [formaPagamento, setFormaPagamento] = useState<IFormaPagamento | undefined>();
@@ -57,7 +58,8 @@ const CondicaoPagamentoForm = ({ action, isOpen, onOpenChange, condicaoPagamento
 
   useEffect(() => {
     setParcelasData([]);
-    if (action === "Edit") {
+    if (action === "Edit" || action === "View") {
+      action === "View" ? setDisabled(true) : setDisabled(false);
       form.reset({
         ...condicaoPagamento,
         desconto: parseFloat(String(condicaoPagamento?.desconto ?? "0")).toFixed(2),
@@ -67,6 +69,7 @@ const CondicaoPagamentoForm = ({ action, isOpen, onOpenChange, condicaoPagamento
       });
       setParcelasData(condicaoPagamento?.parcelas);
     } else {
+      setDisabled(false);
       form.reset(defaultValues);
     }
   }, [isOpen]);
@@ -122,7 +125,7 @@ const CondicaoPagamentoForm = ({ action, isOpen, onOpenChange, condicaoPagamento
                     <FormItem className="flex flex-col gap-2 items-center justify-center">
                       <FormLabel>Ativo</FormLabel>
                       <FormControl>
-                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} />
+                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} disabled={disabled} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -133,6 +136,7 @@ const CondicaoPagamentoForm = ({ action, isOpen, onOpenChange, condicaoPagamento
                   label="Condição de Pagamento*"
                   name="condicaoPagamento"
                   control={form.control}
+                  disabled={disabled}
                   errorMessage={form.formState.errors.condicaoPagamento?.message}
                   className="col-span-4"
                 />
@@ -142,6 +146,7 @@ const CondicaoPagamentoForm = ({ action, isOpen, onOpenChange, condicaoPagamento
                   label="Desconto (%)"
                   name="desconto"
                   maskFunction={formatPercentage}
+                  disabled={disabled}
                   className="col-span-2"
                 />
 
@@ -150,6 +155,7 @@ const CondicaoPagamentoForm = ({ action, isOpen, onOpenChange, condicaoPagamento
                   label="Juros (%)"
                   name="juros"
                   maskFunction={formatPercentage}
+                  disabled={disabled}
                   className="col-span-2"
                 />
 
@@ -158,6 +164,7 @@ const CondicaoPagamentoForm = ({ action, isOpen, onOpenChange, condicaoPagamento
                   label="Multa (%)"
                   name="multa"
                   maskFunction={formatPercentage}
+                  disabled={disabled}
                   className="col-span-2"
                 />
               </div>
@@ -165,7 +172,11 @@ const CondicaoPagamentoForm = ({ action, isOpen, onOpenChange, condicaoPagamento
               <div>
                 <Label className="flex flex-col items-center">Parcelas</Label>
                 <div>
-                  <Button type="button" onClick={() => setOpenParcelasForm(!openParcelasForm)}>
+                  <Button
+                    type="button"
+                    onClick={() => setOpenParcelasForm(!openParcelasForm)}
+                    className={`${disabled ? "hidden" : "visible"}`}
+                  >
                     Adicionar
                   </Button>
                   <ParcelaForm
@@ -193,7 +204,9 @@ const CondicaoPagamentoForm = ({ action, isOpen, onOpenChange, condicaoPagamento
                         <TableCell>{parcela.porcentagem}</TableCell>
                         <TableCell>{parcela?.formaPagamento?.formaPagamento}</TableCell>
                         <TableCell>
-                          <Trash2 color="red" onClick={() => handleRemoveParcela(index)} />
+                          <button disabled={disabled} onClick={() => handleRemoveParcela(index)}>
+                            <Trash2 color="red" />
+                          </button>
                         </TableCell>
                       </TableRow>
                     ))}

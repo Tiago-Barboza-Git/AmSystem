@@ -7,11 +7,13 @@ import { ICondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
 interface condicoesPagamentosColumnsProps {
   onEdit: (condicaoPagamento: ICondicaoPagamento) => void;
   onDelete: (condicaoPagamento: ICondicaoPagamento) => void;
+  onView: (condicaoPagamento: ICondicaoPagamento) => void;
 }
 
 export const getCondicoesPagamentosColumns = ({
   onEdit,
   onDelete,
+  onView,
 }: condicoesPagamentosColumnsProps): ColumnDef<ICondicaoPagamento>[] => [
   {
     accessorKey: "id",
@@ -62,6 +64,6 @@ export const getCondicoesPagamentosColumns = ({
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />,
+    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} onView={onView} />,
   },
 ];

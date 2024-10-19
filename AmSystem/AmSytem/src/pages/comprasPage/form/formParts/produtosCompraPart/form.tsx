@@ -1,6 +1,6 @@
 import DataTable from "@/components/datatable";
 import { IProdutoCompra } from "@/interfaces/produtoCompra.interfaces";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getProdutosCompraColumns } from "./columns";
 import ProdutoCompraForm from "@/pages/comprasPage/produtosCompra/form";
 import DeleteDialog2 from "@/components/dialog/deleteDialog2";
@@ -9,6 +9,8 @@ import { UseFormGetValues, UseFormSetValue, UseFormWatch } from "react-hook-form
 import { CompraFormData } from "../../schema";
 import { formatCurrency } from "@/functions/masks";
 import { formatMoney } from "@/functions/functions";
+import { initialCondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
+import { toast } from "sonner";
 
 interface produtosCompraPartProps {
   getValue: UseFormGetValues<CompraFormData>;
@@ -16,9 +18,10 @@ interface produtosCompraPartProps {
   watch: UseFormWatch<CompraFormData>;
   disabled: boolean;
   actionPai: string;
+  activedStep: number;
 }
 
-function ProdutosCompraPart({ getValue, setValue, watch, disabled, actionPai }: produtosCompraPartProps) {
+function ProdutosCompraPart({ getValue, setValue, watch, disabled, actionPai, activedStep }: produtosCompraPartProps) {
   // Form
   const [action, setAction] = useState<string>("");
   const [index, setIndex] = useState<number>(-1);
@@ -50,28 +53,40 @@ function ProdutosCompraPart({ getValue, setValue, watch, disabled, actionPai }: 
   }, []);
 
   const handleAddProdutoCompra = (produtoCompra: IProdutoCompra) => {
-    const updateProdutosCompra = [...(getValue("produtos") || []), produtoCompra];
-    setValue("produtos", updateProdutosCompra);
-    setValue(
-      "totalProdutos",
-      watch("produtos").reduce((value, sum) => value + Number(Number(sum.precoTotal).toFixed(2)), 0 as number),
-    );
-    setValue("totalCompra", formatMoney(watch("totalProdutos") as string) + formatMoney(watch("totalCusto") as string));
-    console.log(watch("totalCompra"));
-    setOpenProdutosCompraForm(false);
+    if (watch("produtos").find((x) => x.idProduto == produtoCompra.idProduto) == undefined) {
+      const updateProdutosCompra = [...(getValue("produtos") || []), produtoCompra];
+      setValue("produtos", updateProdutosCompra);
+      console.log(watch("produtos"));
+      setValue(
+        "totalProdutos",
+        watch("produtos").reduce((value, sum) => value + Number(Number(sum.precoTotal).toFixed(2)), 0 as number),
+      );
+      setValue("totalNota", watch("totalProdutos") + watch("totalCusto"));
+      setValue("idCondicaoPagamento", 0);
+      setValue("condicaoPagamento", initialCondicaoPagamento);
+      setValue("contasPagar", []);
+      setOpenProdutosCompraForm(false);
+      toast.success("Produto adicionado com sucesso a compra.");
+    } else {
+      toast.error("Esse produto já se encontra na compra!");
+    }
   };
 
   const handleEditProdutoCompra = (produtoCompra: IProdutoCompra) => {
     const updateProdutosCompra = getValue("produtos").map((produto) =>
-      produto.produto.id === produtoCompra.produto.id ? produtoCompra : produto,
+      produto?.produto?.id === produtoCompra?.produto?.id ? produtoCompra : produto,
     );
     setValue("produtos", updateProdutosCompra);
     setValue(
       "totalProdutos",
       watch("produtos").reduce((value, sum) => value + Number(Number(sum.precoTotal).toFixed(2)), 0 as number),
     );
-    setValue("totalCompra", formatMoney(watch("totalProdutos") as string) + formatMoney(watch("totalCusto") as string));
+    setValue("totalNota", formatMoney(String(watch("totalProdutos"))) + formatMoney(String(watch("totalCusto"))));
+    setValue("idCondicaoPagamento", 0);
+    setValue("condicaoPagamento", initialCondicaoPagamento);
+    setValue("contasPagar", []);
     setOpenProdutosCompraForm(false);
+    toast.success("Produto alterado com sucesso na compra.");
   };
 
   const handleRemoveProdutoCompra = (confirmed: boolean) => {
@@ -83,10 +98,10 @@ function ProdutosCompraPart({ getValue, setValue, watch, disabled, actionPai }: 
         "totalProdutos",
         watch("produtos").reduce((value, sum) => value + Number(Number(sum.precoTotal).toFixed(2)), 0 as number),
       );
-      setValue(
-        "totalCompra",
-        formatMoney(watch("totalProdutos") as string) + formatMoney(watch("totalCusto") as string),
-      );
+      setValue("totalNota", formatMoney(String(watch("totalProdutos"))) + formatMoney(String(watch("totalCusto"))));
+      setValue("idCondicaoPagamento", 0);
+      setValue("condicaoPagamento", initialCondicaoPagamento);
+      setValue("contasPagar", []);
     }
   };
 
@@ -112,7 +127,7 @@ function ProdutosCompraPart({ getValue, setValue, watch, disabled, actionPai }: 
       </div>
       <div>
         <DataTable
-          columns={useMemo(() => getProdutosCompraColumns({ onEdit, onDelete, action }), [])}
+          columns={useMemo(() => getProdutosCompraColumns({ onDelete, actionPai, activedStep }), [activedStep])}
           data={watch("produtos")}
           onAdd={onAdd}
           ativos={undefined}

@@ -8,17 +8,13 @@ import { ColumnDef } from "@tanstack/react-table";
 interface clientesColumnsProps {
   onEdit: (cliente: iCliente) => void;
   onDelete: (cliente: iCliente) => void;
+  onView: (cliente: iCliente) => void;
 }
 
-export const getClientesColumns = ({
-  onEdit,
-  onDelete,
-}: clientesColumnsProps): ColumnDef<iCliente>[] => [
+export const getClientesColumns = ({ onEdit, onDelete, onView }: clientesColumnsProps): ColumnDef<iCliente>[] => [
   {
     accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cód. " />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Cód. " />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.id}</span>
@@ -28,9 +24,7 @@ export const getClientesColumns = ({
   },
   {
     accessorKey: "pessoaRazaoSocial",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cliente/Razão Social" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Cliente/Razão Social" />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.pessoaRazaoSocial}</span>
@@ -55,9 +49,7 @@ export const getClientesColumns = ({
     cell: ({ row }) => (
       <div>
         <span>
-          {row.original.tpPessoa === "F"
-            ? insertMaskCPF(row.original.cpfCnpj)
-            : insertMaskCNPJ(row.original.cpfCnpj)}
+          {row.original.tpPessoa === "F" ? insertMaskCPF(row.original.cpfCnpj) : insertMaskCNPJ(row.original.cpfCnpj)}
         </span>
       </div>
     ),
@@ -76,16 +68,12 @@ export const getClientesColumns = ({
   {
     accessorKey: "dtAlteracao",
     header: "Dt. Alteração",
-    cell: ({ row }) => (
-      <div>{formatDate(String(row.original.dtAlteracao))}</div>
-    ),
+    cell: ({ row }) => <div>{formatDate(String(row.original.dtAlteracao))}</div>,
     enableGlobalFilter: false,
   },
   {
     id: "actions",
-    cell: ({ row }) => (
-      <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />
-    ),
+    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} onView={onView} />,
   },
 ];
 

@@ -16,3 +16,8 @@ export interface IPutFornecedor extends IPessoaPut {
   representante?: string;
   celularRepresentante?: string;
 }
+
+export interface IFornecedorRef {
+  id: number;
+  pessoaRazaoSocial: string;
+}

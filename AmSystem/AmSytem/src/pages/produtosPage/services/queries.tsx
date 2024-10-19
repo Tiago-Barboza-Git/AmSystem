@@ -1,10 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import {
-  DeleteProdutoRequest,
-  GetProdutosRequest,
-  PostProdutoRequest,
-  PutProdutoRequest,
-} from "./api";
+import { DeleteProdutoRequest, GetProdutosRequest, PostProdutoRequest, PutProdutoRequest } from "./api";
 import { isQueryKey } from "react-query/types/core/utils";
 import { IPostProduto, IPutProduto } from "@/interfaces/produto.interfaces";
 import { toast } from "sonner";
@@ -22,13 +17,13 @@ export function PutProduto(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPutProduto) => PutProdutoRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetProdutos"] });
       onOpenChange(false);
-      toast.success("Produto atualizado com sucesso.");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao atualizar o produto. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -38,13 +33,13 @@ export function PostProduto(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPostProduto) => PostProdutoRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetProdutos"] });
       onOpenChange(false);
-      toast.success("Produto adicionado com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao adicionar produto. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -52,13 +47,13 @@ export function PostProduto(onOpenChange: (open: boolean) => void) {
 export function DeleteProduto() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (idProduto: Number) => DeleteProdutoRequest(idProduto),
-    onSuccess: () => {
+    mutationFn: (idProduto: number) => DeleteProdutoRequest(idProduto),
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetProdutos"] });
-      toast.success("Produto deletado com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao deletar produto. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }

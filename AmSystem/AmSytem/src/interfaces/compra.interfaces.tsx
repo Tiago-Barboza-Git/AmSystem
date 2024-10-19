@@ -1,25 +1,21 @@
 import { ICompraPai } from "./compraPai.interfaces";
 import { ICondicaoPagamento } from "./condicaoPagamento.interfaces";
 import { IContaPagar, IPostContaPagar } from "./contasPagar";
+import { IFornecedorRef } from "./fornecedor.interfaces";
+import { INotaModel, IPostNota } from "../interfaces/Nota/nota.interfaces";
 import { IProdutoCompra, IPostProdutoCompra } from "./produtoCompra.interfaces";
 
-export interface ICompra extends ICompraPai {
-  dtEmissao: Date;
+export interface ICompra extends INotaModel {
+  idFornecedor: number;
+  fornecedor: IFornecedorRef;
   dtChegada: Date;
   produtos: IProdutoCompra[];
-  tpFrete?: string;
-  frete: number | string;
-  seguro: number | string;
-  outrasDesp: number | string;
-  totalCusto: number | string;
-  totalProdutos: number | string;
-  totalCompra: number | string;
-  idCondicaoPagamento: number;
-  condicaoPagamento: ICondicaoPagamento;
+  tpFrete: string;
+  frete: number;
+  seguro: number;
+  outrasDesp: number;
+  totalCusto: number;
   contasPagar: IContaPagar[];
-  dtCancelamento?: Date;
-  dtCadastro: Date;
-  dtAlteracao: Date;
 }
 
 export const initialCompra: ICompra = {
@@ -27,28 +23,24 @@ export const initialCompra: ICompra = {
   nrModelo: 0,
   nrSerie: 0,
   idFornecedor: 0,
-  fornecedor: undefined,
+  fornecedor: {
+    id: 0,
+    pessoaRazaoSocial: "",
+  },
   dtEmissao: new Date(),
   dtChegada: new Date(),
   produtos: [],
-  tpFrete: undefined,
-  frete: "0",
-  seguro: "0",
-  outrasDesp: "0",
-  totalCusto: "0",
-  totalProdutos: "0",
-  totalCompra: "0",
+  tpFrete: "",
+  frete: 0,
+  seguro: 0,
+  outrasDesp: 0,
+  totalCusto: 0,
+  totalProdutos: 0,
+  totalNota: 0,
   idCondicaoPagamento: 0,
   condicaoPagamento: {
     id: 0,
     condicaoPagamento: "",
-    desconto: "0",
-    juros: "0",
-    multa: "0",
-    ativo: true,
-    dtCadastro: new Date(),
-    dtAlteracao: new Date(),
-    parcelas: [],
   },
   contasPagar: [],
   dtCancelamento: undefined,
@@ -56,56 +48,16 @@ export const initialCompra: ICompra = {
   dtAlteracao: new Date(),
 };
 
-export interface IPostCompra {
-  nrNota?: number;
-  nrModelo?: number;
-  nrSerie?: number;
-  idFornecedor?: number;
-  dtEmissao: Date;
+export interface IPostCompra extends IPostNota {
+  idFornecedor: number;
   dtChegada: Date;
   produtos: IPostProdutoCompra[];
-  tpFrete?: string;
-  frete: number | string;
-  seguro: number | string;
-  outrasDesp: number | string;
-  totalCusto: number | string;
-  totalProdutos: number | string;
-  totalCompra: number | string;
-  idCondicaoPagamento: number;
+  tpFrete: string;
+  frete: number;
+  seguro: number;
+  outrasDesp: number;
+  totalCusto: number;
   contasPagar: IPostContaPagar[];
 }
 
 export interface IPutCompra {}
-
-// setSelectedCompra({
-//   nrNota: 0,
-//   nrModelo: 0,
-//   nrSerie: 0,
-//   idFornecedor: 0,
-//   fornecedor: undefined,
-//   dtEmissao: new Date(), // Data a ser inserida pelo usuário
-//   dtChegada: new Date(), // Data a ser inserida pelo usuário
-//   produtos: [],
-//   tpFrete: undefined,
-//   frete: "0",
-//   seguro: "0",
-//   outrasDesp: "0",
-//   totalCusto: "0",
-//   totalProdutos: "0",
-//   totalCompra: "0",
-//   idCondicaoPagamento: 0,
-//   condicaoPagamento: {
-//     id: 0,
-//     condicaoPagamento: "",
-//     desconto: "0",
-//     juros: "0",
-//     multa: "0",
-//     ativo: true,
-//     dtCadastro: new Date(),
-//     dtAlteracao: new Date(),
-//     parcelas: [],
-//   },
-//   contasPagar: [],
-//   dtCancelamento: undefined, // Data a ser inserida pelo usuário
-//   dtCadastro: new Date(), // Inicializado com a data atual
-// });

@@ -41,6 +41,7 @@ namespace ApiAmSystem.Services
                             p.PrecoUltCompra,
                             p.DtUltCompra,
                             p.CustoMedio,
+                            p.Desconto,
                             p.Observacao,
                             p.Ativo,
                             p.IdFornecedor,
@@ -62,19 +63,20 @@ namespace ApiAmSystem.Services
                         reader.Read();
                         return new ProdutoModel
                         {
-                            id = reader.GetInt32("Id"),
-                            produto = reader.GetString("Produto"),
-                            quantidade = reader.GetInt32("Quantidade"),
-                            precoVenda = reader.GetDecimal("PrecoVenda"),
-                            precoUltCompra = reader.GetDecimal("PrecoUltCompra"),
-                            dtUltCompra = reader.GetDateTime("DtUltCompra"),
-                            custoMedio = reader.GetDecimal("CustoMedio"),
-                            observacao = reader.GetString("Observacao"),
-                            idFornecedor = reader.IsDBNull("IdFornecedor") ? null : reader.GetInt32("IdFornecedor"),
-                            ativo = reader.GetBoolean("Ativo"),
-                            dtCadastro = reader.GetDateTime("DtCadastro"),
-                            dtAlteracao = reader.GetDateTime("DtAlteracao"),
-                            fornecedor = reader.IsDBNull("IdFornecedor") ? null : fornecedoresService.GetFornecedor(reader.GetInt32("IdFornecedor")),
+                            Id = reader.GetInt32("Id"),
+                            Produto = reader.GetString("Produto"),
+                            Quantidade = reader.GetInt32("Quantidade"),
+                            PrecoVenda = reader.GetDecimal("PrecoVenda"),
+                            PrecoUltCompra = reader.GetDecimal("PrecoUltCompra"),
+                            DtUltCompra = reader.GetDateTime("DtUltCompra"),
+                            CustoMedio = reader.GetDecimal("CustoMedio"),
+                            Observacao = reader.GetString("Observacao"),
+                            Desconto = reader.GetDecimal("Desconto"),
+                            IdFornecedor = reader.IsDBNull("IdFornecedor") ? null : reader.GetInt32("IdFornecedor"),
+                            Ativo = reader.GetBoolean("Ativo"),
+                            DtCadastro = reader.GetDateTime("DtCadastro"),
+                            DtAlteracao = reader.GetDateTime("DtAlteracao"),
+                            Fornecedor = reader.IsDBNull("IdFornecedor") ? null : fornecedoresService.GetFornecedor(reader.GetInt32("IdFornecedor")),
                         };
                     }
                     else
@@ -108,6 +110,7 @@ namespace ApiAmSystem.Services
                             p.PrecoUltCompra,
                             p.DtUltCompra,
                             p.CustoMedio,
+                            p.Desconto,
                             p.Observacao,
                             p.Ativo,
                             p.DtCadastro,
@@ -140,33 +143,34 @@ namespace ApiAmSystem.Services
                             result.Add(
                                 new ProdutoModel
                                 {
-                                    id = reader.GetInt32("Id"),
-                                    produto = reader.GetString("Produto"),
-                                    quantidade = reader.IsDBNull("Quantidade") ? null : reader.GetInt32("Quantidade"),
-                                    precoVenda = reader.IsDBNull("PrecoVenda") ? null : Math.Round(reader.GetDecimal("PrecoVenda"),2),
-                                    precoUltCompra = reader.IsDBNull("PrecoUltCompra") ? null : Math.Round(reader.GetDecimal("PrecoUltCompra"),2),
-                                    dtUltCompra = reader.IsDBNull("DtUltCompra") ? null : reader.GetDateTime("DtUltCompra"),
-                                    custoMedio = reader.IsDBNull("CustoMedio") ? null : reader.GetDecimal("CustoMedio"),
-                                    observacao = reader.IsDBNull("Observacao") ? null : reader.GetString("Observacao"),
-                                    idUnidadeMedida = reader.GetInt32("IdUnidadeMedida"),
-                                    idCategoria = reader.GetInt32("IdCategoria"),
-                                    idFornecedor = reader.IsDBNull("IdFornecedor") ? null : reader.GetInt32("IdFornecedor"),
-                                    ativo = reader.GetBoolean("Ativo"),
-                                    dtCadastro = reader.GetDateTime("DtCadastro"),
-                                    dtAlteracao = reader.GetDateTime("DtAlteracao"),
-                                    unidadeMedida = new UnidadeMedidaModel
+                                    Id = reader.GetInt32("Id"),
+                                    Produto = reader.GetString("Produto"),
+                                    Quantidade = reader.IsDBNull("Quantidade") ? null : reader.GetInt32("Quantidade"),
+                                    PrecoVenda = reader.IsDBNull("PrecoVenda") ? null : Math.Round(reader.GetDecimal("PrecoVenda"),2),
+                                    PrecoUltCompra = reader.IsDBNull("PrecoUltCompra") ? null : Math.Round(reader.GetDecimal("PrecoUltCompra"),2),
+                                    DtUltCompra = reader.IsDBNull("DtUltCompra") ? null : reader.GetDateTime("DtUltCompra"),
+                                    CustoMedio = reader.IsDBNull("CustoMedio") ? null : reader.GetDecimal("CustoMedio"),
+                                    Observacao = reader.IsDBNull("Observacao") ? null : reader.GetString("Observacao"),
+                                    Desconto = reader.GetDecimal("Desconto"),
+                                    IdUnidadeMedida = reader.GetInt32("IdUnidadeMedida"),
+                                    IdCategoria = reader.GetInt32("IdCategoria"),
+                                    IdFornecedor = reader.IsDBNull("IdFornecedor") ? null : reader.GetInt32("IdFornecedor"),
+                                    Ativo = reader.GetBoolean("Ativo"),
+                                    DtCadastro = reader.GetDateTime("DtCadastro"),
+                                    DtAlteracao = reader.GetDateTime("DtAlteracao"),
+                                    UnidadeMedida = new UnidadeMedidaModel
                                     {
                                         id = reader.GetInt32("IdUnidadeMedida"),
                                         unidadeMedida = reader.GetString("UnidadeMedida"),
                                         simbolo = reader.GetString("Simbolo"),
                                     },
-                                    categoria = new CategoriaModel
+                                    Categoria = new CategoriaModel
                                     {
                                         id = reader.GetInt32("IdCategoria"),
                                         categoria = reader.GetString("Categoria"),
                                         descricao = reader.GetString("DescricaoCategoria")
                                     },
-                                    fornecedor = reader.IsDBNull("IdFornecedor") ? null : new FornecedorModel
+                                    Fornecedor = reader.IsDBNull("IdFornecedor") ? null : new FornecedorModel
                                     {
                                         id = reader.GetInt32("IdFornecedor"),
                                         pessoaRazaoSocial = reader.GetString("FornecedorRazaoSocial")
@@ -196,23 +200,24 @@ namespace ApiAmSystem.Services
                 {
                     sqlConnection.Open();
                     string query;
-                    if (pProduto.idFornecedor > 0)
-                        query = "INSERT INTO TbProdutos(Produto, Quantidade, PrecoVenda, PrecoUltCompra, DtUltCompra, CustoMedio, Observacao, Ativo, IdUnidadeMedida, IdCategoria, IdFornecedor, DtCadastro, DtAlteracao) VALUES(@Produto, @Quantidade, @PrecoVenda, @PrecoUltCompra, @DtUltCompra, @CustoMedio, @Observacao, @Ativo, @IdUnidadeMedida, @IdCategoria, @IdFornecedor, @DtCadastro, @DtAlteracao)";
+                    if (pProduto.IdFornecedor > 0)
+                        query = "INSERT INTO TbProdutos(Produto, Quantidade, PrecoVenda, PrecoUltCompra, DtUltCompra, CustoMedio, Desconto, Observacao, Ativo, IdUnidadeMedida, IdCategoria, IdFornecedor, DtCadastro, DtAlteracao) VALUES(dbo.fn_RemSpaceFromStr(@Produto), @Quantidade, @PrecoVenda, @PrecoUltCompra, @DtUltCompra, @CustoMedio, @Desconto, @Observacao, @Ativo, @IdUnidadeMedida, @IdCategoria, @IdFornecedor, @DtCadastro, @DtAlteracao)";
                     else
-                        query = "INSERT INTO TbProdutos(Produto, Quantidade, PrecoVenda, PrecoUltCompra, DtUltCompra, CustoMedio, Observacao, Ativo, IdUnidadeMedida, IdCategoria, DtCadastro, DtAlteracao) VALUES(@Produto, @Quantidade, @PrecoVenda, @PrecoUltCompra, @DtUltCompra, @CustoMedio, @Observacao, @Ativo, @IdUnidadeMedida, @IdCategoria, @DtCadastro, @DtAlteracao)";
+                        query = "INSERT INTO TbProdutos(Produto, Quantidade, PrecoVenda, PrecoUltCompra, DtUltCompra, CustoMedio, Desconto, Observacao, Ativo, IdUnidadeMedida, IdCategoria, DtCadastro, DtAlteracao) VALUES(dbo.fn_RemSpaceFromStr(@Produto), @Quantidade, @PrecoVenda, @PrecoUltCompra, @DtUltCompra, @CustoMedio, @Desconto, @Observacao, @Ativo, @IdUnidadeMedida, @IdCategoria, @DtCadastro, @DtAlteracao)";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
-                    cmd.Parameters.Add("@Produto", SqlDbType.VarChar).Value = pProduto.produto;
-                    cmd.Parameters.Add("@Quantidade", SqlDbType.Int).Value = pProduto.quantidade == null ? DBNull.Value : pProduto.quantidade;
-                    cmd.Parameters.Add("@PrecoVenda", SqlDbType.Money).Value = pProduto.precoVenda == null ? DBNull.Value : pProduto.precoVenda;
-                    cmd.Parameters.Add("@PrecoUltCompra", SqlDbType.Money).Value = pProduto.precoUltCompra == null ? DBNull.Value : pProduto.precoUltCompra;
-                    cmd.Parameters.Add("@DtUltCompra", SqlDbType.Date).Value = pProduto.dtUltCompra == null ? DBNull.Value : pProduto.dtUltCompra;
-                    cmd.Parameters.Add("@CustoMedio", SqlDbType.Money).Value = pProduto.custoMedio == null ? DBNull.Value : pProduto.custoMedio;
-                    cmd.Parameters.Add("@Observacao", SqlDbType.VarChar).Value = pProduto.observacao == null ? DBNull.Value : pProduto.observacao;
-                    cmd.Parameters.Add("@IdUnidadeMedida", SqlDbType.Int).Value = pProduto.idUnidadeMedida;
-                    cmd.Parameters.Add("@IdCategoria", SqlDbType.Int).Value = pProduto.idCategoria;
-                    cmd.Parameters.Add("@IdFornecedor", SqlDbType.Int).Value = pProduto.idFornecedor == null ? DBNull.Value : pProduto.idFornecedor;
-                    cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pProduto.ativo;
+                    cmd.Parameters.Add("@Produto", SqlDbType.VarChar).Value = pProduto.Produto;
+                    cmd.Parameters.Add("@Quantidade", SqlDbType.Int).Value = pProduto.Quantidade == null ? DBNull.Value : pProduto.Quantidade;
+                    cmd.Parameters.Add("@PrecoVenda", SqlDbType.Money).Value = pProduto.PrecoVenda == null ? DBNull.Value : pProduto.PrecoVenda;
+                    cmd.Parameters.Add("@PrecoUltCompra", SqlDbType.Money).Value = pProduto.PrecoUltCompra == null ? DBNull.Value : pProduto.PrecoUltCompra;
+                    cmd.Parameters.Add("@DtUltCompra", SqlDbType.Date).Value = pProduto.DtUltCompra == null ? DBNull.Value : pProduto.DtUltCompra;
+                    cmd.Parameters.Add("@CustoMedio", SqlDbType.Money).Value = pProduto.CustoMedio == null ? DBNull.Value : pProduto.CustoMedio;
+                    cmd.Parameters.Add("@Desconto", SqlDbType.Money).Value = pProduto.Desconto;
+                    cmd.Parameters.Add("@Observacao", SqlDbType.VarChar).Value = pProduto.Observacao == null ? DBNull.Value : pProduto.Observacao;
+                    cmd.Parameters.Add("@IdUnidadeMedida", SqlDbType.Int).Value = pProduto.IdUnidadeMedida;
+                    cmd.Parameters.Add("@IdCategoria", SqlDbType.Int).Value = pProduto.IdCategoria;
+                    cmd.Parameters.Add("@IdFornecedor", SqlDbType.Int).Value = pProduto.IdFornecedor == null ? DBNull.Value : pProduto.IdFornecedor;
+                    cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pProduto.Ativo;
                     cmd.Parameters.Add("@DtCadastro", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
@@ -237,28 +242,29 @@ namespace ApiAmSystem.Services
                 {
                     sqlConnection.Open();
                     string query;
-                    if (pProduto.idFornecedor > 0)
-                        query = @"update TbProdutos set Produto = @Produto, Quantidade = @Quantidade, PrecoVenda = @PrecoVenda, 
-                                    PrecoUltCompra = @PrecoUltCompra, DtUltCompra = @DtUltCompra, CustoMedio = @CustoMedio, Observacao = @Observacao, IdUnidadeMedida = @IdUnidadeMedida,
+                    if (pProduto.IdFornecedor > 0)
+                        query = @"update TbProdutos set Produto = dbo.fn_RemSpaceFromStr(@Produto), Quantidade = @Quantidade, PrecoVenda = @PrecoVenda, 
+                                    PrecoUltCompra = @PrecoUltCompra, DtUltCompra = @DtUltCompra, CustoMedio = @CustoMedio, Desconto = @Desconto, Observacao = @Observacao, IdUnidadeMedida = @IdUnidadeMedida,
                                     IdCategoria = @IdCategoria, IdFornecedor = @IdFornecedor, Ativo = @Ativo, DtAlteracao = @DtAlteracao where Id = @Id";
                     else
-                        query = @"update TbProdutos set Produto = @Produto, Quantidade = @Quantidade, PrecoVenda = @PrecoVenda, 
-                                    PrecoUltCompra = @PrecoUltCompra, DtUltCompra = @DtUltCompra, CustoMedio = @CustoMedio, Observacao = @Observacao, IdUnidadeMedida = @IdUnidadeMedida,
+                        query = @"update TbProdutos set Produto = dbo.fn_RemSpaceFromStr(@Produto), Quantidade = @Quantidade, PrecoVenda = @PrecoVenda, 
+                                    PrecoUltCompra = @PrecoUltCompra, DtUltCompra = @DtUltCompra, CustoMedio = @CustoMedio, Desconto = @Desconto, Observacao = @Observacao, IdUnidadeMedida = @IdUnidadeMedida,
                                     IdCategoria = @IdCategoria, Ativo = @Ativo, DtAlteracao = @DtAlteracao where Id = @Id";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
-                    cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pProduto.id;
-                    cmd.Parameters.Add("@Produto", SqlDbType.VarChar).Value = pProduto.produto;
-                    cmd.Parameters.Add("@Quantidade", SqlDbType.Int).Value = pProduto.quantidade == null ? 0 : pProduto.quantidade;
-                    cmd.Parameters.Add("@PrecoVenda", SqlDbType.Money).Value = pProduto.precoVenda == null ? 0 : pProduto.precoVenda;
-                    cmd.Parameters.Add("@PrecoUltCompra", SqlDbType.Money).Value = pProduto.precoUltCompra == null ? DBNull.Value : pProduto.precoUltCompra;
-                    cmd.Parameters.Add("@DtUltCompra", SqlDbType.Date).Value = pProduto.dtUltCompra == null ? DBNull.Value : pProduto.dtUltCompra;
-                    cmd.Parameters.Add("@CustoMedio", SqlDbType.Money).Value = pProduto.custoMedio == null ? 0 : pProduto.custoMedio; ;
-                    cmd.Parameters.Add("@Observacao", SqlDbType.VarChar).Value = pProduto.observacao == null ? "" : pProduto.observacao;
-                    cmd.Parameters.Add("@IdUnidadeMedida", SqlDbType.Int).Value = pProduto.idUnidadeMedida;
-                    cmd.Parameters.Add("@IdCategoria", SqlDbType.Int).Value = pProduto.idCategoria;
-                    cmd.Parameters.Add("@IdFornecedor", SqlDbType.Int).Value = pProduto.idFornecedor == null ? DBNull.Value : pProduto.idFornecedor;
-                    cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pProduto.ativo;
+                    cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pProduto.Id;
+                    cmd.Parameters.Add("@Produto", SqlDbType.VarChar).Value = pProduto.Produto;
+                    cmd.Parameters.Add("@Quantidade", SqlDbType.Int).Value = pProduto.Quantidade == null ? 0 : pProduto.Quantidade;
+                    cmd.Parameters.Add("@PrecoVenda", SqlDbType.Money).Value = pProduto.PrecoVenda == null ? 0 : pProduto.PrecoVenda;
+                    cmd.Parameters.Add("@PrecoUltCompra", SqlDbType.Money).Value = pProduto.PrecoUltCompra == null ? DBNull.Value : pProduto.PrecoUltCompra;
+                    cmd.Parameters.Add("@DtUltCompra", SqlDbType.Date).Value = pProduto.DtUltCompra == null ? DBNull.Value : pProduto.DtUltCompra;
+                    cmd.Parameters.Add("@CustoMedio", SqlDbType.Money).Value = pProduto.CustoMedio == null ? 0 : pProduto.CustoMedio;
+                    cmd.Parameters.Add("@Desconto", SqlDbType.Money).Value = pProduto.Desconto;
+                    cmd.Parameters.Add("@Observacao", SqlDbType.VarChar).Value = pProduto.Observacao == null ? "" : pProduto.Observacao;
+                    cmd.Parameters.Add("@IdUnidadeMedida", SqlDbType.Int).Value = pProduto.IdUnidadeMedida;
+                    cmd.Parameters.Add("@IdCategoria", SqlDbType.Int).Value = pProduto.IdCategoria;
+                    cmd.Parameters.Add("@IdFornecedor", SqlDbType.Int).Value = pProduto.IdFornecedor == null ? DBNull.Value : pProduto.IdFornecedor;
+                    cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pProduto.Ativo;
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
                     return "Sucesso";

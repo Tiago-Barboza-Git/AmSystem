@@ -3,13 +3,8 @@ import { DeleteCategoria, GetCategorias } from "./services/queries";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueryClient, UseQueryResult } from "react-query";
 // import PaisForm from "./paisForm/index.tsx";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
-import DeleteDialog from "@/components/dialog/deleteDialog/index.tsx";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
+import DeleteDialog from "@/components/dialog/deleteDialog";
 import { ICidade } from "@/interfaces/cidade.interfaces";
 import { ICategoria } from "@/interfaces/categoria.interfaces";
 import { getCategoriasColumns } from "./categoriasColumns";
@@ -25,9 +20,7 @@ export function CategoriasPage({ setCategoria }: CategoriasPageProps) {
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
   const [ativos, setAtivos] = useState<boolean>(true);
-  const [selectedCategoria, setSelectedCategoria] = useState<ICategoria | null>(
-    null
-  );
+  const [selectedCategoria, setSelectedCategoria] = useState<ICategoria | null>(null);
   const deleteCategoria = DeleteCategoria();
 
   const onGet = useCallback(async () => {
@@ -53,6 +46,12 @@ export function CategoriasPage({ setCategoria }: CategoriasPageProps) {
   const onAdd = useCallback(() => {
     setAction("Add");
     setSelectedCategoria(null);
+    setOpen(true);
+  }, []);
+
+  const onView = useCallback((categoria: ICategoria) => {
+    setAction("View");
+    setSelectedCategoria(categoria);
     setOpen(true);
   }, []);
 
@@ -87,10 +86,7 @@ export function CategoriasPage({ setCategoria }: CategoriasPageProps) {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(
-            () => getCategoriasColumns({ onEdit, onDelete }),
-            []
-          )}
+          columns={useMemo(() => getCategoriasColumns({ onEdit, onDelete, onView }), [])}
           data={categoriasQuery.data || []}
           onAdd={onAdd}
           onGet={onGet}

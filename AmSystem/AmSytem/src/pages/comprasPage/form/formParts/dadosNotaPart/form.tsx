@@ -4,7 +4,7 @@ import SearchItem from "@/components/searchItem";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { ICompra } from "@/interfaces/compra.interfaces";
-import { IFornecedor } from "@/interfaces/fornecedor.interfaces";
+import { IFornecedor, IFornecedorRef } from "@/interfaces/fornecedor.interfaces";
 import { CompraFormData } from "@/pages/comprasPage/form/schema";
 import { FornecedoresPage } from "@/pages/fornecedoresPage";
 import { Search } from "lucide-react";
@@ -20,11 +20,22 @@ interface dadosNotaPartProps {
   compra: ICompra;
   action?: string;
   disabled?: boolean;
+  activeStep: number;
 }
 
-function DadosNotaPart({ control, setValue, getValue, watch, errors, compra, action, disabled }: dadosNotaPartProps) {
+function DadosNotaPart({
+  control,
+  setValue,
+  getValue,
+  watch,
+  errors,
+  compra,
+  action,
+  disabled,
+  activeStep,
+}: dadosNotaPartProps) {
   const [openFornecedores, setOpenFornecedores] = useState<boolean>(false);
-  const [fornecedor, setFornecedor] = useState<IFornecedor | undefined>(compra?.fornecedor);
+  const [fornecedor, setFornecedor] = useState<IFornecedorRef | undefined>(compra?.fornecedor);
 
   useEffect(() => {
     setValue("idFornecedor", fornecedor?.id as number);
@@ -33,7 +44,7 @@ function DadosNotaPart({ control, setValue, getValue, watch, errors, compra, act
   }, [fornecedor]);
 
   return (
-    <div className="grid grid-cols-12 grid-rows-2 gap-4">
+    <div className="grid grid-cols-12 grid-rows-2 gap-6">
       <FormFieldInput
         label="Nr. Nota*"
         name="nrNota"
@@ -81,6 +92,7 @@ function DadosNotaPart({ control, setValue, getValue, watch, errors, compra, act
           errorMessage={errors?.idFornecedor?.message}
           disabled={disabled}
           page={<FornecedoresPage setFornecedor={setFornecedor} />}
+          hiddenButton={action === "View" || disabled === true ? true : false}
           className="flex flex-row gap-4 flex-grow"
         />
       </div>
@@ -99,11 +111,11 @@ function DadosNotaPart({ control, setValue, getValue, watch, errors, compra, act
 
       <div className="row-start-2 row-end-2 col-span-4">
         <InputCalendar
+          control={control}
           name="dtChegada"
           label="Dt. Chegada"
           setValue={setValue}
           value={watch("dtChegada")}
-          control={control}
           disabled={disabled}
           errorMessage={errors?.dtChegada?.message}
         />

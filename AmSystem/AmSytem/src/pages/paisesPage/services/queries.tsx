@@ -1,13 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import {
-  DeletePaisRequest,
-  GetPaisesRequest,
-  PostPaisRequest,
-  PutPaisRequest,
-} from "./api";
+import { DeletePaisRequest, GetPaisesRequest, PostPaisRequest, PutPaisRequest } from "./api";
 import { IPostPais, IPutPais } from "@/interfaces/pais.interfaces";
 import { toast } from "sonner";
-import { AxiosError } from "axios";
+import { Axios, AxiosError, AxiosResponse } from "axios";
 
 export function GetPaises(Ativos: boolean) {
   return useQuery({
@@ -21,13 +16,13 @@ export function PutPais(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPutPais) => PutPaisRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetPaises"] });
       onOpenChange(false);
-      toast.success("País atualizado com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao atualizar o país. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -37,13 +32,13 @@ export function PostPais(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPostPais) => PostPaisRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetPaises"] });
       onOpenChange(false);
-      toast.success("País adicionado com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao adicionar o país. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -51,13 +46,13 @@ export function PostPais(onOpenChange: (open: boolean) => void) {
 export function DeletePais() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (idPais: Number) => DeletePaisRequest(idPais),
-    onSuccess: () => {
+    mutationFn: (idPais: number) => DeletePaisRequest(idPais),
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetPaises"] });
-      toast.success("País deletado com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao deletar o país. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }

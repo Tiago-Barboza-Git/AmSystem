@@ -35,8 +35,10 @@ interface DataTableProps<TData, TValue> {
   onAdd?: () => void;
   onGet?: () => void;
   ativos?: boolean;
+  labelAtivos?: string;
   hidden?: boolean;
   setObj?: (obj: any) => void;
+  nota?: boolean;
 }
 
 const DataTable = <TData, TValue>({
@@ -45,9 +47,12 @@ const DataTable = <TData, TValue>({
   onAdd,
   onGet,
   ativos,
+  labelAtivos,
   setObj,
   hidden,
+  nota,
 }: DataTableProps<TData, TValue>) => {
+  const [colorFlag, setColorFlag] = useState<boolean>(false);
   const [filtering, setFiltering] = useState<string>("");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -75,6 +80,25 @@ const DataTable = <TData, TValue>({
     enableRowSelection: true,
   });
 
+  // style={rowStyles[index]}
+  const rowStyles = useMemo(() => {
+    let colorFlag = false;
+    return data.map((row) => {
+      if ((row as any)["numParcela"] === 1) colorFlag = !colorFlag;
+      return { backgroundColor: colorFlag ? "#f7f7f7" : "#ffffff" };
+    });
+  }, [data]);
+
+  const getRowStyle = (currentRow: TData) => {
+    if ((currentRow as any)["numParcela"] === 1) setColorFlag(!colorFlag);
+
+    if (colorFlag) {
+      return {
+        backgroundColor: "#f0f0f0", // Define a cor de fundo com base no flag `isGray`
+      };
+    }
+  };
+
   const selectedRow = (row: any, event: any) => {
     const cell = event.target.closest("td");
     if (!cell) return;
@@ -100,11 +124,22 @@ const DataTable = <TData, TValue>({
             <Input className="w-50" value={filtering} onChange={(e) => setFiltering(e.target.value)} />
           </div>
         </div>
-        <div className={`${ativos !== undefined ? "visible" : "hidden"} flex flex-col gap-4`}>
-          <Label>Ativos</Label>
-          <Switch defaultChecked={ativos} onCheckedChange={onGet} />
+        <div
+          className={`${ativos !== undefined && setObj === undefined ? "visible" : "hidden"} flex flex-col gap-4 items-center`}
+        >
+          <Label>{labelAtivos !== undefined ? labelAtivos : "Ativos"}</Label>
+          <Switch
+            defaultChecked={ativos}
+            onCheckedChange={onGet}
+            className={`${labelAtivos === "Canceladas" ? (ativos ? "!bg-red-500" : "!bg-gray") : ativos ? "!bg-green-500" : "!bg-gray"}`}
+          />
         </div>
-        <Button onClick={() => (onAdd !== undefined ? onAdd() : "")}>Adicionar</Button>
+        <Button
+          onClick={() => (onAdd !== undefined ? onAdd() : "")}
+          className={`${onAdd === undefined ? "hidden" : "visible"}`}
+        >
+          Adicionar
+        </Button>
       </div>
       <Table>
         <TableHeader>
@@ -125,13 +160,15 @@ const DataTable = <TData, TValue>({
           })}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id} onClick={(event) => selectedRow(row, event)}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-              ))}
-            </TableRow>
-          ))}
+          {table.getRowModel().rows.map((row, index) => {
+            return (
+              <TableRow key={row.id} onClick={(event) => selectedRow(row, event)} style={rowStyles[index]}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                ))}
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
       <div className={`${hidden === true ? "hidden" : "visible"} flex flex-row justify-between`}>

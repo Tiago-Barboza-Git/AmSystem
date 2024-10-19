@@ -17,13 +17,13 @@ export function PutCliente(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: iClientePut) => PutClienteRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetClientes"] });
       onOpenChange(false);
-      toast.success("Cliente atualizado com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error) => {
-      toast.error(`Erro ao atualizar cliente. Erro: ${error}!`);
+      toast.error(`${error}`);
     },
   });
 }
@@ -33,13 +33,13 @@ export function PostCliente(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: iClientePost) => PostClienteRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetClientes"] });
       onOpenChange(false);
-      toast.success("Cliente adicionado com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao adicionar cliente. Erro: ${error.response?.data}!`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -47,13 +47,13 @@ export function PostCliente(onOpenChange: (open: boolean) => void) {
 export function DeleteCliente() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (idEstado: Number) => DeleteClienteRequest(idEstado),
-    onSuccess: () => {
+    mutationFn: (idCliente: number) => DeleteClienteRequest(idCliente),
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetClientes"] });
-      toast.success("Cliente deleteado com sucesso!");
+      toast.success(`${response}`);
     },
-    onError: (error) => {
-      toast.error(`Erro ao deletar cliente. Erro: ${error}!`);
+    onError: (error: AxiosError) => {
+      toast.error(`${error.response?.data}`);
     },
   });
 }

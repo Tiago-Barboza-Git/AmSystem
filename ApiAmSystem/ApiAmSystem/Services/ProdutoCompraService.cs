@@ -1,5 +1,5 @@
 ﻿using ApiAmSystem.Domain.Interfaces;
-using ApiAmSystem.Domain.Models.CompraProdutos;
+using ApiAmSystem.Domain.Models.Compra.ProdutoCompra;
 using ApiAmSystem.Domain.Models.Produto;
 using ApiAmSystem.Domain.Models.UnidadeMedida;
 using Microsoft.Data.SqlClient;
@@ -17,14 +17,13 @@ namespace ApiAmSystem.Services
             this.produtoService = pIProdutoService;
         }
 
-        public IEnumerable<ProdutoCompraModel> GetProdutosCompra(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor)
+        public IEnumerable<ProdutoCompraModel> GetProdutosCompraByCompra(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor)
         {
-            using (sqlConnection)
+            using (SqlConnection conn = new SqlConnection("Server=DESKTOP-JPC14RO;Database=AmSystem;Trusted_Connection=True;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True;"))
             {
                 try
                 {
-                    if (sqlConnection.State != ConnectionState.Open)
-                        sqlConnection.Open();
+                    conn.Open();
                     List<ProdutoCompraModel> result = new List<ProdutoCompraModel>();
                     string query = @"select 
                                         pc.IdProduto,
@@ -41,7 +40,7 @@ namespace ApiAmSystem.Services
                                     inner join TbProdutos p on p.Id = pc.IdProduto
                                     inner join TbUnidadesMedidas um on um.Id = p.IdUnidadeMedida
                                     where pc.NrNota = @NrNota and pc.NrModelo = @NrModelo and pc.NrSerie = @NrSerie and pc.IdFornecedor = @IdFornecedor;";
-                    SqlCommand cmd = new SqlCommand(query, sqlConnection);
+                    SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@NrNota", SqlDbType.Int).Value = pNrNota;
                     cmd.Parameters.Add("@NrModelo", SqlDbType.Int).Value = pNrModelo;
@@ -52,7 +51,7 @@ namespace ApiAmSystem.Services
                     {
                         while (reader.Read())
                         {
-                            result.Add(new ProdutoCompraModel()
+                            result.Add(new ProdutoCompraModel
                             {
                                 NrNota = pNrNota,
                                 NrModelo = pNrModelo,
@@ -67,10 +66,10 @@ namespace ApiAmSystem.Services
                                 Rateio = reader.GetDecimal("Rateio"),
                                 Produto = new ProdutoModel
                                 {
-                                    id = reader.GetInt32("IdProduto"),
-                                    produto = reader.GetString("Produto"),
-                                    idUnidadeMedida = reader.GetInt32("IdUnidadeMedida"),
-                                    unidadeMedida = new UnidadeMedidaModel
+                                    Id = reader.GetInt32("IdProduto"),
+                                    Produto = reader.GetString("Produto"),
+                                    IdUnidadeMedida = reader.GetInt32("IdUnidadeMedida"),
+                                    UnidadeMedida = new UnidadeMedidaModel
                                     {
                                         id = reader.GetInt32("IdUnidadeMedida"),
                                         unidadeMedida = reader.GetString("UnidadeMedida")
@@ -89,6 +88,7 @@ namespace ApiAmSystem.Services
                 }
                 finally
                 {
+                    conn.Close();
                 }
             }
         }

@@ -1,34 +1,29 @@
-import { formatDate } from "@/functions/functions";
+import { formatDate, formatMoney } from "@/functions/functions";
 import { ICategoria } from "@/interfaces/categoria.interfaces";
 import { IEstado } from "@/interfaces/estado.interfaces";
 import { IFornecedor } from "@/interfaces/fornecedor.interfaces";
 import { IProduto } from "@/interfaces/produto.interfaces";
 import { IUnidadeMedida } from "@/interfaces/unidadeMedida.interfaces";
+import { ProdutoFormSchema } from "@/pages/produtosPage/produtoForm/schema";
 import { z } from "zod";
 
-export const ProdutoCompraFormSchema = z
-  .object({
-    nrNota: z.number().optional(),
-    nrModelo: z.number().optional(),
-    nrSerie: z.number().optional(),
-    idFornecedor: z.number().optional(),
-    fornecedor: z.custom<IFornecedor>().optional(),
-    quantidade: z
-      .number()
-      .min(1, "Obrigatório")
-      .refine((value) => value > 0, "Obrigatório"),
-    precoUnit: z.union([z.string(), z.number()]),
-    precoTotal: z.union([z.string(), z.number()]),
-    custoProd: z.union([z.string(), z.number()]),
-    custoUnit: z.union([z.string(), z.number()]),
-    rateio: z.union([z.string(), z.number()]),
-    idProduto: z
-      .number()
-      .min(1, "Obrigatório")
-      .refine((value) => value > 0, "Obrigatório"),
-    produto: z.custom<IProduto>(),
-  })
-  .superRefine((data, ctx) => {});
+export const ProdutoCompraFormSchema = z.object({
+  // nrNota: z.number(),
+  // nrModelo: z.number(),
+  // nrSerie: z.number(),
+  // idFornecedor: z.number(),
+  // fornecedor: z.custom<IFornecedor>(),
+  quantidade: z.number().refine((value) => value > 0, "Insira a quantidade"),
+  precoUnit: z
+    .preprocess((val) => Number(formatMoney(String(val))), z.number())
+    .refine((value) => value !== 0, "Deve ser maior que 0"),
+  precoTotal: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
+  custoProd: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
+  custoUnit: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
+  rateio: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
+  idProduto: z.number().min(1, "Obrigatório"),
+  produto: z.custom<IProduto>(),
+});
 
 export type ProdutoCompraFormData = z.infer<typeof ProdutoCompraFormSchema>;
 
@@ -40,5 +35,4 @@ export const defaultValues = {
   custoUnit: 0,
   rateio: 0,
   idProduto: 0,
-  dtCadastro: new Date(),
 };

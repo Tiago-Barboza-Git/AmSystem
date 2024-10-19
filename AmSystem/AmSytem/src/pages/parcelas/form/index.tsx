@@ -4,19 +4,8 @@ import { IParcela } from "@/interfaces/parcela.interfaces";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 import { ParcelaFormData, ParcelaFormSchema, defaultValues } from "./schema";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
@@ -34,16 +23,9 @@ interface ParcelaFormProps {
   addParcela: (parcela: IParcela) => void;
 }
 
-export const ParcelaForm = ({
-  isOpen,
-  onOpenChange,
-  parcelasData,
-  addParcela,
-}: ParcelaFormProps) => {
+export const ParcelaForm = ({ isOpen, onOpenChange, parcelasData, addParcela }: ParcelaFormProps) => {
   const [openFormaPagamento, setOpenFormaPagamento] = useState<boolean>(false);
-  const [formaPagamento, setFormaPagamento] = useState<IFormaPagamento | null>(
-    null
-  );
+  const [formaPagamento, setFormaPagamento] = useState<IFormaPagamento | null>(null);
   const form = useForm<ParcelaFormData>({
     mode: "onChange",
     resolver: zodResolver(ParcelaFormSchema),
@@ -62,9 +44,11 @@ export const ParcelaForm = ({
   }, [formaPagamento]);
 
   const onSubmit = (data: IParcela) => {
-    addParcela(data);
-    form.reset();
-    onOpenChange(false);
+    if (openFormaPagamento === false) {
+      addParcela(data);
+      form.reset();
+      onOpenChange(false);
+    }
   };
 
   return (
@@ -74,12 +58,9 @@ export const ParcelaForm = ({
           <DialogTitle>{"Adicionar nova parcela"}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            className="space-y-4 flex flex-col"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form className="space-y-4 flex flex-col" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-4">
-              <div className="flex flex-row justify-between col-span-9">
+              {/* <div className="flex flex-row justify-between col-span-9">
                 <FormFieldInput
                   label="Cód."
                   name="id"
@@ -90,7 +71,7 @@ export const ParcelaForm = ({
                   className="col-span-2"
                 />
               </div>
-              <Separator className="!mt-10 !mb-9" />
+              <Separator className="!mt-10 !mb-9" /> */}
               <div className="grid grid-cols-8 grid-rows-2 gap-4">
                 <FormFieldInput
                   label="Núm. Parcela"
@@ -98,6 +79,7 @@ export const ParcelaForm = ({
                   control={form.control}
                   isNumber={true}
                   errorMessage={form.formState.errors.numParcela?.message}
+                  disabled={true}
                   className="col-span-2"
                 />
 
@@ -120,11 +102,12 @@ export const ParcelaForm = ({
                 />
 
                 <FormFieldInput
-                  label="Cód. Forma Pagamento"
+                  label="Cód. Form. Pag."
                   name="idFormaPagamento"
                   control={form.control}
                   isNumber={true}
                   disabled={true}
+                  errorMessage={form.formState.errors.idFormaPagamento?.message}
                   className="col-span-2 row-start-2"
                 />
 
@@ -137,19 +120,14 @@ export const ParcelaForm = ({
                 />
 
                 <div className="relative row-start-2">
-                  <Dialog
-                    open={openFormaPagamento}
-                    onOpenChange={(value) => setOpenFormaPagamento(value)}
-                  >
+                  <Dialog open={openFormaPagamento} onOpenChange={(value) => setOpenFormaPagamento(value)}>
                     <DialogTrigger asChild className="absolute bottom-[30%]">
                       <Button variant="default">
                         <Search />
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="!p-0">
-                      <FormasPagamentosPage
-                        setFormaPagamento={setFormaPagamento}
-                      />
+                      <FormasPagamentosPage setFormaPagamento={setFormaPagamento} />
                     </DialogContent>
                   </Dialog>
                 </div>

@@ -33,9 +33,9 @@ namespace ApiAmSystem.Controllers
         [Route("/GetFuncionarios")]
         [ProducesResponseType(typeof(IEnumerable<FuncionarioModel>), 200)]
         [ProducesResponseType(typeof(BadRequest), 400)]
-        public IActionResult GetEstados(bool pInativos)
+        public IActionResult GetEstados(bool pAtivo)
         {
-            IEnumerable<FuncionarioModel> result = funcionariosService.GetFuncionarios(pInativos);
+            IEnumerable<FuncionarioModel> result = funcionariosService.GetFuncionarios(pAtivo);
             if (result != null)
                 return Ok(result);
             else

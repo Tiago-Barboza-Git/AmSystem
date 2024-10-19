@@ -1,23 +1,19 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { iPais } from "@/interfaces/pais.interfaces";
+import { IPais } from "@/interfaces/pais.interfaces";
 import DataTableColumnHeader from "@/components/datatable/dataTableColumnHeader";
 import { DataTableRowActions } from "@/components/datatable/dataTableRowActions";
 import { formatDate } from "@/functions/functions";
 
 interface paisesColumnsProps {
-  onEdit: (pais: iPais) => void;
-  onDelete: (pais: iPais) => void;
+  onEdit: (pais: IPais) => void;
+  onDelete: (pais: IPais) => void;
+  onView: (pais: IPais) => void;
 }
 
-export const getPaisesColumns = ({
-  onEdit,
-  onDelete,
-}: paisesColumnsProps): ColumnDef<iPais>[] => [
+export const getPaisesColumns = ({ onEdit, onDelete, onView }: paisesColumnsProps): ColumnDef<IPais>[] => [
   {
     accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cód. " />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Cód. " />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.id}</span>
@@ -27,9 +23,7 @@ export const getPaisesColumns = ({
   },
   {
     accessorKey: "pais",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="País" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="País" />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.pais}</span>
@@ -57,15 +51,11 @@ export const getPaisesColumns = ({
     accessorKey: "dtAlteracao",
     header: "Dt. Alteração",
     enableGlobalFilter: false,
-    cell: ({ row }) => (
-      <div>{formatDate(String(row.original.dtAlteracao))}</div>
-    ),
+    cell: ({ row }) => <div>{formatDate(String(row.original.dtAlteracao))}</div>,
   },
   {
     id: "actions",
-    cell: ({ row }) => (
-      <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />
-    ),
+    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} onView={onView} />,
   },
 ];
 

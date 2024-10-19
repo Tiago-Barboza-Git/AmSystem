@@ -14,6 +14,7 @@ import { CategoriasPage } from "@/pages/categoriasPage/index.tsx";
 import { UnidadesMedidasPage } from "@/pages/unidadeMedidaPage/index.tsx";
 import { ComprasPage } from "@/pages/comprasPage/index.tsx";
 import ContasPagarPage from "@/pages/contasPagarPage/index.tsx";
+import VendasPage from "@/pages/vendasPage/index.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([
       { path: "unidadesMedidas", element: <UnidadesMedidasPage /> },
       { path: "compras", element: <ComprasPage /> },
       { path: "contasPagar", element: <ContasPagarPage /> },
+      { path: "vendas", element: <VendasPage /> },
     ],
   },
 ]);

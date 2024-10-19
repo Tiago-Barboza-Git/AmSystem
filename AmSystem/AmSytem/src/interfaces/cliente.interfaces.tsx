@@ -16,3 +16,8 @@ export interface iClientePut extends IPessoaPut {
   representate?: string;
   celularRepresentante?: string;
 }
+
+export interface IClienteRef {
+  id: number;
+  pessoaRazaoSocial: string;
+}

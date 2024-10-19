@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ICompra } from "@/interfaces/compra.interfaces";
 import { ICondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
-import { IContaPagar } from "@/interfaces/contasPagar";
+import { IContaPagar, IPostContaPagar } from "@/interfaces/contasPagar";
 import { CompraFormData } from "@/pages/comprasPage/form/schema";
 import { CondicoesPagamentosPage } from "@/pages/condicoesPagamentosPage";
 import { Search } from "lucide-react";
@@ -25,6 +25,7 @@ interface ContasPagarPartProps {
   compra: ICompra;
   action?: string;
   disabled?: boolean;
+  activeStep: number;
 }
 
 const addDays = (date: Date, days: number): Date => {
@@ -42,6 +43,7 @@ function ContasPagarPart({
   compra,
   action,
   disabled,
+  activeStep,
 }: ContasPagarPartProps) {
   // Condição Pagamento Begin
   const [openCondicaoPagamento, setOpenCondicaoPagamento] = useState<boolean>(false);
@@ -50,43 +52,33 @@ function ContasPagarPart({
   );
 
   useEffect(() => {
-    if (action !== "View" && openCondicaoPagamento !== false) {
-      setOpenCondicaoPagamento(false);
-      setValue("idCondicaoPagamento", condicaoPagamento?.id as number);
-      setValue("condicaoPagamento", condicaoPagamento as ICondicaoPagamento);
+    if (action !== "View") {
+      if (openCondicaoPagamento !== false) {
+        setOpenCondicaoPagamento(false);
+        setValue("idCondicaoPagamento", condicaoPagamento?.id as number);
+        setValue("condicaoPagamento", condicaoPagamento as ICondicaoPagamento);
 
-      const contasPagar: IContaPagar[] =
-        condicaoPagamento?.parcelas.map((parcela, index) => {
-          console.log(addDays(watch("dtEmissao") as Date, 30 * (index + 1)));
-          return {
-            nrNota: watch("nrNota"),
-            nrModelo: watch("nrModelo"),
-            nrSerie: watch("nrSerie"),
-            idFornecedor: watch("idFornecedor"),
-            numParcela: index + 1,
-            valorParcela:
-              (formatMoney(watch("totalProdutos") as string) + formatMoney(watch("totalCusto") as string)) *
-              ((parcela.porcentagem as number) / 100),
-            dtEmissao: watch("dtEmissao"),
-            dtVencimento: addDays(watch("dtEmissao") as Date, 30 * (index + 1)),
-            desconto: 0,
-            juros: 0,
-            multa: 0,
-            valorPago: 0,
-            valorTotal: 0,
-            dtPagamento: undefined,
-            idFormaPagamento: parcela.idFormaPagamento ?? 0,
-            formaPagamento: parcela.formaPagamento,
-            fornecedor: getValue("fornecedor"),
-            dtCadastro: new Date(),
-            dtAlteracao: new Date(),
-          };
-        }) || [];
+        const contasPagar: IPostContaPagar[] =
+          condicaoPagamento?.parcelas.map((parcela, index) => {
+            return {
+              idFormaPagamento: parcela.idFormaPagamento,
+              numParcela: index + 1,
+              valorParcela: formatMoney(
+                Number(
+                  (formatMoney(watch("totalProdutos")) + formatMoney(watch("totalCusto"))) *
+                    ((parcela.porcentagem as number) / 100),
+                ),
+              ),
+              dtVencimento: addDays(watch("dtEmissao") as Date, parcela.dias),
+              formaPagamento: parcela.formaPagamento,
+            };
+          }) || [];
 
-      setValue("contasPagar", contasPagar);
+        setValue("contasPagar", contasPagar);
+      }
     }
   }, [condicaoPagamento]);
-
+  console.log(watch("contasPagar"));
   // Condição Pagamento End
 
   return (
@@ -107,6 +99,7 @@ function ContasPagarPart({
         nameCod="idCondicaoPagamento"
         nameNome="condicaoPagamento.condicaoPagamento"
         page={<CondicoesPagamentosPage setCondicaoPagamento={setCondicaoPagamento} />}
+        hiddenButton={action === "View" || activeStep === 4 ? true : false}
       />
       <Separator className="!mt-10 !mb-9" />
       <div>

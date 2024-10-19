@@ -6,6 +6,7 @@ import { ICondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
 import { ICompra } from "@/interfaces/compra.interfaces";
 import { CurrencyInput } from "react-currency-mask";
 import { Input } from "@/components/ui/input";
+import { Circle, CircleCheck, CircleX } from "lucide-react";
 
 interface comprasColumnsProps {
   onView: (compra: ICompra) => void;
@@ -15,7 +16,7 @@ interface comprasColumnsProps {
 export const getComprasColumns = ({ onView, onCancel }: comprasColumnsProps): ColumnDef<ICompra>[] => [
   {
     accessorKey: "nrNota",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Nr. Nota" />,
+    header: "Nr. Nota",
     cell: ({ row }) => (
       <div>
         <span>{row.original.nrNota}</span>
@@ -25,7 +26,7 @@ export const getComprasColumns = ({ onView, onCancel }: comprasColumnsProps): Co
   },
   {
     accessorKey: "nrModelo",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Nr. Modelo" />,
+    header: "Nr. Modelo",
     cell: ({ row }) => (
       <div>
         <span>{row.original.nrModelo}</span>
@@ -40,30 +41,30 @@ export const getComprasColumns = ({ onView, onCancel }: comprasColumnsProps): Co
   },
   {
     accessorKey: "fornecedor.pessoaRazaoSocial",
-    header: "Fornecedor",
-    enableGlobalFilter: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Fornecedor" />,
+    enableGlobalFilter: true,
   },
   {
     accessorKey: "dtEmissao",
-    header: "Dt. Emissão",
     enableGlobalFilter: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Dt. Emissão" />,
     cell: ({ row }) => <div>{formatDate(String(row.original.dtEmissao))}</div>,
   },
   {
     accessorKey: "dtCadastro",
-    header: "Dt. Cadastro",
     enableGlobalFilter: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Dt. Cadastro" />,
     cell: ({ row }) => <div>{formatDate(String(row.original.dtCadastro))}</div>,
   },
   {
     accessorKey: "totalCompra",
-    header: "Total Compra",
     enableGlobalFilter: false,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Total Compra" />,
     cell: ({ row }) => (
       <div>
         {
           <CurrencyInput
-            value={row.original.totalCompra as string}
+            value={row.original.totalNota}
             onChangeValue={() => ""}
             InputElement={<Input disabled className="bg-transparent border-none shadow-none disabled:!text-red" />}
           />
@@ -72,7 +73,41 @@ export const getComprasColumns = ({ onView, onCancel }: comprasColumnsProps): Co
     ),
   },
   {
+    header: "Status",
+    cell: ({ row }) => (
+      <div>
+        {row.original.dtCancelamento === null ? (
+          <span>
+            {row.original.contasPagar.every((conta) => Number(conta.valorPago) > 0) ? (
+              <Circle color="green" fill="green" size={20} />
+            ) : (
+              <Circle color="orange" fill="orange" size={20} />
+            )}
+          </span>
+        ) : (
+          <span>
+            <Circle color="red" fill="red" size={20} />
+          </span>
+        )}
+      </div>
+    ),
+  },
+  {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} onView={onView} onCancel={onCancel} />,
+    cell: ({ row }) => {
+      console.log(row.original.dtCancelamento);
+      return (
+        <DataTableRowActions
+          row={row}
+          onView={onView}
+          onCancel={
+            row.original.contasPagar.some((conta) => Number(conta.valorPago) > 0) ||
+            row.original.dtCancelamento !== null
+              ? undefined
+              : onCancel
+          }
+        />
+      );
+    },
   },
 ];

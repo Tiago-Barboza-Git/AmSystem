@@ -42,7 +42,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PostCidade(CidadePostRequest pCidade)
         {
             string result = cidadesService.PostCidade(pCidade);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -53,7 +53,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PutCidade(CidadePutRequest pCidade)
         {
             string result = cidadesService.PutCidade(pCidade);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -64,7 +64,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult DeleteCidade(int pId)
         {
             string result = cidadesService.DeleteCidade(pId);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);

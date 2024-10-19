@@ -5,10 +5,7 @@ import { useQueryClient } from "react-query";
 import { useCallback, useMemo, useState } from "react";
 import { iCliente } from "@/interfaces/cliente.interfaces";
 import { IFornecedor } from "@/interfaces/fornecedor.interfaces.tsx";
-import {
-  GetFornecedoresRequest,
-  PutFornecedorRequest,
-} from "./services/api.tsx";
+import { GetFornecedoresRequest, PutFornecedorRequest } from "./services/api.tsx";
 import { DeleteFornecedor, GetFornecedores } from "./services/queries.tsx";
 import getFornecedoresColumns from "./fornecedoresColumns.tsx";
 import FornecedorForm from "./fornecedorForm/index.tsx";
@@ -23,8 +20,7 @@ export function FornecedoresPage({ setFornecedor }: FornecedoresPageProps) {
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
   const [ativos, setAtivos] = useState<boolean>(true);
-  const [selectedFornecedor, setSelectedFornecedor] =
-    useState<IFornecedor | null>(null);
+  const [selectedFornecedor, setSelectedFornecedor] = useState<IFornecedor | null>(null);
   const deleteFornecedor = DeleteFornecedor();
 
   const onGet = useCallback(async () => {
@@ -53,11 +49,17 @@ export function FornecedoresPage({ setFornecedor }: FornecedoresPageProps) {
     setOpen(true);
   }, []);
 
+  const onView = useCallback((fornecedor: IFornecedor) => {
+    setAction("View");
+    setSelectedFornecedor(fornecedor);
+    setOpen(true);
+  }, []);
+
   const fornecedoresQuery = GetFornecedores(ativos);
   const fornecedores = fornecedoresQuery.data || []; // Ensure paises is an array
 
   return (
-    <Card className="h-full max-w-2xl">
+    <Card className="h-full">
       <CardHeader className="!w-[200px]">
         <CardTitle>Fornecedores</CardTitle>
         <div className="flex justify-between">
@@ -86,10 +88,7 @@ export function FornecedoresPage({ setFornecedor }: FornecedoresPageProps) {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(
-            () => getFornecedoresColumns({ onEdit, onDelete }),
-            []
-          )}
+          columns={useMemo(() => getFornecedoresColumns({ onEdit, onDelete, onView }), [])}
           data={fornecedores}
           onAdd={onAdd}
           onGet={onGet}

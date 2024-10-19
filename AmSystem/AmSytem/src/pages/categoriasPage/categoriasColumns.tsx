@@ -10,17 +10,13 @@ import { ICategoria } from "@/interfaces/categoria.interfaces";
 interface categoriasColumnsProps {
   onEdit: (categoria: ICategoria) => void;
   onDelete: (categoria: ICategoria) => void;
+  onView: (categoria: ICategoria) => void;
 }
 
-export const getCategoriasColumns = ({
-  onEdit,
-  onDelete,
-}: categoriasColumnsProps): ColumnDef<ICategoria>[] => [
+export const getCategoriasColumns = ({ onEdit, onDelete, onView }: categoriasColumnsProps): ColumnDef<ICategoria>[] => [
   {
     accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cód. " />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Cód. " />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.id}</span>
@@ -30,9 +26,7 @@ export const getCategoriasColumns = ({
   },
   {
     accessorKey: "categoria",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Categoria" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Categoria" />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.categoria}</span>
@@ -50,14 +44,10 @@ export const getCategoriasColumns = ({
     accessorKey: "dtAlteracao",
     header: "Dt. Alteração",
     enableColumnFilter: false,
-    cell: ({ row }) => (
-      <div>{formatDate(String(row.original.dtAlteracao))}</div>
-    ),
+    cell: ({ row }) => <div>{formatDate(String(row.original.dtAlteracao))}</div>,
   },
   {
     header: "Ações",
-    cell: ({ row }) => (
-      <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />
-    ),
+    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} onView={onView} />,
   },
 ];

@@ -2,11 +2,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import DataTableColumnHeader from "@/components/datatable/dataTableColumnHeader";
 import { DataTableRowActions } from "@/components/datatable/dataTableRowActions";
 import { formatDate } from "@/functions/functions";
-import { IContaPagar } from "@/interfaces/contasPagar";
+import { IContaPagar, IPostContaPagar } from "@/interfaces/contasPagar";
 import { CurrencyInput } from "react-currency-mask";
 import { Input } from "@/components/ui/input";
 
-export const getContaPagarPartColumns = ({}): ColumnDef<IContaPagar>[] => [
+export const getContaPagarPartColumns = ({}): ColumnDef<IPostContaPagar>[] => [
   {
     accessorKey: "numParcela",
     header: "Parcela",

@@ -1,10 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import {
-  DeleteCidadeRequest,
-  GetCidadesRequest,
-  PostCidadeRequest,
-  PutCidadeRequest,
-} from "./api";
+import { DeleteCidadeRequest, GetCidadesRequest, PostCidadeRequest, PutCidadeRequest } from "./api";
 import { isQueryKey } from "react-query/types/core/utils";
 import { IPostCidade, IPutCidade } from "@/interfaces/cidade.interfaces";
 import { AxiosError } from "axios";
@@ -22,13 +17,13 @@ export function PutCidade(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPutCidade) => PutCidadeRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetCidades"] });
       onOpenChange(false);
-      toast.success("Cidade atualizada com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao atualizar cidade. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -38,13 +33,13 @@ export function PostCidade(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPostCidade) => PostCidadeRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetCidades"] });
       onOpenChange(false);
-      toast.success("Cidade adicionada com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao adicionar cidade. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -52,13 +47,13 @@ export function PostCidade(onOpenChange: (open: boolean) => void) {
 export function DeleteCidade() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (idCidade: Number) => DeleteCidadeRequest(idCidade),
-    onSuccess: () => {
+    mutationFn: (idCidade: number) => DeleteCidadeRequest(idCidade),
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetCidades"] });
-      toast.success("Cidade deletada com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao deletar cidade. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }

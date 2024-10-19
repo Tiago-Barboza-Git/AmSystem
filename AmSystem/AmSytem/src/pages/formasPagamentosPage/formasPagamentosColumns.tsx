@@ -7,17 +7,17 @@ import { IFormaPagamento } from "@/interfaces/formaPagamento.interfaces";
 interface formasPagamentosColumnsProps {
   onEdit: (formaPagamento: IFormaPagamento) => void;
   onDelete: (formaPagamento: IFormaPagamento) => void;
+  onView: (formaPagamento: IFormaPagamento) => void;
 }
 
 export const getFormasPagamentosColumns = ({
   onEdit,
   onDelete,
+  onView,
 }: formasPagamentosColumnsProps): ColumnDef<IFormaPagamento>[] => [
   {
     accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cód. " />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Cód. " />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.id}</span>
@@ -27,9 +27,7 @@ export const getFormasPagamentosColumns = ({
   },
   {
     accessorKey: "formaPagamento",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Forma de Pagamento" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Forma de Pagamento" />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.formaPagamento}</span>
@@ -47,14 +45,10 @@ export const getFormasPagamentosColumns = ({
     accessorKey: "dtAlteracao",
     header: "Dt. Alteração",
     enableColumnFilter: false,
-    cell: ({ row }) => (
-      <div>{formatDate(String(row.original.dtAlteracao))}</div>
-    ),
+    cell: ({ row }) => <div>{formatDate(String(row.original.dtAlteracao))}</div>,
   },
   {
     id: "actions",
-    cell: ({ row }) => (
-      <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />
-    ),
+    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} onView={onView} />,
   },
 ];

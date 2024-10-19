@@ -8,17 +8,17 @@ import { ColumnDef } from "@tanstack/react-table";
 interface funcionariosColumnsProps {
   onEdit: (funcionario: IFuncionario) => void;
   onDelete: (funcionario: IFuncionario) => void;
+  onView: (funcionario: IFuncionario) => void;
 }
 
 export const getFuncionariosColumns = ({
   onEdit,
   onDelete,
+  onView,
 }: funcionariosColumnsProps): ColumnDef<IFuncionario>[] => [
   {
     accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cód. " />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Cód. " />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.id}</span>
@@ -28,9 +28,7 @@ export const getFuncionariosColumns = ({
   },
   {
     accessorKey: "funcionario",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Funcionário" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Funcionário" />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.funcionario}</span>
@@ -62,16 +60,12 @@ export const getFuncionariosColumns = ({
   {
     accessorKey: "dtAlteracao",
     header: "Dt. Alteração",
-    cell: ({ row }) => (
-      <div>{formatDate(String(row.original.dtAlteracao))}</div>
-    ),
+    cell: ({ row }) => <div>{formatDate(String(row.original.dtAlteracao))}</div>,
     enableGlobalFilter: false,
   },
   {
     id: "actions",
-    cell: ({ row }) => (
-      <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />
-    ),
+    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} onView={onView} />,
   },
 ];
 

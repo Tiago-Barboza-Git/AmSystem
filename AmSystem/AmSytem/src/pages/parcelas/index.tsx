@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IParcela } from "@/interfaces/parcela.interfaces";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ProdutoForm from "../produtosPage/produtoForm";
-import DeleteDialog from "@/components/dialog/deleteDialog";
+import DeleteDialog from "@/components/dialog/deleteDialog3";
 import DataTable from "./dataTable/index";
 import { getParcelasColumns } from "./parcelasColumns";
 import { ParcelaForm } from "./form";
@@ -26,7 +26,7 @@ export const Parcelas = ({ parcelas }: ParcelasProps) => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
   const [selectedParcela, setSelectedParcela] = useState<IParcela | null>(null);
-  let parcelasTeste = [];
+  const parcelasTeste = [];
   useEffect(() => {
     parcelas.push(selectedParcela as IParcela);
   }, [setSelectedParcela]);

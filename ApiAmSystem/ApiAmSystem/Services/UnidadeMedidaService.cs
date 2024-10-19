@@ -73,7 +73,7 @@ namespace ApiAmSystem.Services
                 try
                 {
                     sqlConnection.Open();
-                    string query = "insert into TbUnidadesMedidas(UnidadeMedida,Simbolo,Ativo,DtCadastro,DtAlteracao) values(@UnidadeMedida,@Simbolo,@Ativo,@DtCadastro,@DtAlteracao)";
+                    string query = "insert into TbUnidadesMedidas(UnidadeMedida,Simbolo,Ativo,DtCadastro,DtAlteracao) values(dbo.fn_RemSpaceFromStr(@UnidadeMedida),dbo.fn_RemSpaceFromStr(@Simbolo),@Ativo,@DtCadastro,@DtAlteracao)";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@UnidadeMedida", SqlDbType.VarChar).Value = pUnidadeMedida.unidadeMedida;
@@ -104,7 +104,7 @@ namespace ApiAmSystem.Services
                 try
                 {
                     sqlConnection.Open();
-                    string query = "update TbUnidadesMedidas set UnidadeMedida = @UnidadeMedida, Simbolo = @Simbolo, Ativo = @Ativo, DtCadastro = @DtCadastro, DtAlteracao = @DtAlteracao where Id = @Id";
+                    string query = "update TbUnidadesMedidas set UnidadeMedida = dbo.fn_RemSpaceFromStr(@UnidadeMedida), Simbolo = dbo.fn_RemSpaceFromStr(@Simbolo), Ativo = @Ativo, DtCadastro = @DtCadastro, DtAlteracao = @DtAlteracao where Id = @Id";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pUnidadeMedida.id;

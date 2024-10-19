@@ -75,7 +75,7 @@ namespace ApiAmSystem.Services
                 try
                 {
                     sqlConnection.Open();
-                    string query = @"insert into TbCategorias(Categoria, Descricao, Ativo, DtCadastro, DtAlteracao) values(@Categoria, @Descricao, @Ativo, @DtCadastro, @DtAlteracao)";
+                    string query = @"insert into TbCategorias(Categoria, Descricao, Ativo, DtCadastro, DtAlteracao) values(dbo.fn_RemSpaceFromStr(@Categoria), dbo.fn_RemSpaceFromStr(@Descricao), @Ativo, @DtCadastro, @DtAlteracao)";
                     SqlCommand cmd = new SqlCommand (query, sqlConnection);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Categoria", SqlDbType.VarChar).Value = pCategoria.categoria;
@@ -84,7 +84,7 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@DtCadastro", SqlDbType.Date).Value = DateTime.Now; 
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Categoria adicionado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
@@ -92,7 +92,7 @@ namespace ApiAmSystem.Services
                     {
                         return "Categoria já existente";
                     }
-                    return ex.Message;
+                    return "Erro ao adicionar categoria!";
                 }
                 finally
                 {
@@ -108,7 +108,7 @@ namespace ApiAmSystem.Services
                 try
                 {
                     sqlConnection.Open();
-                    string query = @"update TbCategorias set Categoria = @Categoria, Descricao = @Descricao, Ativo = @Ativo, DtAlteracao = @DtAlteracao where Id = @Id";
+                    string query = @"update TbCategorias set Categoria = dbo.fn_RemSpaceFromStr(@Categoria), Descricao = dbo.fn_RemSpaceFromStr(@Descricao), Ativo = @Ativo, DtAlteracao = @DtAlteracao where Id = @Id";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pCategoria.id;
@@ -117,15 +117,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pCategoria.ativo;
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Categoria alterada com sucesso!";
                 }
                 catch (SqlException ex)
                 {
                     if (ex.Number == 2627 || ex.Number == 2601)
                     {
-                        return "Categoria já existente";
+                        return "Categoria já existente!";
                     }
-                    return ex.Message;
+                    return "Erro ao alterar categoria!";
                 }
                 finally 
                 { 
@@ -146,11 +146,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pId;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Categoria deletada com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    return ex.Message;
+                    if (ex.Number == 547)
+                    {
+                        return "Cateogria está vinculada a outros registros!";
+                    }
+                    return "Erro ao deletar categoria!";
                 }
                 finally
                 {

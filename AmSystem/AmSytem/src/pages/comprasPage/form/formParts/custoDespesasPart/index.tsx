@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/text/text.tsx";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ICompra } from "@/interfaces/compra.interfaces";
-import { ICondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
+import { ICondicaoPagamento, initialCondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
 import { CompraFormData } from "@/pages/comprasPage/form/schema";
 import { CondicoesPagamentosPage } from "@/pages/condicoesPagamentosPage";
 import { Search } from "lucide-react";
@@ -29,22 +29,33 @@ interface custosDespesasPartProps {
   errors: FieldErrors<CompraFormData>;
   disabled?: boolean;
   compra: ICompra;
+  action: string;
 }
 
-function CustosDespesasPart({ control, setValue, getValue, watch, errors, disabled, compra }: custosDespesasPartProps) {
+function CustosDespesasPart({
+  control,
+  setValue,
+  getValue,
+  watch,
+  errors,
+  disabled,
+  compra,
+  action,
+}: custosDespesasPartProps) {
   useEffect(() => {
-    setValue(
-      "totalCusto",
-      String(
-        formatMoney(watch("seguro") as string) +
-          formatMoney(watch("outrasDesp") as string) +
-          formatMoney(watch("frete") as string),
-      ),
-    );
-    setValue(
-      "totalCompra",
-      formatCurrency(watch("totalCusto") as string) + formatCurrency(watch("totalProdutos") as string),
-    );
+    if (action !== "View") {
+      console.log(Number(watch("seguro")));
+      setValue(
+        "totalCusto",
+        Number(formatMoney(watch("seguro"))) +
+          Number(formatMoney(watch("outrasDesp"))) +
+          Number(formatMoney(watch("frete"))),
+      );
+      setValue("totalNota", Number(watch("totalCusto")) + Number(watch("totalProdutos")));
+      setValue("idCondicaoPagamento", 0);
+      setValue("condicaoPagamento", initialCondicaoPagamento);
+      setValue("contasPagar", []);
+    }
   }, [watch("seguro"), watch("outrasDesp"), watch("frete")]);
   return (
     <div className="grid grid-cols-10 grid-rows-2 gap-4">
@@ -66,7 +77,7 @@ function CustosDespesasPart({ control, setValue, getValue, watch, errors, disabl
                     id="r2"
                     onClick={() => {
                       setValue("tpFrete", "FOB");
-                      setValue("frete", "0");
+                      setValue("frete", 0);
                     }}
                   />
                   <span>FOB</span>
@@ -83,7 +94,8 @@ function CustosDespesasPart({ control, setValue, getValue, watch, errors, disabl
         labelName="Valor Frete"
         nameValor="frete"
         errorMessage={errors.frete?.message}
-        disabled={watch("tpFrete") === "FOB" ? true : false}
+        disabled={watch("tpFrete") === "FOB" || disabled === true ? true : false}
+        className="col-span-2 row-start-2 row-end-2"
       />
 
       <InputMoney
@@ -93,6 +105,7 @@ function CustosDespesasPart({ control, setValue, getValue, watch, errors, disabl
         nameValor="seguro"
         errorMessage={errors.seguro?.message}
         disabled={disabled}
+        className="col-span-2 row-start-2 row-end-2"
       />
 
       <InputMoney
@@ -102,6 +115,7 @@ function CustosDespesasPart({ control, setValue, getValue, watch, errors, disabl
         nameValor="outrasDesp"
         errorMessage={errors.outrasDesp?.message}
         disabled={disabled}
+        className="col-span-2 row-start-2 row-end-2"
       />
 
       <InputMoney
@@ -111,15 +125,17 @@ function CustosDespesasPart({ control, setValue, getValue, watch, errors, disabl
         nameValor="totalCusto"
         errorMessage={errors.totalCusto?.message}
         disabled={true}
+        className="col-span-2 row-start-2 row-end-2"
       />
 
       <InputMoney
         control={control}
         watch={watch}
         labelName="Total Compra"
-        nameValor="totalCompra"
-        errorMessage={errors.totalCompra?.message}
+        nameValor="totalNota"
+        errorMessage={errors.totalNota?.message}
         disabled={true}
+        className="col-span-2 row-start-2 row-end-2"
       />
     </div>
   );

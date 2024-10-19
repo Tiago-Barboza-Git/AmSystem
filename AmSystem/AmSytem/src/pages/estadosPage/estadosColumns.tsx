@@ -7,9 +7,10 @@ import { IEstado } from "@/interfaces/estado.interfaces";
 interface estadosColumnsProps {
   onEdit: (estado: IEstado) => void;
   onDelete: (estado: IEstado) => void;
+  onView: (estado: IEstado) => void;
 }
 
-export const getEstadosColumns = ({ onEdit, onDelete }: estadosColumnsProps): ColumnDef<IEstado>[] => [
+export const getEstadosColumns = ({ onEdit, onDelete, onView }: estadosColumnsProps): ColumnDef<IEstado>[] => [
   {
     accessorKey: "id",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Cód. " />,
@@ -54,6 +55,6 @@ export const getEstadosColumns = ({ onEdit, onDelete }: estadosColumnsProps): Co
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />,
+    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} onView={onView} />,
   },
 ];

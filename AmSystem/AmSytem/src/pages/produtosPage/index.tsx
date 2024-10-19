@@ -47,6 +47,12 @@ export function ProdutosPage({ setProduto }: produtosPageProps) {
     setOpen(true);
   }, []);
 
+  const onView = useCallback((produto: IProduto) => {
+    setAction("View");
+    setSelectedProduto(produto);
+    setOpen(true);
+  }, []);
+
   const produtosQuery = GetProdutos(ativos);
   const produtos = produtosQuery.data || []; // Ensure paises is an array
 
@@ -80,7 +86,7 @@ export function ProdutosPage({ setProduto }: produtosPageProps) {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getProdutosColumns({ onEdit, onDelete }), [])}
+          columns={useMemo(() => getProdutosColumns({ onEdit, onDelete, onView }), [])}
           data={produtos}
           onAdd={onAdd}
           onGet={onGet}

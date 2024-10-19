@@ -3,7 +3,7 @@ import {
   IPostCondicaoPagamento,
   IPutCondicaoPagamento,
 } from "@/interfaces/condicaoPagamento.interfaces";
-import { IContaPagar, IPostContaPagar, IPutContaPagar } from "@/interfaces/contasPagar";
+import { IContaPagar, IPutContaPagar } from "@/interfaces/contasPagar";
 import axios from "axios";
 
 const BASE_URL = "https://localhost:7248/";
@@ -15,4 +15,10 @@ export const GetContasPagarRequest = (Ativos: boolean) => {
 
 export const PutContaPagarRequest = (ContaPagar: IPutContaPagar) => {
   return axiosInstance.put<IPutContaPagar>("PutContaPagar", ContaPagar).then((response) => response.data);
+};
+
+export const PutCondicaoPagamentoRequest = (CondicaoPagamento: IPutCondicaoPagamento) => {
+  return axiosInstance
+    .put<IPutCondicaoPagamento>("PutCondicaoPagamento", CondicaoPagamento)
+    .then((response) => response.data);
 };

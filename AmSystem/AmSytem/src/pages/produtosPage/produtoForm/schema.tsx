@@ -1,4 +1,4 @@
-import { formatDate } from "@/functions/functions";
+import { formatDate, formatMoney } from "@/functions/functions";
 import { ICategoria } from "@/interfaces/categoria.interfaces";
 import { IEstado } from "@/interfaces/estado.interfaces";
 import { IFornecedor } from "@/interfaces/fornecedor.interfaces";
@@ -9,17 +9,16 @@ export const ProdutoFormSchema = z
   .object({
     id: z.number(),
     produto: z
-      .string()
-      .min(1, "Esse campo é obrigatório")
-      .regex(
-        /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/,
-        "É permitido apenas letras, acentos e espaços"
-      ),
-    quantidade: z.number().optional(),
-    precoVenda: z.union([z.string(), z.number()]).optional(),
-    precoUltCompra: z.union([z.string(), z.number()]).optional(),
+      .string({ message: "Obrigatório" })
+      .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/, "É permitido apenas letras, acentos e espaços"),
+    quantidade: z.number(),
+    precoVenda: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
+    precoUltCompra: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
     dtUltCompra: z.custom<Date>().optional(),
-    custoMedio: z.union([z.string(), z.number()]).optional(),
+    custoMedio: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
+    desconto: z
+      .preprocess((val) => Number(formatMoney(String(val))), z.number())
+      .refine((value) => !Number.isNaN(value), "Deve ser 0 ou maior"),
     observacao: z.string().optional(),
     idUnidadeMedida: z.number(),
     idCategoria: z.number(),
@@ -41,6 +40,8 @@ export const defaultValues = {
   precoVenda: 0,
   precoUltCompra: 0,
   custoMedio: 0,
+  desconto: 0,
+  observacao: "",
   ativo: true,
   dtCadastro: new Date(),
   dtAlteracao: new Date(),

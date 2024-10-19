@@ -1,27 +1,12 @@
 import FormFieldInput from "@/components/form/input";
 import InputCalendar from "@/components/form/inputCalendar";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
-import {
-  FormaPagamentoFormData,
-  FormaPagamentoFormSchema,
-  defaultValues,
-} from "./schema";
+import { FormaPagamentoFormData, FormaPagamentoFormSchema, defaultValues } from "./schema";
 import { useEffect, useState } from "react";
 import { IFormaPagamento } from "@/interfaces/formaPagamento.interfaces";
 import { PostFormaPagamento, PutFormaPagamento } from "../services/queries";
@@ -39,12 +24,8 @@ interface formaPagamentoFormProps {
   formaPagamento: IFormaPagamento | null;
 }
 
-const FormaPagamentoForm = ({
-  action,
-  isOpen,
-  onOpenChange,
-  formaPagamento,
-}: formaPagamentoFormProps) => {
+const FormaPagamentoForm = ({ action, isOpen, onOpenChange, formaPagamento }: formaPagamentoFormProps) => {
+  const [disabled, setDisabled] = useState<boolean>();
   const putFormaPagamento = PutFormaPagamento(onOpenChange);
   const postFormaPagamento = PostFormaPagamento(onOpenChange);
   const form = useForm<FormaPagamentoFormData>({
@@ -54,11 +35,13 @@ const FormaPagamentoForm = ({
   });
 
   useEffect(() => {
-    if (action === "Edit") {
+    if (action === "Edit" || action === "View") {
+      action === "View" ? setDisabled(true) : setDisabled(false);
       form.reset({
         ...formaPagamento,
       });
     } else {
+      setDisabled(false);
       form.reset(defaultValues);
     }
   }, [isOpen]);
@@ -80,16 +63,11 @@ const FormaPagamentoForm = ({
       >
         <DialogHeader>
           <DialogTitle>
-            {formaPagamento
-              ? "Atualizar a forma de pagamento"
-              : "Adicionar nova forma de pagamento"}
+            {formaPagamento ? "Atualizar a forma de pagamento" : "Adicionar nova forma de pagamento"}
           </DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            className="space-y-4 flex flex-col"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form className="space-y-4 flex flex-col" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-4">
               <div className="flex flex-row justify-between col-span-9">
                 <FormFieldInput
@@ -110,10 +88,7 @@ const FormaPagamentoForm = ({
                     <FormItem className="flex flex-col gap-2 items-center justify-center">
                       <FormLabel>Ativo</FormLabel>
                       <FormControl>
-                        <Switch
-                          defaultChecked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} disabled={disabled} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -124,6 +99,7 @@ const FormaPagamentoForm = ({
                 label="Forma de Pagamento"
                 name="formaPagamento"
                 control={form.control}
+                disabled={disabled}
                 errorMessage={form.formState.errors.formaPagamento?.message}
                 className="col-span-4"
               />

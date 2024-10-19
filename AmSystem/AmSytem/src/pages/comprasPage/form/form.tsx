@@ -1,6 +1,6 @@
 import FormFieldInput from "@/components/form/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ICompra } from "@/interfaces/compra.interfaces";
+import { ICompra, IPostCompra } from "@/interfaces/compra.interfaces";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 import { CompraFormData, CompraFormSchema, defaultValues } from "./schema";
@@ -41,7 +41,7 @@ export const CompraForm = ({ action, isOpen, onOpenChange, compra }: comprasForm
   const [produtosCompraData, setProdutosCompraData] = useState<IProdutoCompra[]>(compra?.produtos || []);
 
   const form = useForm<CompraFormData>({
-    mode: "onTouched",
+    mode: "onSubmit",
     resolver: zodResolver(CompraFormSchema),
     defaultValues: defaultValues,
   });
@@ -52,9 +52,22 @@ export const CompraForm = ({ action, isOpen, onOpenChange, compra }: comprasForm
 
   const handleNexstStep = async () => {
     if (activeStep === 0) {
-      if ((await form.trigger(["nrNota", "nrModelo", "nrSerie", "idFornecedor", "dtEmissao", "dtChegada"])) === false)
-        toast.error("Os campos apresetandos possuem erros.");
-      else {
+      if (
+        (await form.trigger([
+          "nrNota",
+          "nrModelo",
+          "nrSerie",
+          "idFornecedor",
+          "fornecedor.pessoaRazaoSocial",
+          "dtEmissao",
+        ])) === false
+      )
+        return;
+      else if (
+        new Date(form.watch("dtChegada")).setHours(0, 0, 0, 0) < new Date(form.watch("dtEmissao")).setHours(0, 0, 0, 0)
+      ) {
+        form.setError("dtChegada", { message: "Deve ser maior ou igual a Dt. Emissão" });
+      } else {
         getVerificaExistenciaCompra.mutate(
           {
             nrNota: form.watch("nrNota"),
@@ -64,8 +77,9 @@ export const CompraForm = ({ action, isOpen, onOpenChange, compra }: comprasForm
           },
           {
             onSuccess: (data) => {
-              if (!data) setActiveStep(activeStep + 1);
-              else toast.error("Já existe uma compra registrada com esses dados!");
+              if (!data) {
+                setActiveStep(activeStep + 1);
+              } else toast.error("Já existe uma compra registrada com esses dados!");
             },
           },
         );
@@ -76,16 +90,19 @@ export const CompraForm = ({ action, isOpen, onOpenChange, compra }: comprasForm
           "totalProdutos",
           form
             .getValues("produtos")
-            .reduce((sum, item) => (sum + formatMoney(item.precoTotal as string)) as number, 0) as number,
+            .reduce((sum, item) => (sum + formatMoney(String(item.precoTotal))) as number, 0) as number,
         );
+        form.clearErrors("condicaoPagamento");
+        form.clearErrors("idCondicaoPagamento");
         setActiveStep(activeStep + 1);
       } else {
         toast.error("É necessário que a compra tenha ao menos um produto!!!");
       }
     } else if (activeStep === 2) {
-      // form.clearErrors(["condicaoPagamento.condicaoPagamento", "idCondicaoPagamento"]);
       setActiveStep(activeStep + 1);
     } else if (activeStep === 3) {
+      if ((await form.trigger(["idCondicaoPagamento", "condicaoPagamento.condicaoPagamento"])) === false) return;
+
       if (form.watch("idCondicaoPagamento") !== 0) {
         setDisabled(true);
         setActiveStep(activeStep + 1);
@@ -111,17 +128,18 @@ export const CompraForm = ({ action, isOpen, onOpenChange, compra }: comprasForm
     } else if (action === "Add") {
       setActiveStep(0);
       setDisabled(false);
-      form.reset(defaultValues);
+      form.reset({ ...defaultValues });
     } else if (action === "View") {
       form.reset({ ...compra });
       setDisabled(true);
     }
-  }, [action]);
+  }, [isOpen]);
 
-  const onSubmit = (data: ICompra) => {
+  const onSubmit = (data: IPostCompra) => {
     if (activeStep === 4) {
-      data.outrasDesp = formatCurrency(data.outrasDesp as string);
-      data.seguro = formatCurrency(data.seguro as string);
+      data.outrasDesp = formatMoney(data.outrasDesp);
+      data.seguro = formatMoney(data.seguro);
+      data.frete = formatMoney(data.frete);
       postCompra.mutate(data);
     }
   };
@@ -133,9 +151,10 @@ export const CompraForm = ({ action, isOpen, onOpenChange, compra }: comprasForm
         onInteractOutside={(e) => {
           e.preventDefault();
         }}
+        aria-describedby={undefined}
       >
         <DialogTitle className="text-center">
-          <H1>{compra ? "Visualizar compra" : "Adicionar nova compra"}</H1>
+          <span>{compra ? "Visualizar compra" : "Adicionar nova compra"}</span>
         </DialogTitle>
         <DialogHeader className={`${action === "View" ? "hidden" : "visible"}`}>
           <StepperCustom
@@ -165,6 +184,8 @@ export const CompraForm = ({ action, isOpen, onOpenChange, compra }: comprasForm
                 watch={form.watch}
                 disabled={disabled}
                 compra={compra as ICompra}
+                action={action}
+                activeStep={activeStep}
               />
             </div>
             <div
@@ -177,6 +198,7 @@ export const CompraForm = ({ action, isOpen, onOpenChange, compra }: comprasForm
                 setValue={form.setValue}
                 watch={form.watch}
                 actionPai={action}
+                activedStep={activeStep}
               />
             </div>
             <div
@@ -191,6 +213,7 @@ export const CompraForm = ({ action, isOpen, onOpenChange, compra }: comprasForm
                 watch={form.watch}
                 disabled={disabled}
                 compra={compra as ICompra}
+                action={action}
               />
             </div>
             <div
@@ -206,16 +229,8 @@ export const CompraForm = ({ action, isOpen, onOpenChange, compra }: comprasForm
                 action={action}
                 disabled={disabled}
                 compra={compra as ICompra}
+                activeStep={activeStep}
               />
-            </div>
-            <div className="flex flex-row justify-end gap-4 !mt-5">
-              <Button
-                className={`${activeStep === 4 && action !== "View" ? "visible" : "hidden"}`}
-                type="button"
-                onClick={() => onSubmit}
-              >
-                <span>Salvar</span>
-              </Button>
             </div>
             <div className="flex flex-row gap-4 justify-end">
               <Button
@@ -231,6 +246,9 @@ export const CompraForm = ({ action, isOpen, onOpenChange, compra }: comprasForm
                 className={`${activeStep === 4 || action === "View" ? "hidden" : "visible"} w-40`}
               >
                 <span>Próximo</span>
+              </Button>
+              <Button className={`${activeStep === 4 && action !== "View" ? "visible" : "hidden"}`} type="submit">
+                <span>Salvar</span>
               </Button>
             </div>
           </form>

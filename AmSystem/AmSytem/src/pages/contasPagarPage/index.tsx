@@ -9,21 +9,23 @@ import { useQueryClient } from "react-query";
 
 function ContasPagarPage() {
   const queryClient = useQueryClient();
+
   const [open, setOpen] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
-  const [ativos, setAtivos] = useState<boolean>(true);
+  const [canceladas, setCanceladas] = useState<boolean>(false);
+  const [openPagamento, setOpenPagamento] = useState<boolean>(false);
   const [selectedContaPagar, setSelectedContaPagar] = useState<IContaPagar | null>(null);
 
   const onGet = useCallback(async () => {
     try {
-      setAtivos(!ativos);
+      setCanceladas(!canceladas);
       await queryClient.invalidateQueries("GetContasPagar"); // Invalidate the cache for "paises" query
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }, [ativos, queryClient]);
+  }, [canceladas, queryClient]);
 
-  const onEdit = useCallback((contaPagar: IContaPagar) => {
+  const onPagar = useCallback((contaPagar: IContaPagar) => {
     setAction("Edit");
     setSelectedContaPagar(contaPagar);
     setOpen(true);
@@ -35,7 +37,7 @@ function ContasPagarPage() {
     setOpen(true);
   }, []);
 
-  const contasPagarQuery = GetContasPagar(ativos);
+  const contasPagarQuery = GetContasPagar(canceladas);
   const contasPagar = contasPagarQuery.data || []; // Ensure paises is an array
 
   return (
@@ -54,24 +56,16 @@ function ContasPagarPage() {
                 if (!value) setSelectedContaPagar(null);
               }}
             />
-            {/* <DeleteDialog
-              registerId={selectedCondicaoPagamento?.id as number}
-              isOpen={openDeleteDialog}
-              deleteFunction={deleteCondicao}
-              onOpenChange={(value) => {
-                setOpenDeleteDialog(value);
-                if (!value) setSelectedCondicaoPagamento(null);
-              }}
-            /> */}
           </div>
         </div>
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getContaPagarColumns({ onEdit, onView }), [])}
+          columns={useMemo(() => getContaPagarColumns({ onPagar, onView }), [])}
           data={contasPagar}
           onGet={onGet}
-          ativos={ativos}
+          ativos={canceladas}
+          labelAtivos="Canceladas"
         />
       </CardContent>
     </Card>

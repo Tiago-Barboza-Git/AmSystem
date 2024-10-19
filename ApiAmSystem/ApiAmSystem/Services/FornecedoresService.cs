@@ -68,20 +68,20 @@ namespace ApiAmSystem.Services
                             id = reader.GetInt32("Id"),
                             tpPessoa = Convert.ToChar(reader.GetString("TpFornecedor")),
                             pessoaRazaoSocial = reader.GetString("FornecedorRazaoSocial"),
-                            apelidoNomeFantasia = reader.IsDBNull("ApelidoNomeFantasia") ? null : reader.GetString("ApelidoNomeFantasia"),
+                            apelidoNomeFantasia = reader.IsDBNull("ApelidoNomeFantasia") ? "" : reader.GetString("ApelidoNomeFantasia"),
                             sexo = reader.IsDBNull("Sexo") ? null : Convert.ToChar(reader.GetString("Sexo")),
-                            representante = reader.IsDBNull("Representante") ? null : reader.GetString("Representante"),
-                            celularRepresentante = reader.IsDBNull("CelularRepresentante") ? null : reader.GetString("CelularRepresentante"),
-                            telefone = reader.IsDBNull("Telefone") ? null : reader.GetString("Telefone"),
+                            representante = reader.IsDBNull("Representante") ? "" : reader.GetString("Representante"),
+                            celularRepresentante = reader.IsDBNull("CelularRepresentante") ? "" : reader.GetString("CelularRepresentante"),
+                            telefone = reader.IsDBNull("Telefone") ? "" : reader.GetString("Telefone"),
                             celular = reader.GetString("Celular"),
                             email = reader.GetString("Email"),
                             cep = reader.GetString("Cep"),
                             logradouro = reader.GetString("Logradouro"),
                             numero = reader.GetInt32("Numero"),
-                            complemento = reader.IsDBNull("Complemento") ? null : reader.GetString("Complemento"),
+                            complemento = reader.IsDBNull("Complemento") ? "" : reader.GetString("Complemento"),
                             bairro = reader.GetString("Bairro"),
-                            cpfCnpj = reader.GetString("CpfCnpj"),
-                            ieRg = reader.IsDBNull("IeRg") ? null : reader.GetString("IeRg"),
+                            cpfCnpj = reader.IsDBNull("CpfCnpj") ? "" : reader.GetString("CpfCnpj"),
+                            ieRg = reader.IsDBNull("IeRg") ? "" : reader.GetString("IeRg"),
                             ativo = reader.GetBoolean("Ativo"),
                             dtNascimento = reader.IsDBNull("DtNascimento") ? null : reader.GetDateTime("DtNascimento"),
                             dtCadastro = reader.GetDateTime("DtCadastro"),
@@ -171,20 +171,20 @@ namespace ApiAmSystem.Services
                                 id = reader.GetInt32("Id"),
                                 tpPessoa = Convert.ToChar(reader.GetString("TpFornecedor")),
                                 pessoaRazaoSocial = reader.GetString("FornecedorRazaoSocial"),
-                                apelidoNomeFantasia = reader.IsDBNull("ApelidoNomeFantasia") ? null : reader.GetString("ApelidoNomeFantasia"),
-                                sexo = reader.IsDBNull("Sexo") ? null : Convert.ToChar(reader.GetString("Sexo")),
-                                representante = reader.IsDBNull("Representante") ? null : reader.GetString("Representante"),
-                                celularRepresentante = reader.IsDBNull("CelularRepresentante") ? null : reader.GetString("CelularRepresentante"),
-                                telefone = reader.IsDBNull("Telefone") ? null : reader.GetString("Telefone"),
+                                apelidoNomeFantasia = reader.IsDBNull("ApelidoNomeFantasia") ? "" : reader.GetString("ApelidoNomeFantasia"),
+                                sexo = Convert.ToChar(reader.GetString("Sexo")),
+                                representante = reader.IsDBNull("Representante") ? "" : reader.GetString("Representante"),
+                                celularRepresentante = reader.IsDBNull("CelularRepresentante") ? "" : reader.GetString("CelularRepresentante"),
+                                telefone = reader.IsDBNull("Telefone") ? "" : reader.GetString("Telefone"),
                                 celular = reader.GetString("Celular"),
                                 email = reader.GetString("Email"),
                                 cep = reader.GetString("Cep"),
                                 logradouro = reader.GetString("Logradouro"),
                                 numero = reader.GetInt32("Numero"),
-                                complemento = reader.IsDBNull("Complemento") ? null : reader.GetString("Complemento"),
+                                complemento = reader.IsDBNull("Complemento") ? "" : reader.GetString("Complemento"),
                                 bairro = reader.GetString("Bairro"),
-                                cpfCnpj = reader.GetString("CpfCnpj"),
-                                ieRg = reader.IsDBNull("IeRg") ? null : reader.GetString("IeRg"),
+                                cpfCnpj = reader.IsDBNull("CpfCnpj") ? "" : reader.GetString("CpfCnpj"),
+                                ieRg = reader.IsDBNull("IeRg") ? "" : reader.GetString("IeRg"),
                                 ativo = reader.GetBoolean("Ativo"),
                                 dtNascimento = reader.IsDBNull("DtNascimento") ? null : reader.GetDateTime("DtNascimento"),
                                 dtCadastro = reader.GetDateTime("DtCadastro"),
@@ -239,8 +239,8 @@ namespace ApiAmSystem.Services
                     string query = @"INSERT INTO TbFornecedores
                                         (TpFornecedor,FornecedorRazaoSocial, ApelidoNomeFantasia, Sexo, Representante, CelularRepresentante, Telefone, Celular, Email, Cep, Logradouro, 
                                          Numero, Complemento, Bairro, CpfCnpj, IeRg, Ativo, DtNascimento, DtCadastro, DtAlteracao, IdCidade)
-                                    VALUES(@TpFornecedor, @FornecedorRazaoSocial, @ApelidoNomeFantasia, @Sexo, @Representante, @CelularRepresentante, @Telefone, @Celular, @Email, @Cep, @Logradouro, 
-                                         @Numero, @Complemento, @Bairro, @CpfCnpj, @IeRg, @Ativo, @DtNascimento, @DtCadastro, @DtAlteracao, @IdCidade)";
+                                    VALUES(@TpFornecedor, dbo.fn_RemSpaceFromStr(@FornecedorRazaoSocial), dbo.fn_RemSpaceFromStr(@ApelidoNomeFantasia), @Sexo, dbo.fn_RemSpaceFromStr(@Representante), dbo.fn_RemSpaceFromStr(@CelularRepresentante), dbo.fn_RemSpaceFromStr(@Telefone), dbo.fn_RemSpaceFromStr(@Celular), dbo.fn_RemSpaceFromStr(@Email), dbo.fn_RemSpaceFromStr(@Cep), dbo.fn_RemSpaceFromStr(@Logradouro), 
+                                         @Numero, dbo.fn_RemSpaceFromStr(@Complemento), dbo.fn_RemSpaceFromStr(@Bairro), @CpfCnpj, @IeRg, @Ativo, @DtNascimento, @DtCadastro, @DtAlteracao, @IdCidade)";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@TpFornecedor", SqlDbType.Char).Value = pFornecedor.tpPessoa;
@@ -257,7 +257,7 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@Numero", SqlDbType.Int).Value = pFornecedor.numero;
                     cmd.Parameters.Add("@Complemento", SqlDbType.VarChar).Value = pFornecedor.complemento == null ? string.Empty : pFornecedor.complemento;
                     cmd.Parameters.Add("@Bairro", SqlDbType.VarChar).Value = pFornecedor.bairro;
-                    cmd.Parameters.Add("@CpfCnpj", SqlDbType.VarChar).Value = pFornecedor.cpfCnpj;
+                    cmd.Parameters.Add("@CpfCnpj", SqlDbType.VarChar).Value = pFornecedor.cpfCnpj.Length == 0 ? DBNull.Value : pFornecedor.cpfCnpj;
                     cmd.Parameters.Add("@IeRg", SqlDbType.VarChar).Value = pFornecedor.ieRg == null ? string.Empty : pFornecedor.ieRg;
                     cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pFornecedor.ativo;
                     cmd.Parameters.Add("@DtNascimento", SqlDbType.DateTime).Value = pFornecedor.dtNascimento == null ? DBNull.Value : pFornecedor.dtNascimento;
@@ -290,9 +290,9 @@ namespace ApiAmSystem.Services
                 try
                 {
                     sqlConnection.Open();
-                    string query = @" UPDATE TbFornecedores SET TpFornecedor = @TpFornecedor, FornecedorRazaoSocial = @FornecedorRazaoSocial, ApelidoNomeFantasia = @ApelidoNomeFantasia, 
-                                        Sexo = @Sexo, Representante = @Representante, CelularRepresentante = @CelularRepresentante, Telefone = @Telefone, Celular = @Celular, Email = @Email, Cep = @Cep, Logradouro = @Logradouro, Numero = @Numero, 
-                                        Complemento = @Complemento, Bairro = @Bairro, CpfCnpj = @CpfCnpj, IeRg = @IeRg, Ativo = @Ativo, DtNascimento = @DtNascimento,
+                    string query = @" UPDATE TbFornecedores SET TpFornecedor = @TpFornecedor, FornecedorRazaoSocial = dbo.fn_RemSpaceFromStr(@FornecedorRazaoSocial), ApelidoNomeFantasia = dbo.fn_RemSpaceFromStr(@ApelidoNomeFantasia), 
+                                        Sexo = @Sexo, Representante = dbo.fn_RemSpaceFromStr(@Representante), CelularRepresentante = dbo.fn_RemSpaceFromStr(@CelularRepresentante), Telefone = dbo.fn_RemSpaceFromStr(@Telefone), Celular = dbo.fn_RemSpaceFromStr(@Celular), Email = dbo.fn_RemSpaceFromStr(@Email), Cep = dbo.fn_RemSpaceFromStr(@Cep), Logradouro = dbo.fn_RemSpaceFromStr(@Logradouro), Numero = @Numero, 
+                                        Complemento = dbo.fn_RemSpaceFromStr(@Complemento), Bairro = dbo.fn_RemSpaceFromStr(@Bairro), CpfCnpj = @CpfCnpj, IeRg = @IeRg, Ativo = @Ativo, DtNascimento = @DtNascimento,
                                         DtAlteracao = @DtAlteracao, IdCidade = @IdCidade WHERE Id = @Id";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
@@ -311,7 +311,7 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@Numero", SqlDbType.Int).Value = pFornecedor.numero;
                     cmd.Parameters.Add("@Complemento", SqlDbType.VarChar).Value = pFornecedor.complemento == null ? string.Empty : pFornecedor.complemento;
                     cmd.Parameters.Add("@Bairro", SqlDbType.VarChar).Value = pFornecedor.bairro;
-                    cmd.Parameters.Add("@CpfCnpj", SqlDbType.VarChar).Value = pFornecedor.cpfCnpj;
+                    cmd.Parameters.Add("@CpfCnpj", SqlDbType.VarChar).Value = pFornecedor.cpfCnpj.Length == 0 ? DBNull.Value : pFornecedor.cpfCnpj;
                     cmd.Parameters.Add("@IeRg", SqlDbType.VarChar).Value = pFornecedor.ieRg == null ? string.Empty : pFornecedor.ieRg;
                     cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pFornecedor.ativo;
                     cmd.Parameters.Add("@DtNascimento", SqlDbType.DateTime).Value = pFornecedor.dtNascimento == null ? DBNull.Value : pFornecedor.dtNascimento;

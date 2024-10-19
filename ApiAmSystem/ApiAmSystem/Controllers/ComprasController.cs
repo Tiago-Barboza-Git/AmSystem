@@ -24,9 +24,9 @@ namespace ApiAmSystem.Controllers
 
         [HttpGet]
         [Route("GetCompras")]
-        public IEnumerable<CompraModel> GetCompras()
+        public IEnumerable<CompraModel> GetCompras(bool pCanceladas)
         {
-            IEnumerable<CompraModel> result = compraService.GetCompras();
+            IEnumerable<CompraModel> result = compraService.GetCompras(pCanceladas);
             return result;
         }
 
@@ -35,7 +35,7 @@ namespace ApiAmSystem.Controllers
         public string PostCompra(CompraPostRequest compra)
         {
             string result = compraService.PostCompra(compra);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return "Compra adicionada com sucesso";
             else
                 throw new Exception("Erro ao adicionar compra");
@@ -43,10 +43,35 @@ namespace ApiAmSystem.Controllers
 
         [HttpGet]
         [Route("GetVerificaExistenciaCompra")]
-        public bool VerificaExistenciaCompra(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor)
+        public IActionResult VerificaExistenciaCompra(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor)
         {
-            bool result = compraService.VerificaExistenciaCompra(pNrNota, pNrModelo, pNrSerie, pIdFornecedor);
-            return result;
+            try
+            {
+                bool result = compraService.VerificaExistenciaCompra(pNrNota, pNrModelo, pNrSerie, pIdFornecedor);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao verificar a existência da compra");
+            }
+        }
+
+        [HttpPut]
+        [Route("PutCancelarCompra")]
+        public IActionResult PutCancelarCompra(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor)
+        {
+            try
+            {
+                string result = compraService.PutCancelarCompra(pNrNota, pNrModelo, pNrSerie, pIdFornecedor);
+                if (result.Contains("sucesso"))
+                    return Ok("Compra cancelada com sucesso");
+                else
+                    return BadRequest("Compra já possui parcelas pagas, com isso não é possível realizar o cancelamento!");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao cancelar compra: {ex.Message}");
+            }
         }
 
     }

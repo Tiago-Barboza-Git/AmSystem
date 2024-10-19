@@ -4,13 +4,8 @@ import { DeleteCidade, GetCidades } from "./services/queries";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueryClient, UseQueryResult } from "react-query";
 // import PaisForm from "./paisForm/index.tsx";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
-import DeleteDialog from "@/components/dialog/deleteDialog/index.tsx";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
+import DeleteDialog from "@/components/dialog/deleteDialog";
 import { ICidade } from "@/interfaces/cidade.interfaces";
 import CidadeForm from "./cidadeForm";
 
@@ -53,15 +48,21 @@ export function CidadesPage({ setCidade }: CidadesPageProps) {
     setOpen(true);
   }, []);
 
+  const onView = useCallback((cidade: ICidade) => {
+    setAction("View");
+    setSelectedCidade(cidade);
+    setOpen(true);
+  }, []);
+
   const cidadesQuery = GetCidades(ativos);
   const cidades = cidadesQuery.data || []; // Ensure paises is an array
 
   return (
-    <Card className={`h-full`}>
+    <Card className={`h-full !min-w-4xl`}>
       <CardHeader>
         <CardTitle>Cidades</CardTitle>
         <div className="flex justify-between bg-red-400">
-          <div className="bg-red-500 border-red-100">
+          <div className="bg-red-500 border-red-100 !min-w-max">
             <CidadeForm
               action={action}
               isOpen={open}
@@ -85,7 +86,7 @@ export function CidadesPage({ setCidade }: CidadesPageProps) {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getCidadesColumns({ onEdit, onDelete }), [])}
+          columns={useMemo(() => getCidadesColumns({ onEdit, onDelete, onView }), [])}
           data={cidades}
           onAdd={onAdd}
           onGet={onGet}

@@ -8,98 +8,80 @@ export const ClienteFormSchema = z
     id: z.number(),
     tpPessoa: z.string(),
     pessoaRazaoSocial: z
-      .string({ message: "Esse campo é obrigatório" })
-      .nonempty("Esse campo é obrigatório")
-      .regex(
-        /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/,
-        "É permitido apenas letras, acentos e espaços"
-      ),
+      .string()
+      .min(1, "Obrigatório")
+      .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/, "É permitido apenas letras, acentos e espaços"),
     apelidoNomeFantasia: z
       .string()
-      .regex(
-        /^([A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]*)$/,
-        "É permitido apenas letras, acentos e espaços"
-      )
+      .regex(/^([A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]*)$/, "É permitido apenas letras, acentos e espaços")
       .optional(),
-    sexo: z.string({ message: "Esse campo é obrigatório" }).optional(),
+    sexo: z.string().optional(),
     representante: z
       .string()
-      .regex(
-        /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]*$/,
-        "É permitido apenas letras, acentos e espaços"
-      )
+      .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]*$/, "É permitido apenas letras, acentos e espaços")
       .optional(),
-
     celularRepresentante: z.string().optional(),
     telefone: z.string().optional(),
-    celular: z
-      .string({ message: "Esse campo é obrigatório" })
-      .min(1, "Esse campo é obrigatório"),
-    email: z
-      .string({ message: "Esse campo é obrigatório" })
-      .min(0, "Esse campo é obrigatório")
-      .email("Email inválido"),
-    cep: z.string({ message: "Esse campo é obrigatório" }).nonempty(),
-    logradouro: z.string({ message: "Esse campo é obrigatório" }).nonempty(),
-    numero: z
-      .number()
-      .refine((e) => e > 0, {
-        message: "Insira um número",
-      })
-      .refine((e) => typeof e === "number", {
-        message: "Esse campo só aceita números",
-      }),
+    celular: z.string().min(1, "Obrigatório"),
+    email: z.string().min(1, "Obrigatório").email("Email inválido"),
+    cep: z.string().min(1, "Obrigatório"),
+    logradouro: z.string().min(1, "Obrigatório"),
+    numero: z.number().refine((e) => e > 0, {
+      message: "Obrigatório",
+    }),
     complemento: z.string().optional(),
-    bairro: z.string({ message: "Esse campo é obrigatório" }).min(1),
-    cpfCnpj: z
-      .string({ message: "Esse campo é obrigatório" })
-      .min(1, "Esse campo é obrigatório"),
-    // .refine((value) => validarCPF(value) === true, {
-    //   message: "CPF inválido",
-    // }),
-
+    bairro: z.string().min(1, "Obrigatório"),
+    cpfCnpj: z.string().default(""),
     ieRg: z.string().optional(),
-    dtNascimento: z.custom<Date>().optional(),
+    dtNascimento: z.custom<Date>(),
     ativo: z.boolean(),
     idCidade: z
-      .number({ message: "Esse campo é obrigatório" })
-      .refine((value) => value !== 0, {
-        message: "Selecione uma cidade",
-      }),
+      .number()
+      .refine((value) => value !== 0, "Obrigatório")
+      .default(0),
     cidade: z.custom<ICidade>(),
     dtCadastro: z.custom<Date>(),
     dtAlteracao: z.custom<Date>(),
   })
   .superRefine((data, ctx) => {
-    if (
-      data.tpPessoa === "F" &&
-      (!data.sexo || (data.sexo !== "F" && data.sexo !== "M"))
-    ) {
+    if (data.tpPessoa === "F" && (!data.sexo || (data.sexo !== "F" && data.sexo !== "M"))) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Sexo é obrigatório",
+        message: "Obrigatório",
         path: ["sexo"],
       });
     }
 
     //Validação de CPF e CNPJ
-    if (data.tpPessoa === "F") {
-      if (!validarCPF(String(data.cpfCnpj))) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "CPF inválido",
-          path: ["cpfCnpj"],
-        });
-      }
-    } else {
-      if (!validarCNPJ(String(data.cpfCnpj))) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "CNPJ inválido",
-          path: ["cpfCnpj"],
-        });
-      } else {
-        data.cpfCnpj.replace(".", "").replace("/", "").replace("-", "");
+    if (data.cidade.cidade !== undefined) {
+      if (data.cidade.estado.pais.sigla.toUpperCase() === "BR") {
+        if (data.cpfCnpj.length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Obrigatório",
+            path: ["cpfCnpj"],
+          });
+        } else {
+          if (data.tpPessoa === "F") {
+            if (!validarCPF(String(data.cpfCnpj))) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "CPF inválido",
+                path: ["cpfCnpj"],
+              });
+            }
+          } else {
+            if (!validarCNPJ(String(data.cpfCnpj))) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "CNPJ inválido",
+                path: ["cpfCnpj"],
+              });
+            } else {
+              data.cpfCnpj.replace(".", "").replace("/", "").replace("-", "");
+            }
+          }
+        }
       }
     }
   });
@@ -107,8 +89,23 @@ export type ClienteFormData = z.infer<typeof ClienteFormSchema>;
 
 export const defaultValues = {
   id: 0,
-  ativo: true,
+  sexo: undefined,
+  pessoaRazaoSocial: "",
+  apelidoNomeFantasia: "",
+  representante: "",
+  celularRepresentante: "",
+  telefone: "",
+  celular: "",
+  email: "",
+  cep: "",
+  logradouro: "",
   numero: 0,
+  complemento: "",
+  bairro: "",
+  cpfCnpj: "",
+  ieRg: "",
+  idCidade: 0,
+  ativo: true,
   dtCadastro: new Date(),
   dtAlteracao: new Date(),
 };

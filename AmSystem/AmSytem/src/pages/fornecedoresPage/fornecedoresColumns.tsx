@@ -9,9 +9,14 @@ import { ColumnDef } from "@tanstack/react-table";
 interface fornecedoresColumnsProps {
   onEdit: (cliente: IFornecedor) => void;
   onDelete: (cliente: IFornecedor) => void;
+  onView: (cliente: IFornecedor) => void;
 }
 
-export const getFornecedoresColumns = ({ onEdit, onDelete }: fornecedoresColumnsProps): ColumnDef<IFornecedor>[] => [
+export const getFornecedoresColumns = ({
+  onEdit,
+  onDelete,
+  onView,
+}: fornecedoresColumnsProps): ColumnDef<IFornecedor>[] => [
   {
     accessorKey: "id",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Cód. " />,
@@ -73,7 +78,7 @@ export const getFornecedoresColumns = ({ onEdit, onDelete }: fornecedoresColumns
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />,
+    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} onView={onView} />,
   },
 ];
 

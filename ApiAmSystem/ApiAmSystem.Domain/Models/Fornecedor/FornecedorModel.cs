@@ -41,4 +41,10 @@ namespace ApiAmSystem.Domain.Models.Fornecedor
             set { this.CelularRepresentante = value; }
         }
     }
+
+    public class FornecedorRef
+    {
+        public int Id { get; set; }
+        public string PessoaRazaoSocial { get; set; }
+    }
 }

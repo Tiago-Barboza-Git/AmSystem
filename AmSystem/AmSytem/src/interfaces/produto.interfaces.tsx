@@ -5,18 +5,19 @@ import { IUnidadeMedida } from "./unidadeMedida.interfaces";
 export interface IProduto {
   id: number;
   produto: string;
-  quantidade?: number;
-  precoVenda?: number | string;
-  precoUltCompra?: number | string;
+  quantidade: number;
+  precoVenda: number;
+  precoUltCompra: number;
   dtUltCompra?: Date;
-  custoMedio?: number | string;
+  custoMedio: number;
+  desconto: number;
   observacao?: string;
   ativo: boolean;
   idUnidadeMedida: number;
   idCategoria: number;
   idFornecedor?: number;
-  dtCadastro?: Date;
-  dtAlteracao?: Date;
+  dtCadastro: Date;
+  dtAlteracao: Date;
   fornecedor?: IFornecedor;
   unidadeMedida: IUnidadeMedida;
   categoria: ICategoria;
@@ -24,11 +25,12 @@ export interface IProduto {
 
 export interface IPostProduto {
   produto: string;
-  quantidade?: number;
-  precoVenda?: string | number;
-  precoUltCompra?: string | number;
+  quantidade: number;
+  precoVenda: number;
+  precoUltCompra: number;
   dtUltCompra?: Date;
-  custoMedio?: string | number;
+  custoMedio: number;
+  desconto: number;
   observacao?: string;
   ativo: boolean;
   idFornecedor?: number;
@@ -39,11 +41,12 @@ export interface IPostProduto {
 export interface IPutProduto {
   id: number;
   produto: string;
-  quantidade?: number;
-  precoVenda?: string | number;
-  precoUltCompra?: string | number;
+  quantidade: number;
+  precoVenda: number;
+  precoUltCompra: number;
   dtUltCompra?: Date;
-  custoMedio?: string | number;
+  custoMedio: number;
+  desconto: number;
   observacao?: string;
   ativo: boolean;
   idFornecedor?: number | null;

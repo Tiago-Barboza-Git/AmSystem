@@ -1,14 +1,18 @@
 import DataTable from "@/components/datatable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DeleteCliente, GetClientes } from "./services/queries";
-import DeleteDialog from "@/components/dialog/deleteDialog";
+import DeleteDialog from "@/components/dialog/deleteDialog/index.tsx";
 import { useQueryClient } from "react-query";
 import { useCallback, useMemo, useState } from "react";
 import { iCliente } from "@/interfaces/cliente.interfaces";
 import getClientesColumns from "./clienteColumns";
 import ClienteForm from "./clienteForm/index.tsx";
 
-export function ClientesPage() {
+interface clientesPageProps {
+  setCliente?: (fornecedor: iCliente) => void;
+}
+
+export function ClientesPage({ setCliente }: clientesPageProps) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
@@ -40,6 +44,12 @@ export function ClientesPage() {
   const onAdd = useCallback(() => {
     setAction("Add");
     setSelectedCliente(null);
+    setOpen(true);
+  }, []);
+
+  const onView = useCallback((cliente: iCliente) => {
+    setAction("View");
+    setSelectedCliente(cliente);
     setOpen(true);
   }, []);
 
@@ -76,11 +86,12 @@ export function ClientesPage() {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getClientesColumns({ onEdit, onDelete }), [])}
+          columns={useMemo(() => getClientesColumns({ onEdit, onDelete, onView }), [])}
           data={clientes}
           onAdd={onAdd}
           onGet={onGet}
           ativos={ativos}
+          setObj={setCliente}
         />
       </CardContent>
     </Card>

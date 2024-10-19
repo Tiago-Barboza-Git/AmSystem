@@ -3,13 +3,8 @@ import { getEstadosColumns } from "./estadosColumns";
 import { DeleteEstado, GetEstados } from "./services/queries";
 import { useCallback, useMemo, useState } from "react";
 import { useQueryClient, UseQueryResult } from "react-query";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
-import DeleteDialog from "@/components/dialog/deleteDialog/index.tsx";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
+import DeleteDialog from "@/components/dialog/deleteDialog";
 import { IEstado } from "@/interfaces/estado.interfaces";
 import EstadoForm from "./estadoForm";
 
@@ -52,6 +47,12 @@ export function EstadosPage({ setEstado }: EstadosPageProps) {
     setOpen(true);
   }, []);
 
+  const onView = useCallback((estado: IEstado) => {
+    setAction("View");
+    setSelectedEstado(estado);
+    setOpen(true);
+  }, []);
+
   const estadosQuery = GetEstados(ativos);
   const estados = estadosQuery.data || []; // Ensure paises is an array
 
@@ -85,7 +86,7 @@ export function EstadosPage({ setEstado }: EstadosPageProps) {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getEstadosColumns({ onEdit, onDelete }), [])}
+          columns={useMemo(() => getEstadosColumns({ onEdit, onDelete, onView }), [])}
           data={estados}
           onAdd={onAdd}
           onGet={onGet}

@@ -3,20 +3,24 @@
   "WorkspaceRootPath": "C:\\Git\\AmSystem\\ApiAmSystem\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|c:\\git\\amsystem\\apiamsystem\\apiamsystem\\services\\contapagarservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|solutionrelative:apiamsystem\\services\\contapagarservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|c:\\git\\amsystem\\apiamsystem\\apiamsystem\\services\\compraservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|solutionrelative:apiamsystem\\services\\compraservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|c:\\git\\amsystem\\apiamsystem\\apiamsystem\\controllers\\contapagarcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|solutionrelative:apiamsystem\\controllers\\contapagarcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3678DD37-2645-45EF-ACD0-557A51858E7A}|ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj|c:\\git\\amsystem\\apiamsystem\\apiamsystem.domain\\interfaces\\icompraservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3678DD37-2645-45EF-ACD0-557A51858E7A}|ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj|solutionrelative:apiamsystem.domain\\interfaces\\icompraservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3678DD37-2645-45EF-ACD0-557A51858E7A}|ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj|C:\\Git\\AmSystem\\ApiAmSystem\\apiamsystem.domain\\interfaces\\icontapagarservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3678DD37-2645-45EF-ACD0-557A51858E7A}|ApiAmSystem.Domain\\ApiAmSystem.Domain.csproj|solutionrelative:apiamsystem.domain\\interfaces\\icontapagarservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|c:\\git\\amsystem\\apiamsystem\\apiamsystem\\controllers\\comprascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|solutionrelative:apiamsystem\\controllers\\comprascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|c:\\git\\amsystem\\apiamsystem\\apiamsystem\\controllers\\cidadescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|solutionrelative:apiamsystem\\controllers\\cidadescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|c:\\git\\amsystem\\apiamsystem\\apiamsystem\\services\\paisesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|solutionrelative:apiamsystem\\services\\paisesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|c:\\git\\amsystem\\apiamsystem\\apiamsystem\\controllers\\paisescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8D906CB8-B6AF-4C8F-9237-086CE4D0E4CF}|ApiAmSystem\\ApiAmSystem.csproj|solutionrelative:apiamsystem\\controllers\\paisescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -25,23 +29,9 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 333,
-          "SelectedChildIndex": 11,
+          "DockedWidth": 424,
+          "SelectedChildIndex": 10,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "IContaPagarService.cs",
-              "DocumentMoniker": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem.Domain\\Interfaces\\IContaPagarService.cs",
-              "RelativeDocumentMoniker": "ApiAmSystem.Domain\\Interfaces\\IContaPagarService.cs",
-              "ToolTip": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem.Domain\\Interfaces\\IContaPagarService.cs",
-              "RelativeToolTip": "ApiAmSystem.Domain\\Interfaces\\IContaPagarService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAA/AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-30T10:44:14.03Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
@@ -85,33 +75,72 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ContaPagarService.cs",
-              "DocumentMoniker": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Services\\ContaPagarService.cs",
-              "RelativeDocumentMoniker": "ApiAmSystem\\Services\\ContaPagarService.cs",
-              "ToolTip": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Services\\ContaPagarService.cs",
-              "RelativeToolTip": "ApiAmSystem\\Services\\ContaPagarService.cs",
-              "ViewState": "AQIAACMAAAAAAAAAAAAUwD4AAAA/AAAA",
+              "Title": "CompraService.cs",
+              "DocumentMoniker": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Services\\CompraService.cs",
+              "RelativeDocumentMoniker": "ApiAmSystem\\Services\\CompraService.cs",
+              "ToolTip": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Services\\CompraService.cs",
+              "RelativeToolTip": "ApiAmSystem\\Services\\CompraService.cs",
+              "ViewState": "AQIAALQBAAAAAAAAAAAqwLgBAAARAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-14T19:38:35.197Z",
+              "WhenOpened": "2024-10-18T22:19:12.121Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ContaPagarController.cs",
-              "DocumentMoniker": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Controllers\\ContaPagarController.cs",
-              "RelativeDocumentMoniker": "ApiAmSystem\\Controllers\\ContaPagarController.cs",
-              "ToolTip": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Controllers\\ContaPagarController.cs",
-              "RelativeToolTip": "ApiAmSystem\\Controllers\\ContaPagarController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAfAAAA",
+              "Title": "ICompraService.cs",
+              "DocumentMoniker": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem.Domain\\Interfaces\\ICompraService.cs",
+              "RelativeDocumentMoniker": "ApiAmSystem.Domain\\Interfaces\\ICompraService.cs",
+              "ToolTip": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem.Domain\\Interfaces\\ICompraService.cs",
+              "RelativeToolTip": "ApiAmSystem.Domain\\Interfaces\\ICompraService.cs",
+              "ViewState": "AQIAAAEAAAAAAAAAAAAWwBEAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-14T19:35:36.527Z",
+              "WhenOpened": "2024-10-18T22:17:37.259Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ComprasController.cs",
+              "DocumentMoniker": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Controllers\\ComprasController.cs",
+              "RelativeDocumentMoniker": "ApiAmSystem\\Controllers\\ComprasController.cs",
+              "ToolTip": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Controllers\\ComprasController.cs",
+              "RelativeToolTip": "ApiAmSystem\\Controllers\\ComprasController.cs",
+              "ViewState": "AQIAADQAAAAAAAAAAAAcwDsAAAAkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T18:13:40.284Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "PaisesService.cs",
+              "DocumentMoniker": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Services\\PaisesService.cs",
+              "RelativeDocumentMoniker": "ApiAmSystem\\Services\\PaisesService.cs",
+              "ToolTip": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Services\\PaisesService.cs",
+              "RelativeToolTip": "ApiAmSystem\\Services\\PaisesService.cs",
+              "ViewState": "AQIAAJQAAAAAAAAAAAAqwKcAAAAUAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-18T18:04:36.57Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "PaisesController.cs",
+              "DocumentMoniker": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Controllers\\PaisesController.cs",
+              "RelativeDocumentMoniker": "ApiAmSystem\\Controllers\\PaisesController.cs",
+              "ToolTip": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Controllers\\PaisesController.cs",
+              "RelativeToolTip": "ApiAmSystem\\Controllers\\PaisesController.cs",
+              "ViewState": "AQIAADEAAAAAAAAAAIA9wE0AAAA6AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-16T22:09:51.976Z",
               "EditorCaption": ""
             }
           ]
         },
         {
-          "DockedWidth": 189,
+          "DockedWidth": 424,
           "SelectedChildIndex": -1,
           "Children": [
             {
@@ -131,40 +160,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:136:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Orientation": 0,
-      "VerticalTabListWidth": 256,
-      "FloatingWindowState": {
-        "Id": "14655ee9-1db2-41b9-992a-3986ff3c8ca0",
-        "Display": 1,
-        "X": 174,
-        "Y": 158,
-        "Width": 1528,
-        "Height": 882,
-        "WindowState": 0
-      },
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "CidadesController.cs",
-              "DocumentMoniker": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Controllers\\CidadesController.cs",
-              "RelativeDocumentMoniker": "ApiAmSystem\\Controllers\\CidadesController.cs",
-              "ToolTip": "C:\\Git\\AmSystem\\ApiAmSystem\\ApiAmSystem\\Controllers\\CidadesController.cs",
-              "RelativeToolTip": "ApiAmSystem\\Controllers\\CidadesController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-14T19:35:44.601Z",
-              "EditorCaption": ""
             }
           ]
         }

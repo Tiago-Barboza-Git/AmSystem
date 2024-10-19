@@ -94,7 +94,7 @@ namespace ApiAmSystem.Services
                             e.Ativo AS 'Ativo',
                             e.DtCadastro AS 'DtCadastro',
                             e.DtAlteracao AS 'DtAlteracao',
-                            e.IdPais AS 'IdPais'
+                            e.IdPais AS 'IdPais',
                         	p.Pais,
 	                        p.Sigla
                         FROM TbEstados e
@@ -148,7 +148,7 @@ namespace ApiAmSystem.Services
                 try
                 {
                     sqlConnection.Open();
-                    string query = "INSERT INTO TbEstados(Estado, Uf, Ativo, IdPais, DtCadastro, DtAlteracao) VALUES(@Estado, @Uf, @Ativo, @IdPais, @DtCadastro, @DtAlteracao)";
+                    string query = "INSERT INTO TbEstados(Estado, Uf, Ativo, IdPais, DtCadastro, DtAlteracao) VALUES(dbo.fn_RemSpaceFromStr(@Estado), @Uf, @Ativo, @IdPais, @DtCadastro, @DtAlteracao)";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Estado", SqlDbType.VarChar).Value = pEstado.estado;
@@ -158,11 +158,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@DtCadastro", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Estado adicionado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "Estado já cadastrado!";
+                    }
+                    return "Erro ao adicionar estado!";
                 }
                 finally
                 {
@@ -178,7 +182,7 @@ namespace ApiAmSystem.Services
                 try
                 {
                     sqlConnection.Open();
-                    string query = "UPDATE TbEstados SET Estado = @Estado, Uf = @Uf, Ativo = @Ativo, IdPais = @IdPais, DtAlteracao = @DtAlteracao WHERE Id = @Id";
+                    string query = "UPDATE TbEstados SET Estado = dbo.fn_RemSpaceFromStr(@Estado), Uf = @Uf, Ativo = @Ativo, IdPais = @IdPais, DtAlteracao = @DtAlteracao WHERE Id = @Id";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pEstado.id;
@@ -188,11 +192,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@IdPais", SqlDbType.Int).Value = pEstado.idPais;
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Estado alterado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "Estado já cadastrado!";
+                    }
+                    return "Erro ao alterar o estado!";
                 }
                 finally
                 {
@@ -213,11 +221,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pId;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "País deletado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 547)
+                    {
+                        return "Estado está vinculado a outros registros!";
+                    }
+                    return "Erro ao deletar estado!";
                 }
                 finally
                 {

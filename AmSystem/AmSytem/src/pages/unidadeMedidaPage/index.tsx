@@ -1,34 +1,23 @@
 import DataTable from "@/components/datatable";
 import { useCallback, useMemo, useState } from "react";
 import { useQueryClient } from "react-query";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
-import DeleteDialog from "@/components/dialog/deleteDialog/index.tsx";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
+import DeleteDialog from "@/components/dialog/deleteDialog";
 import { getUnidadesMedidasColumns } from "./columns";
 import { IUnidadeMedida } from "@/interfaces/unidadeMedida.interfaces";
-import {
-  GetUnidadesMedidas,
-  DeleteUnidadeMedida,
-} from "./services/queries.tsx";
+import { GetUnidadesMedidas, DeleteUnidadeMedida } from "./services/queries.tsx";
 import UnidadeMedidaForm from "./form/index.tsx";
 
 interface UnidadesMedidasPageProps {
   setUnidadeMedida?: (unidadeMedida: IUnidadeMedida) => void;
 }
 
-export function UnidadesMedidasPage({
-  setUnidadeMedida,
-}: UnidadesMedidasPageProps) {
+export function UnidadesMedidasPage({ setUnidadeMedida }: UnidadesMedidasPageProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
   const [ativos, setAtivos] = useState<boolean>(true);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedUnidadeMedida, setSelectedUnidadeMedida] =
-    useState<IUnidadeMedida | null>(null);
+  const [selectedUnidadeMedida, setSelectedUnidadeMedida] = useState<IUnidadeMedida | null>(null);
 
   const queryClient = useQueryClient();
   const deleteUnidadeMedida = DeleteUnidadeMedida();
@@ -56,6 +45,12 @@ export function UnidadesMedidasPage({
   const onAdd = useCallback(() => {
     setAction("Add");
     setSelectedUnidadeMedida(null);
+    setOpen(true);
+  }, []);
+
+  const onView = useCallback((unidadeMedida: IUnidadeMedida) => {
+    setAction("View");
+    setSelectedUnidadeMedida(unidadeMedida);
     setOpen(true);
   }, []);
 
@@ -91,10 +86,7 @@ export function UnidadesMedidasPage({
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(
-            () => getUnidadesMedidasColumns({ onEdit, onDelete }),
-            []
-          )}
+          columns={useMemo(() => getUnidadesMedidasColumns({ onEdit, onDelete, onView }), [])}
           data={unidadesMedidasData}
           onAdd={onAdd}
           onGet={onGet}

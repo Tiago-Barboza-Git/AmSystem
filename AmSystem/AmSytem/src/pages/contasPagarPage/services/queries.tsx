@@ -19,13 +19,13 @@ export function PutContasPagar(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPutContaPagar) => PutContaPagarRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetContasPagar"] });
       onOpenChange(false);
-      toast.success("Conta a pagar paga com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao pagar a conta a pagar. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }

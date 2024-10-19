@@ -18,7 +18,7 @@ import { Parcelas } from "@/pages/parcelas";
 import { IParcela } from "@/interfaces/parcela.interfaces";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ParcelaForm } from "@/pages/parcelas/form";
-import { formatPercentage } from "@/functions/functions";
+import { formatMoney, formatPercentage } from "@/functions/functions";
 import { Toaster, toast } from "sonner";
 import { IProdutoCompra } from "@/interfaces/produtoCompra.interfaces";
 import { ProdutoCompraFormData, ProdutoCompraFormSchema, defaultValues } from "./schema";
@@ -27,6 +27,7 @@ import { ProdutosPage } from "@/pages/produtosPage";
 import { formatCurrency } from "@/functions/masks";
 import { CompraFormData } from "../form/schema";
 import SearchItem from "@/components/searchItem";
+import InputMoney from "@/components/form/inputMoney";
 
 interface produtoCompraFormProps {
   action: string;
@@ -38,6 +39,7 @@ interface produtoCompraFormProps {
   setValue: UseFormSetValue<CompraFormData>;
   getValue: UseFormGetValues<CompraFormData>;
   watch: UseFormWatch<CompraFormData>;
+  disabled?: boolean;
 }
 
 const ProdutoCompraForm = ({
@@ -50,12 +52,13 @@ const ProdutoCompraForm = ({
   setValue,
   getValue,
   watch,
+  disabled = false,
 }: produtoCompraFormProps) => {
   const [openProdutos, setOpenProdutos] = useState<boolean>(false);
   const [produto, setProduto] = useState<IProduto | undefined>(produtoCompra?.produto);
 
   const form = useForm<ProdutoCompraFormData>({
-    mode: "onChange",
+    mode: "onSubmit",
     resolver: zodResolver(ProdutoCompraFormSchema),
     defaultValues: defaultValues,
   });
@@ -71,23 +74,33 @@ const ProdutoCompraForm = ({
   }, [isOpen]);
 
   useEffect(() => {
-    form.setValue("idProduto", produto?.id as number);
-    form.setValue("produto", produto as IProduto);
-    setOpenProdutos(false);
+    if (produto) {
+      form.setValue("idProduto", produto?.id as number);
+      form.setValue("produto", produto as IProduto);
+      setOpenProdutos(false);
+    }
   }, [produto]);
 
+  useEffect(() => {
+    const precoUnit = isNaN(form.watch("precoUnit")) ? 0 : form.watch("precoUnit");
+    const quantidade = isNaN(form.watch("quantidade")) ? 0 : form.watch("quantidade");
+
+    form.setValue("precoTotal", formatMoney(precoUnit) * quantidade);
+  }, [form.watch("precoUnit"), form.watch("quantidade")]);
+
   const onSubmit = (data: IProdutoCompra) => {
-    data.precoUnit = formatCurrency(data.precoUnit as string);
+    console.log(data);
+    // data.precoUnit = formatMoney(data?.precoUnit);
     if (action === "Add") {
-      data.precoTotal = data.precoUnit * data.quantidade;
+      data.precoTotal = data.precoUnit * data?.quantidade;
       handleAddProdutoCompra(data);
-      toast.success("Produto adicionado com sucesso a compra.");
     } else {
-      data.precoTotal = data.precoUnit * data.quantidade;
+      data.precoTotal = data.precoUnit * data?.quantidade;
       handleEditProdutoCompra(data);
-      toast.success("Produto alterado com sucesso na compra.");
     }
   };
+
+  useEffect(() => {}, [form.watch()]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -104,70 +117,66 @@ const ProdutoCompraForm = ({
         </DialogHeader>
         <FormProvider {...form}>
           <form className="space-y-4 flex flex-col" onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-6 gap-4">
-              <FormFieldInput
-                label="Cód. Produto"
-                name="idProduto"
+            <div className="flex flex-col gap-4">
+              <SearchItem
                 control={form.control}
-                isNumber={true}
-                disabled={true}
-                className="col-span-1"
+                getValue={form.getValues}
+                setValue={form.setValue}
+                watch={form.watch}
+                obj={produto}
+                setObj={setProduto}
+                openSearch={openProdutos}
+                setOpenSearch={setOpenProdutos}
+                labelCod="Cód. Produto"
+                nameCod="idProduto"
+                labelNome="Produto*"
+                nameNome="produto.produto"
+                errorMessage={form.formState.errors.idProduto?.message}
+                disabled={disabled}
+                page={<ProdutosPage setProduto={setProduto} />}
+                hiddenButton={action === "View" ? true : false}
+                className="flex flex-row gap-4 flex-grow"
               />
 
               <FormFieldInput
-                label="Produto"
-                name="produto.produto"
                 control={form.control}
+                label="Un. Medida"
+                name="produto.unidadeMedida.unidadeMedida"
                 disabled={true}
-                className="col-span-3"
+                className="w-[20rem]"
               />
-
-              <div className="relative col-span-1">
-                <Dialog open={openProdutos} onOpenChange={(value) => setOpenProdutos(value)}>
-                  <DialogTrigger asChild className="relative mt-[31%]">
-                    <Button variant="default">
-                      <Search />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="!p-0 max-w-2xl">
-                    <ProdutosPage setProduto={setProduto} />
-                  </DialogContent>
-                </Dialog>
-              </div>
             </div>
-            <div>
+            <div className="flex flex-row gap-4">
               <FormFieldInput
                 label="Quantidade"
                 name="quantidade"
                 control={form.control}
                 disabled={false}
                 isNumber={true}
+                errorMessage={form.formState.errors.quantidade?.message}
                 className="col-span-3"
               />
 
-              <FormField
-                name="precoUnit"
+              <InputMoney
                 control={form.control}
-                defaultValue={produtoCompra?.precoUnit}
-                render={({ field }) => (
-                  <FormItem className="flex flex-col gap-2 col-span-1">
-                    <FormLabel>Preço Unitário</FormLabel>
-                    <FormControl>
-                      <CurrencyInput
-                        defaultValue={field.value}
-                        onChangeValue={field.onChange}
-                        currency="BRL"
-                        locale="pt-BR"
-                        InputElement={<Input defaultValue={field.value} />}
-                      />
-                    </FormControl>
-                    <FormMessage>{form.formState.errors.quantidade?.message}</FormMessage>
-                  </FormItem>
-                )}
+                watch={form.watch}
+                labelName="Preço Unitário"
+                nameValor="precoUnit"
+                disabled={false}
+                errorMessage={form.formState.errors.precoUnit?.message}
+              />
+
+              <InputMoney
+                control={form.control}
+                watch={form.watch}
+                labelName="Preço Total"
+                nameValor="precoTotal"
+                disabled={true}
               />
             </div>
+
             <div>
-              <Button type="submit" variant="default" onClick={() => onsubmit}>
+              <Button type="submit" variant="default">
                 Salvar
               </Button>
             </div>

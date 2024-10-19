@@ -1,15 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import {
-  DeleteCategoriaRequest,
-  GetCategoriasRequest,
-  PostCategoriaRequest,
-  PutCategoriaRequest,
-} from "./api";
+import { DeleteCategoriaRequest, GetCategoriasRequest, PostCategoriaRequest, PutCategoriaRequest } from "./api";
 import { isQueryKey } from "react-query/types/core/utils";
-import {
-  IPostCategoria,
-  IPutCategoria,
-} from "@/interfaces/categoria.interfaces";
+import { IPostCategoria, IPutCategoria } from "@/interfaces/categoria.interfaces";
 import { toast } from "sonner";
 import { Axios, AxiosError } from "axios";
 
@@ -25,13 +17,13 @@ export function PutCategoria(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPutCategoria) => PutCategoriaRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetCategorias"] });
       onOpenChange(false);
-      toast.success("Categorias atualizada com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao deletar categoria. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -41,15 +33,13 @@ export function PostCategoria(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPostCategoria) => PostCategoriaRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetCategorias"] });
       onOpenChange(false);
-      toast.success("Categoria adicionada com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(
-        `Erro ao adicionar categorias. Erro: ${error.response?.data}`
-      );
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -57,13 +47,13 @@ export function PostCategoria(onOpenChange: (open: boolean) => void) {
 export function DeleteCategoria() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (idCategoria: Number) => DeleteCategoriaRequest(idCategoria),
-    onSuccess: () => {
+    mutationFn: (idCategoria: number) => DeleteCategoriaRequest(idCategoria),
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetCategorias"] });
-      toast.success(`Categoria deletada com sucesso!`);
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao deletar categoria. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }

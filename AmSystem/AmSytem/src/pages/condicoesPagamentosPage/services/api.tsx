@@ -14,23 +14,19 @@ export const GetCondicoesPagamentosRequest = (Ativos: boolean) => {
     .then((reponse) => reponse.data);
 };
 
-export const PutCondicaoPagamentoRequest = (
-  CondicaoPagamento: IPutCondicaoPagamento
-) => {
+export const PutCondicaoPagamentoRequest = (CondicaoPagamento: IPutCondicaoPagamento) => {
   return axiosInstance
     .put<IPutCondicaoPagamento>("PutCondicaoPagamento", CondicaoPagamento)
     .then((response) => response.data);
 };
 
-export const PostCondicaoPagamentoRequest = (
-  CondicaoPagamento: IPostCondicaoPagamento
-) => {
+export const PostCondicaoPagamentoRequest = (CondicaoPagamento: IPostCondicaoPagamento) => {
   return axiosInstance
     .post<IPostCondicaoPagamento>("PostCondicaoPagamento", CondicaoPagamento)
     .then((response) => response.data);
 };
 
-export const DeleteCondicaoPagamentoRequest = (IdCondicaoPagamento: Number) => {
+export const DeleteCondicaoPagamentoRequest = (IdCondicaoPagamento: number) => {
   return axiosInstance
     .delete<number>(`DeleteCondicaoPagamento?pId=${IdCondicaoPagamento}`)
     .then((reponse) => reponse.data);

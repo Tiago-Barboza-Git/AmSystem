@@ -22,75 +22,13 @@ namespace ApiAmSystem.Domain.Models.Funcionario
         private string Bairro;
         private decimal? Salario;
         private string? Cargo;
-        private bool Ativo; 
+        private bool Ativo;
         private int IdCidade;
         private DateTime? DtAdmissao;
         private DateTime? DtDemissao;
         private DateTime DtCadastro;
         private DateTime DtAlteracao;
         private CidadeModel Cidade;
-
-        public FuncionarioModel()
-        {
-            this.Id = 0;
-            this.Funcionario = string.Empty;
-            this.Apelido = string.Empty;
-            this.Cpf = string.Empty;
-            this.Rg = string.Empty;
-            this.DtNascimento = null;
-            this.Email = string.Empty;
-            this.Telefone = string.Empty;
-            this.Celular = string.Empty;
-            this.Salario = 0;
-            this.Pis = string.Empty;
-            this.CEP = string.Empty;
-            this.Logradouro = string.Empty;
-            this.Bairro = string.Empty;
-            this.Numero = 0;
-            this.Complemento = string.Empty;
-            this.Sexo = ' ';
-            this.Cargo = string.Empty;
-            this.Ativo = false;
-            this.IdCidade = 0;
-            this.DtAdmissao = null;
-            this.DtDemissao = null;
-            this.DtCadastro = DateTime.Now;
-            this.DtAlteracao = DateTime.Now;
-            this.Cidade = new CidadeModel();
-        }
-
-        public FuncionarioModel(int pId, string pFuncionario, string? pApelido, string pCPF, string? pRG, DateTime? pDtNasciomento,
-                                string pEmail, string? pTelefone, string pCelular, decimal? pSalario, string? pPis, string pCEP, string pLogradouro, string pBairro,
-                                int pNumero, string? pComplemento, char pSexo, string? pCargo, bool pAtivo, int pIdCidade, DateTime? pDtAdmissao,
-                                DateTime? pDtDemissao, DateTime pDtCadastro, DateTime pDtAlteracao, CidadeModel pCidade)
-        {
-            this.Id = pId;
-            this.Funcionario = pFuncionario;
-            this.Apelido = pApelido;
-            this.Cpf = pCPF;
-            this.Rg = pRG;
-            this.DtNascimento = pDtNasciomento;
-            this.Email = pEmail;
-            this.Telefone = pTelefone;
-            this.Celular = pCelular;
-            this.Salario = pSalario;
-            this.Pis = pPis;
-            this.CEP = pCEP;
-            this.Logradouro = pLogradouro;
-            this.Bairro = pBairro;
-            this.Numero = pNumero;
-            this.Complemento = pComplemento;
-            this.Sexo = pSexo;
-            this.Cargo = pCargo;
-            this.Ativo = pAtivo;
-            this.IdCidade = pIdCidade;
-            this.DtAdmissao = pDtAdmissao;
-            this.DtDemissao = pDtDemissao;
-            this.DtCadastro = pDtCadastro;
-            this.DtAlteracao = pDtAlteracao;
-            this.Cidade = pCidade;
-        }
-
         public int id
         {
             get { return this.Id; }
@@ -189,7 +127,7 @@ namespace ApiAmSystem.Domain.Models.Funcionario
         public char sexo
         {
             get { return this.Sexo; }
-            set { this.Sexo = value;}
+            set { this.Sexo = value; }
         }
 
         public string cargo
@@ -235,5 +173,11 @@ namespace ApiAmSystem.Domain.Models.Funcionario
             get { return this.Cidade; }
             set { this.Cidade = value; }
         }
+    }
+
+    public class FuncionarioRef
+    {
+        public int Id { get; set; }
+        public string Funcionario { get; set; }
     }
 }

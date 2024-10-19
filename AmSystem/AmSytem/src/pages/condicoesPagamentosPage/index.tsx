@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueryClient, UseQueryResult } from "react-query";
 // import PaisForm from "./paisForm/index.tsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
-import DeleteDialog from "@/components/dialog/deleteDialog/index.tsx";
+import DeleteDialog from "@/components/dialog/deleteDialog";
 import CondicaoPagamentoForm from "./form";
 import { ICondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
 ("./form/index");
@@ -49,6 +49,12 @@ export function CondicoesPagamentosPage({ setCondicaoPagamento }: CondicoesPagam
     setOpen(true);
   }, []);
 
+  const onView = useCallback((condicaoPagamento: ICondicaoPagamento) => {
+    setAction("View");
+    setSelectedCondicaoPagamento(condicaoPagamento);
+    setOpen(true);
+  }, []);
+
   const condicoesPagamentosQuery = GetCondicoesPagamentos(ativos);
   const condicoesPagamentos = condicoesPagamentosQuery.data || []; // Ensure paises is an array
 
@@ -82,7 +88,7 @@ export function CondicoesPagamentosPage({ setCondicaoPagamento }: CondicoesPagam
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getCondicoesPagamentosColumns({ onEdit, onDelete }), [])}
+          columns={useMemo(() => getCondicoesPagamentosColumns({ onEdit, onDelete, onView }), [])}
           data={condicoesPagamentos}
           onAdd={onAdd}
           onGet={onGet}

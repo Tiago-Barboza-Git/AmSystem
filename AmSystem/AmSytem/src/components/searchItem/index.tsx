@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Search } from "lucide-react";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { FormMessage } from "../ui/form";
 
 interface searchItemProps<T extends FieldValues> {
   labelCod: string;
@@ -30,6 +31,7 @@ interface searchItemProps<T extends FieldValues> {
   disabled?: boolean;
   page?: React.ReactNode;
   className?: string;
+  hiddenButton?: boolean;
 }
 
 function SearchItem<T extends FieldValues>({
@@ -49,7 +51,10 @@ function SearchItem<T extends FieldValues>({
   disabled = false,
   page,
   className,
+  hiddenButton,
 }: searchItemProps<T>) {
+  // if (control.getFieldState(nameCod).error !== undefined)
+  const errorCod = control.getFieldState(nameCod).error?.message;
   return (
     <div className={`${className} flex flex-row gap-4 items-center align-middle relative`}>
       <FormFieldInput
@@ -59,7 +64,7 @@ function SearchItem<T extends FieldValues>({
         isNumber={true}
         disabled={true}
         errorMessage={errorMessage}
-        className={`col-span-2`}
+        className={`!w-[10rem]`}
       />
 
       <FormFieldInput
@@ -68,16 +73,16 @@ function SearchItem<T extends FieldValues>({
         name={nameNome}
         disabled={true}
         errorMessage={errorMessage}
-        className="col-span-3"
+        className={`!w-[15rem]`}
       />
-      <div className="!mt-8">
+      <div className={`${hiddenButton !== undefined && hiddenButton === true ? "hidden" : "visible"} !mt-8`}>
         <Dialog open={openSearch} onOpenChange={(value) => (setOpenSearch ? setOpenSearch(value) : "")}>
           <DialogTrigger asChild className="">
             <Button variant="default" disabled={disabled} className="">
               <Search />
             </Button>
           </DialogTrigger>
-          <DialogContent className="!p-0 max-w-2xl">{page}</DialogContent>
+          <DialogContent className="!p-0 max-w-4xl">{page}</DialogContent>
         </Dialog>
       </div>
     </div>

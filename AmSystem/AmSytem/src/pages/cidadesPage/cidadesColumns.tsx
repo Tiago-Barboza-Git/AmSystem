@@ -9,17 +9,13 @@ import { ICidade } from "@/interfaces/cidade.interfaces";
 interface cidadesColumnsProps {
   onEdit: (cidade: ICidade) => void;
   onDelete: (cidade: ICidade) => void;
+  onView: (cidade: ICidade) => void;
 }
 
-export const getCidadesColumns = ({
-  onEdit,
-  onDelete,
-}: cidadesColumnsProps): ColumnDef<ICidade>[] => [
+export const getCidadesColumns = ({ onEdit, onDelete, onView }: cidadesColumnsProps): ColumnDef<ICidade>[] => [
   {
     accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cód. " />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Cód. " />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.id}</span>
@@ -29,9 +25,7 @@ export const getCidadesColumns = ({
   },
   {
     accessorKey: "cidade",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cidade" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Cidade" />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.cidade}</span>
@@ -64,15 +58,11 @@ export const getCidadesColumns = ({
     accessorKey: "dtAlteracao",
     header: "Dt. Alteração",
     enableColumnFilter: false,
-    cell: ({ row }) => (
-      <div>{formatDate(String(row.original.dtAlteracao))}</div>
-    ),
+    cell: ({ row }) => <div>{formatDate(String(row.original.dtAlteracao))}</div>,
   },
   {
     header: "Ações",
     id: "100",
-    cell: ({ row }) => (
-      <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />
-    ),
+    cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} onView={onView} />,
   },
 ];

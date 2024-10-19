@@ -5,18 +5,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { IPais } from "@/interfaces/pais.interfaces";
 import { useQueryClient, UseQueryResult } from "react-query";
 import PaisForm from "./paisForm/index.tsx";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
 import DeleteDialog from "@/components/dialog/deleteDialog/index.tsx";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog.tsx";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 
 interface PaisesPageProps {
@@ -58,11 +49,17 @@ export const PaisesPage = ({ setPais }: PaisesPageProps) => {
     setOpen(true);
   }, []);
 
+  const onView = useCallback((pais: IPais) => {
+    setAction("View");
+    setSelectPais(pais);
+    setOpen(true);
+  }, []);
+
   const paisesQuery = GetPaises(ativos);
   const paises = paisesQuery.data || []; // Ensure paises is an array
 
   return (
-    <Card className={`h-full`}>
+    <Card className={`h-full !min-w-max`}>
       <CardHeader>
         <CardTitle>Países</CardTitle>
         <div className="flex justify-between">
@@ -78,12 +75,21 @@ export const PaisesPage = ({ setPais }: PaisesPageProps) => {
                 if (!value) setSelectPais(null);
               }}
             />
+            <DeleteDialog
+              registerId={selectPais?.id as number}
+              isOpen={openDeleteDialog}
+              deleteFunction={deletePais}
+              onOpenChange={(value) => {
+                setOpenDeleteDialog(value);
+                if (!value) setSelectPais(null);
+              }}
+            />
           </div>
         </div>
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getPaisesColumns({ onEdit, onDelete }), [])}
+          columns={useMemo(() => getPaisesColumns({ onEdit, onDelete, onView }), [])}
           data={paises}
           onAdd={onAdd}
           onGet={onGet}

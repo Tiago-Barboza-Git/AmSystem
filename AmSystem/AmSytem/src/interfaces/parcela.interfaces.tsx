@@ -5,6 +5,6 @@ export interface IParcela {
   numParcela: number;
   dias: number;
   porcentagem: number | string;
-  idFormaPagamento?: number;
-  formaPagamento?: IFormaPagamento;
+  idFormaPagamento: number;
+  formaPagamento: IFormaPagamento;
 }

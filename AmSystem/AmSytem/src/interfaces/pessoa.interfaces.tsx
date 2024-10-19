@@ -20,6 +20,8 @@ export interface IPessoa extends IPai {
   dtNascimento?: Date;
   idCidade: number;
   cidade: ICidade;
+  dtCadastro: Date;
+  dtAlteracao: Date;
 }
 
 export interface IPessoaPost extends IPaiPost {

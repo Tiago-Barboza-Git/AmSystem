@@ -1,23 +1,10 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ICidade } from "@/interfaces/cidade.interfaces";
 import { CidadeFormData, CidadeFormSchema, defaultValues } from "./schema.tsx";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form.tsx";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch.tsx";
@@ -38,6 +25,7 @@ import { GetEstados } from "@/pages/estadosPage/services/queries.tsx";
 import { IEstado } from "@/interfaces/estado.interfaces.tsx";
 import { EstadosPage } from "@/pages/estadosPage/index.tsx";
 import InputCalendar from "@/components/form/inputCalendar/index.tsx";
+import SearchItem from "@/components/searchItem/index.tsx";
 
 interface cidadeFormProps {
   action: string;
@@ -46,24 +34,21 @@ interface cidadeFormProps {
   cidade: ICidade | null;
 }
 
-const CidadeForm = ({
-  action,
-  isOpen,
-  onOpenChange,
-  cidade,
-}: cidadeFormProps) => {
+const CidadeForm = ({ action, isOpen, onOpenChange, cidade }: cidadeFormProps) => {
+  const [disabled, setDisabled] = useState<boolean>();
   const [openEstados, setOpenEstados] = useState<boolean>(false);
   const [estado, setEstado] = useState<IEstado | undefined>(cidade?.estado);
   const putCidade = PutCidade(onOpenChange);
   const postCidade = PostCidade(onOpenChange);
   const form = useForm<CidadeFormData>({
-    mode: "onChange",
+    mode: "onSubmit",
     resolver: zodResolver(CidadeFormSchema),
     defaultValues: defaultValues,
   });
 
   useEffect(() => {
-    if (action === "Edit") {
+    if (action === "Edit" || action === "View") {
+      action === "View" ? setDisabled(true) : setDisabled(false);
       form.reset({
         ...cidade,
       });
@@ -94,11 +79,10 @@ const CidadeForm = ({
         onInteractOutside={(e) => {
           e.preventDefault();
         }}
+        className="!min-w-max"
       >
         <DialogHeader>
-          <DialogTitle>
-            {cidade ? "Atualizar a cidade" : "Adicionar nova cidade"}
-          </DialogTitle>
+          <DialogTitle>{cidade ? "Atualizar a cidade" : "Adicionar nova cidade"}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
           <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
@@ -122,10 +106,7 @@ const CidadeForm = ({
                     <FormItem className="flex flex-col gap-2 items-center justify-center">
                       <FormLabel>Ativo</FormLabel>
                       <FormControl>
-                        <Switch
-                          defaultChecked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} disabled={disabled} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -138,6 +119,7 @@ const CidadeForm = ({
                   name="cidade"
                   control={form.control}
                   errorMessage={form.formState.errors.cidade?.message}
+                  disabled={disabled}
                   className="col-span-4"
                 />
 
@@ -147,43 +129,31 @@ const CidadeForm = ({
                   control={form.control}
                   errorMessage={form.formState.errors.ddd?.message}
                   isNumber={true}
+                  disabled={disabled}
                   className="col-span-2"
                 />
               </div>
 
-              <div className="grid grid-cols-8 gap-4">
-                <FormFieldInput
-                  label="Cód. Estado"
-                  name="idEstado"
+              <div>
+                <SearchItem
                   control={form.control}
-                  isNumber={true}
-                  disabled={true}
-                  className="col-span-2"
+                  getValue={form.getValues}
+                  setValue={form.setValue}
+                  watch={form.watch}
+                  obj={estado}
+                  setObj={setEstado}
+                  openSearch={openEstados}
+                  setOpenSearch={setOpenEstados}
+                  labelCod="Cód. Estado"
+                  nameCod="idEstado"
+                  labelNome="Estado*"
+                  nameNome="estado.estado"
+                  errorMessage={form.formState.errors?.idEstado?.message}
+                  disabled={disabled}
+                  page={<EstadosPage setEstado={setEstado} />}
+                  hiddenButton={action === "View" || disabled === true ? true : false}
+                  className="flex flex-row gap-4 flex-grow"
                 />
-
-                <FormFieldInput
-                  label="Estado"
-                  name="estado.estado"
-                  control={form.control}
-                  disabled={true}
-                  className="col-span-4"
-                />
-
-                <div className="relative">
-                  <Dialog
-                    open={openEstados}
-                    onOpenChange={(value) => setOpenEstados(value)}
-                  >
-                    <DialogTrigger asChild className="absolute bottom-0">
-                      <Button variant="default">
-                        <Search />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="!p-0">
-                      <EstadosPage setEstado={setEstado} />
-                    </DialogContent>
-                  </Dialog>
-                </div>
               </div>
 
               <div className="flex flex-row gap-4">

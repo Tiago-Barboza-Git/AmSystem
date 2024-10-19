@@ -1,24 +1,10 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  UnidadeMedidaFormData,
-  UnidadeMedidaFormSchema,
-  defaultValues,
-} from "../schema.tsx";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { UnidadeMedidaFormData, UnidadeMedidaFormSchema, defaultValues } from "../schema.tsx";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form.tsx";
-import { useEffect } from "react";
+import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form.tsx";
+import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch.tsx";
 import { PostUnidadeMedida, PutUnidadeMedida } from "../services/queries.tsx";
 import FormFieldInput from "@/components/form/input/index.tsx";
@@ -33,12 +19,8 @@ interface unidadeMedidaFormProps {
   unidadeMedida: IUnidadeMedida | null;
 }
 
-const UnidadeMedidaForm = ({
-  action,
-  isOpen,
-  onOpenChange,
-  unidadeMedida,
-}: unidadeMedidaFormProps) => {
+const UnidadeMedidaForm = ({ action, isOpen, onOpenChange, unidadeMedida }: unidadeMedidaFormProps) => {
+  const [disabled, setDisabled] = useState<boolean>();
   const putUnidadeMedida = PutUnidadeMedida(onOpenChange);
   const postUnidadeMedida = PostUnidadeMedida(onOpenChange);
   const form = useForm<UnidadeMedidaFormData>({
@@ -48,11 +30,13 @@ const UnidadeMedidaForm = ({
   });
 
   useEffect(() => {
-    if (action === "Edit") {
+    if (action === "Edit" || action === "View") {
+      action === "View" ? setDisabled(true) : setDisabled(false);
       form.reset({
         ...unidadeMedida,
       });
     } else {
+      setDisabled(false);
       form.reset(defaultValues);
     }
   }, [isOpen]);
@@ -75,9 +59,7 @@ const UnidadeMedidaForm = ({
       >
         <DialogHeader>
           <DialogTitle>
-            {unidadeMedida
-              ? "Atualizar a unidade de medida"
-              : "Adicionar nova unidade de medida"}
+            {unidadeMedida ? "Atualizar a unidade de medida" : "Adicionar nova unidade de medida"}
           </DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
@@ -102,10 +84,7 @@ const UnidadeMedidaForm = ({
                     <FormItem className="flex flex-col gap-2 items-center justify-center">
                       <FormLabel>Ativo</FormLabel>
                       <FormControl>
-                        <Switch
-                          defaultChecked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} disabled={disabled} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -117,6 +96,7 @@ const UnidadeMedidaForm = ({
                   label="Unidade de Medida"
                   name="unidadeMedida"
                   control={form.control}
+                  disabled={disabled}
                   errorMessage={form.formState.errors.unidadeMedida?.message}
                   className="col-span-4"
                 />
@@ -126,6 +106,7 @@ const UnidadeMedidaForm = ({
                   name="simbolo"
                   label="Símbolo"
                   className="col-span-8"
+                  disabled={disabled}
                 />
               </div>
 
@@ -150,7 +131,7 @@ const UnidadeMedidaForm = ({
                   className="col-span-2"
                 />
               </div>
-              <Button type="submit" variant="default">
+              <Button type="submit" variant="default" className={`${action === "View" ? "hidden" : "visible"}`}>
                 Salvar
               </Button>
             </div>

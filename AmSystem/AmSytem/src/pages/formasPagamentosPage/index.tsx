@@ -12,16 +12,13 @@ interface FormaPagamentoProps {
   setFormaPagamento?: (formaPagamento: IFormaPagamento) => void;
 }
 
-export function FormasPagamentosPage({
-  setFormaPagamento,
-}: FormaPagamentoProps) {
+export function FormasPagamentosPage({ setFormaPagamento }: FormaPagamentoProps) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
   const [ativos, setAtivos] = useState<boolean>(true);
-  const [selectedFormaPagamento, setSelectedFormaPagamento] =
-    useState<IFormaPagamento | null>(null);
+  const [selectedFormaPagamento, setSelectedFormaPagamento] = useState<IFormaPagamento | null>(null);
   const deleteFormaPagamento = DeleteFormaPagamento();
 
   const onGet = useCallback(async () => {
@@ -47,6 +44,12 @@ export function FormasPagamentosPage({
   const onAdd = useCallback(() => {
     setAction("Add");
     setSelectedFormaPagamento(null);
+    setOpen(true);
+  }, []);
+
+  const onView = useCallback((formaPagamento: IFormaPagamento) => {
+    setAction("View");
+    setSelectedFormaPagamento(formaPagamento);
     setOpen(true);
   }, []);
 
@@ -83,10 +86,7 @@ export function FormasPagamentosPage({
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(
-            () => getFormasPagamentosColumns({ onEdit, onDelete }),
-            []
-          )}
+          columns={useMemo(() => getFormasPagamentosColumns({ onEdit, onDelete, onView }), [])}
           data={formasPagamentos}
           onAdd={onAdd}
           onGet={onGet}

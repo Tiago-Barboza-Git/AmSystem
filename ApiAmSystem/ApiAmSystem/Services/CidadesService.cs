@@ -171,7 +171,7 @@ namespace ApiAmSystem.Services
                 try
                 {
                     sqlConnection.Open();
-                    string query = "INSERT INTO TbCidades(Cidade, DDD, Ativo, IdEstado, DtCadastro, DtAlteracao) VALUES(@Cidade, @DDD, @Ativo, @IdEstado, @DtCadastro, @DtAlteracao)";
+                    string query = "INSERT INTO TbCidades(Cidade, DDD, Ativo, IdEstado, DtCadastro, DtAlteracao) VALUES(dbo.fn_RemSpaceFromStr(@Cidade), @DDD, @Ativo, @IdEstado, @DtCadastro, @DtAlteracao)";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Cidade", SqlDbType.VarChar).Value = pCidade.cidade;
@@ -181,11 +181,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@DtCadastro", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Cidade adicionada com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "Cidade já cadastrada!";
+                    }
+                    return "Erro ao adicionar cidade!";
                 }
                 finally
                 {
@@ -201,7 +205,7 @@ namespace ApiAmSystem.Services
                 try
                 {
                     sqlConnection.Open();
-                    string query = "UPDATE TbCidades SET Cidade = @Cidade, DDD = @ddd, Ativo = @Ativo, IdEstado = @IdEstado, DtAlteracao = @DtAlteracao WHERE Id = @Id";
+                    string query = "UPDATE TbCidades SET Cidade = dbo.fn_RemSpaceFromStr(@Cidade), DDD = @ddd, Ativo = @Ativo, IdEstado = @IdEstado, DtAlteracao = @DtAlteracao WHERE Id = @Id";
                     SqlCommand cmd = new SqlCommand(query, sqlConnection);
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pCidade.id;
@@ -211,11 +215,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@IdEstado", SqlDbType.Int).Value = pCidade.idEstado;
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Cidade alterada com sucesso";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "Cidade já cadastrada!";
+                    }
+                    return "Erro ao alterar cidade!";
                 }
                 finally
                 {
@@ -240,7 +248,11 @@ namespace ApiAmSystem.Services
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 547)
+                    {
+                        return "Cidade está vinculada a outros registros!";
+                    }
+                    return "Erro ao deletar cidade!";
                 }
                 finally
                 {

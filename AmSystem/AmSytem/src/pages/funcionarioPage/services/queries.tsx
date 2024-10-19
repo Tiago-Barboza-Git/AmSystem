@@ -1,14 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import {
-  DeleteFuncionarioRequest,
-  GetFuncionariosRequest,
-  PostFuncionarioRequest,
-  PutFuncionarioRequest,
-} from "./api";
-import {
-  IPostFuncionario,
-  IPutFuncionario,
-} from "@/interfaces/funcionario.interfaces";
+import { DeleteFuncionarioRequest, GetFuncionariosRequest, PostFuncionarioRequest, PutFuncionarioRequest } from "./api";
+import { IPostFuncionario, IPutFuncionario } from "@/interfaces/funcionario.interfaces";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 
@@ -24,15 +16,13 @@ export function PutFuncionario(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPutFuncionario) => PutFuncionarioRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetFuncionarios"] });
       onOpenChange(false);
-      toast.success("Funcionário atualizado com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(
-        `Erro ao atualizar o funcionário. Erro: ${error.response?.data}`
-      );
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -42,15 +32,13 @@ export function PostFuncionario(onOpenChange: (open: boolean) => void) {
 
   return useMutation({
     mutationFn: (data: IPostFuncionario) => PostFuncionarioRequest(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetFuncionarios"] });
       onOpenChange(false);
-      toast.success("Funcionário adicionado com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(
-        `Erro ao adicionar funcionário. Erro: ${error.response?.data}`
-      );
+      toast.error(`${error.response?.data}`);
     },
   });
 }
@@ -58,14 +46,13 @@ export function PostFuncionario(onOpenChange: (open: boolean) => void) {
 export function DeleteFuncionario() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (idFuncionario: Number) =>
-      DeleteFuncionarioRequest(idFuncionario),
-    onSuccess: () => {
+    mutationFn: (idFuncionario: number) => DeleteFuncionarioRequest(idFuncionario),
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetFuncionarios"] });
-      toast.success("Funcionário deletado com sucesso!");
+      toast.success(`${response}`);
     },
     onError: (error: AxiosError) => {
-      toast.error(`Erro ao deletar funcionário. Erro: ${error.response?.data}`);
+      toast.error(`${error.response?.data}`);
     },
   });
 }

@@ -1,0 +1,13 @@
+C:\Git\AmSystem\ApiAmSystem\ApiAmSystem.Domain\bin\Release\net8.0\ApiAmSystem.Domain.deps.json
+C:\Git\AmSystem\ApiAmSystem\ApiAmSystem.Domain\bin\Release\net8.0\ApiAmSystem.Domain.dll
+C:\Git\AmSystem\ApiAmSystem\ApiAmSystem.Domain\bin\Release\net8.0\ApiAmSystem.Domain.pdb
+C:\Git\AmSystem\ApiAmSystem\ApiAmSystem.Domain\obj\Release\net8.0\ApiAmSystem.Domain.csproj.AssemblyReference.cache
+C:\Git\AmSystem\ApiAmSystem\ApiAmSystem.Domain\obj\Release\net8.0\ApiAmSystem.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Git\AmSystem\ApiAmSystem\ApiAmSystem.Domain\obj\Release\net8.0\ApiAmSystem.Domain.AssemblyInfoInputs.cache
+C:\Git\AmSystem\ApiAmSystem\ApiAmSystem.Domain\obj\Release\net8.0\ApiAmSystem.Domain.AssemblyInfo.cs
+C:\Git\AmSystem\ApiAmSystem\ApiAmSystem.Domain\obj\Release\net8.0\ApiAmSystem.Domain.csproj.CoreCompileInputs.cache
+C:\Git\AmSystem\ApiAmSystem\ApiAmSystem.Domain\obj\Release\net8.0\ApiAmSystem.Domain.sourcelink.json
+C:\Git\AmSystem\ApiAmSystem\ApiAmSystem.Domain\obj\Release\net8.0\ApiAmSystem.Domain.dll
+C:\Git\AmSystem\ApiAmSystem\ApiAmSystem.Domain\obj\Release\net8.0\refint\ApiAmSystem.Domain.dll
+C:\Git\AmSystem\ApiAmSystem\ApiAmSystem.Domain\obj\Release\net8.0\ApiAmSystem.Domain.pdb
+C:\Git\AmSystem\ApiAmSystem\ApiAmSystem.Domain\obj\Release\net8.0\ref\ApiAmSystem.Domain.dll

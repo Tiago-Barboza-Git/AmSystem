@@ -15,6 +15,7 @@ interface DataTableRowActionsProps<TData> {
   onView?: (value: TData) => void;
   onDelete?: (value: TData, index: number) => void;
   onCancel?: (value: TData, index: number) => void;
+  onPagar?: (value: TData) => void;
 }
 
 export function DataTableRowActions<TData>({
@@ -23,6 +24,7 @@ export function DataTableRowActions<TData>({
   onView,
   onDelete,
   onCancel,
+  onPagar,
 }: DataTableRowActionsProps<TData>) {
   return (
     <DropdownMenu>
@@ -38,25 +40,37 @@ export function DataTableRowActions<TData>({
         >
           Editar
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className={`${onView === undefined || onEdit === undefined ? "hidden" : "visible"}`} />
         <DropdownMenuItem
           className={`${onView === undefined ? "hidden" : "visible"}`}
           onClick={() => (onView !== undefined ? onView(row.original) : "")}
         >
           Visualizar
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className={`${onDelete === undefined || onView === undefined ? "hidden" : "visible"}`} />
         <DropdownMenuItem
           className={`${onDelete === undefined ? "hidden" : "visible"}`}
           onClick={() => (onDelete !== undefined ? onDelete(row.original, row.index) : "")}
         >
           Deletar
         </DropdownMenuItem>
+        <DropdownMenuSeparator
+          className={`${onCancel === undefined || onDelete === undefined ? "hidden" : "visible"}`}
+        />
         <DropdownMenuItem
           className={`${onCancel === undefined ? "hidden" : "visible"}`}
           onClick={() => (onCancel !== undefined ? onCancel(row.original, row.index) : "")}
         >
           Cancelar
+        </DropdownMenuItem>
+        <DropdownMenuSeparator
+          className={`${onPagar === undefined || onCancel === undefined ? "hidden" : "visible"}`}
+        />
+        <DropdownMenuItem
+          className={`${onPagar === undefined ? "hidden" : "visible"}`}
+          onClick={() => (onPagar !== undefined ? onPagar(row.original) : "")}
+        >
+          Pagar
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

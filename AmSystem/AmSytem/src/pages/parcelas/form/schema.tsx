@@ -10,7 +10,7 @@ export const ParcelaFormSchema = z
     numParcela: z.number().refine((value) => value > 0, "Obrigatório"),
     dias: z.number().refine((value) => value > 0, "Obrigatório"),
     porcentagem: z.union([z.string(), z.number()]),
-    idFormaPagamento: z.number().optional(),
+    idFormaPagamento: z.number({ message: "Obrigatório" }).refine((value) => Number(value) > 0, "Obrigatório"),
     formaPagamento: z.custom<IFormaPagamento>().optional(),
   })
   .superRefine((data, ctx) => {
@@ -32,4 +32,4 @@ export const defaultValues = {
   idFormaPagamento: 0,
 };
 
-salario: z.union([z.string(), z.number()]).optional();
+z.union([z.string(), z.number()]).optional();

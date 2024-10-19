@@ -1,32 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PostFuncionario, PutFuncionario } from "../services/queries";
-import {
-  FuncionarioFormData,
-  FuncionarioFormSchema,
-  defaultValues,
-} from "./schema";
+import { FuncionarioFormData, FuncionarioFormSchema, defaultValues } from "./schema";
 import { useForm, FormProvider } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { removeSpecialCharacters } from "@/functions/functions";
-import {
-  formatPISPASEP,
-  insertMaskCEP,
-  insertMaskCPF,
-  insertMaskCel,
-} from "@/functions/masks";
-import {
-  Dialog,
-  DialogHeader,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { formatPISPASEP, insertMaskCEP, insertMaskCPF, insertMaskCel } from "@/functions/masks";
+import { Dialog, DialogHeader, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
@@ -48,6 +28,7 @@ import { Search } from "lucide-react";
 import { CurrencyInput } from "react-currency-mask";
 import { Input } from "@/components/ui/input";
 import InputCalendar from "@/components/form/inputCalendar";
+import InputMoney from "@/components/form/inputMoney";
 
 interface funcionarioFormProps {
   action: string;
@@ -56,28 +37,26 @@ interface funcionarioFormProps {
   onOpenChange: (value: boolean) => void;
 }
 
-const FuncionarioForm = ({
-  action,
-  isOpen,
-  funcionario,
-  onOpenChange,
-}: funcionarioFormProps) => {
+const FuncionarioForm = ({ action, isOpen, funcionario, onOpenChange }: funcionarioFormProps) => {
+  const [disabled, setDisabled] = useState<boolean>();
   const [openCidades, setOpenCidades] = useState<boolean>(false);
   const [cidade, setCidade] = useState<ICidade | undefined>();
   const putFuncionario = PutFuncionario(onOpenChange);
   const postFuncionario = PostFuncionario(onOpenChange);
   const form = useForm<FuncionarioFormData>({
-    mode: "onChange",
+    mode: "onSubmit",
     resolver: zodResolver(FuncionarioFormSchema),
     defaultValues: defaultValues,
   });
 
   useEffect(() => {
-    if (action === "Edit") {
+    if (action === "Edit" || action === "View") {
+      action === "View" ? setDisabled(true) : setDisabled(false);
       form.reset({
         ...funcionario,
       });
     } else {
+      setDisabled(false);
       form.reset(defaultValues);
     }
   }, [funcionario, isOpen]);
@@ -112,17 +91,10 @@ const FuncionarioForm = ({
         }}
       >
         <DialogHeader>
-          <DialogTitle>
-            {funcionario
-              ? "Atualizar o funcionário"
-              : "Adicionar novo funcionário"}
-          </DialogTitle>
+          <DialogTitle>{funcionario ? "Atualizar o funcionário" : "Adicionar novo funcionário"}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            className="space-y-4 flex flex-col"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form className="space-y-4 flex flex-col" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-row justify-between">
               <div className="flex flex-row gap-4">
                 <FormFieldInput
@@ -142,10 +114,7 @@ const FuncionarioForm = ({
                     <FormItem className="flex flex-col gap-2 items-center justify-center">
                       <FormLabel>Ativo</FormLabel>
                       <FormControl>
-                        <Switch
-                          defaultChecked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} disabled={disabled} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -162,6 +131,7 @@ const FuncionarioForm = ({
                   label="Funcionário*"
                   name="funcionario"
                   control={form.control}
+                  disabled={disabled}
                   className="col-span-4"
                 />
 
@@ -169,6 +139,7 @@ const FuncionarioForm = ({
                   label="Apelido"
                   name="apelido"
                   control={form.control}
+                  disabled={disabled}
                   errorMessage={form.formState.errors.apelido?.message}
                   className="col-span-3"
                 />
@@ -184,6 +155,7 @@ const FuncionarioForm = ({
                           onValueChange={(value) => {
                             field.onChange(value);
                           }}
+                          disabled={disabled}
                         >
                           <SelectTrigger className="">
                             <SelectValue>
@@ -203,9 +175,7 @@ const FuncionarioForm = ({
                           </SelectContent>
                         </Select>
                       </FormControl>
-                      <FormLabel className="text-xs">
-                        {form.formState.errors.sexo?.message}
-                      </FormLabel>
+                      <FormLabel className="text-xs">{form.formState.errors.sexo?.message}</FormLabel>
                     </FormItem>
                   )}
                 />
@@ -215,6 +185,7 @@ const FuncionarioForm = ({
                   name="telefone"
                   control={form.control}
                   maskFunction={insertMaskCel}
+                  disabled={disabled}
                   className="col-span-2"
                 />
 
@@ -224,6 +195,7 @@ const FuncionarioForm = ({
                   control={form.control}
                   errorMessage={form.formState.errors.celular?.message}
                   maskFunction={insertMaskCel}
+                  disabled={disabled}
                   className="col-span-2"
                 />
 
@@ -231,16 +203,18 @@ const FuncionarioForm = ({
                   label="Email*"
                   name="email"
                   control={form.control}
+                  disabled={disabled}
                   className="col-span-4"
                   errorMessage={form.formState.errors.email?.message}
                 />
 
                 <FormFieldInput
-                  label="CPF*"
+                  label="CPF"
                   name="cpf"
                   control={form.control}
                   errorMessage={form.formState.errors.cpf?.message}
                   maskFunction={insertMaskCPF}
+                  disabled={disabled}
                   className="col-span-2"
                 />
 
@@ -249,6 +223,7 @@ const FuncionarioForm = ({
                   name="rg"
                   control={form.control}
                   errorMessage={form.formState.errors.rg?.message}
+                  disabled={disabled}
                   className="col-span-2"
                 />
 
@@ -257,6 +232,7 @@ const FuncionarioForm = ({
                   name="pis"
                   control={form.control}
                   maskFunction={formatPISPASEP}
+                  disabled={disabled}
                   className="col-span-2"
                 />
 
@@ -267,6 +243,7 @@ const FuncionarioForm = ({
                     setValue={form.setValue}
                     value={form.watch("dtNascimento")}
                     control={form.control}
+                    disabled={disabled}
                   />
                 </div>
               </div>
@@ -282,6 +259,7 @@ const FuncionarioForm = ({
                   className="col-span-3"
                   errorMessage={form.formState.errors.cep?.message}
                   maskFunction={insertMaskCEP}
+                  disabled={disabled}
                 />
 
                 <FormFieldInput
@@ -290,6 +268,7 @@ const FuncionarioForm = ({
                   control={form.control}
                   className="col-span-3"
                   errorMessage={form.formState.errors.logradouro?.message}
+                  disabled={disabled}
                 />
 
                 <FormFieldInput
@@ -299,6 +278,7 @@ const FuncionarioForm = ({
                   className="col-span-1"
                   isNumber={true}
                   errorMessage={form.formState.errors.numero?.message}
+                  disabled={disabled}
                 />
 
                 <FormFieldInput
@@ -306,6 +286,7 @@ const FuncionarioForm = ({
                   name="complemento"
                   control={form.control}
                   className="col-span-3"
+                  disabled={disabled}
                 />
 
                 <FormFieldInput
@@ -313,6 +294,7 @@ const FuncionarioForm = ({
                   name="bairro"
                   control={form.control}
                   errorMessage={form.formState.errors.bairro?.message}
+                  disabled={disabled}
                   className="col-span-3"
                 />
                 <FormFieldInput
@@ -321,6 +303,7 @@ const FuncionarioForm = ({
                   control={form.control}
                   isNumber={true}
                   disabled={true}
+                  errorMessage={form.formState.errors.idCidade?.message}
                   className="col-span-1 row-start-3 row-end-3"
                 />
 
@@ -329,6 +312,7 @@ const FuncionarioForm = ({
                   name="cidade.cidade"
                   control={form.control}
                   disabled={true}
+                  errorMessage={form.formState.errors.cidade?.message}
                   className="col-span-2 row-start-3 row-end-3"
                 />
 
@@ -357,11 +341,11 @@ const FuncionarioForm = ({
                     }}
                   >
                     <DialogTrigger asChild className="absolute bottom-0">
-                      <Button variant="default">
+                      <Button variant="default" className={`${action === "View" ? "hidden" : "visible"}`} type="button">
                         <Search />
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="!p-0">
+                    <DialogContent className="!p-0 !max-w-4xl">
                       <CidadesPage setCidade={setCidade} />
                     </DialogContent>
                   </Dialog>
@@ -372,24 +356,12 @@ const FuncionarioForm = ({
             <div className="flex flex-col gap-4">
               <Label>Dados da Função</Label>
               <div className="grid grid-cols-8 grid-rows-2 gap-4">
-                <FormField
-                  name="salario"
+                <InputMoney
                   control={form.control}
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col col-span-2 gap-2">
-                      <FormLabel>Salário</FormLabel>
-                      <FormControl>
-                        <CurrencyInput
-                          defaultValue={field.value}
-                          onChangeValue={field.onChange}
-                          autoReset={true}
-                          currency="BRL"
-                          locale="pt-BR"
-                          InputElement={<Input defaultValue={field.value} />}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
+                  watch={form.watch}
+                  labelName="Salário"
+                  nameValor="salario"
+                  disabled={disabled}
                 />
 
                 <FormFieldInput
@@ -397,6 +369,7 @@ const FuncionarioForm = ({
                   name="cargo"
                   control={form.control}
                   className="col-span-4"
+                  disabled={disabled}
                 />
 
                 <InputCalendar
@@ -405,6 +378,7 @@ const FuncionarioForm = ({
                   setValue={form.setValue}
                   value={form.watch("dtAdmissao")}
                   control={form.control}
+                  disabled={disabled}
                   className="row-start-2 col-span-2"
                 />
 
@@ -414,6 +388,7 @@ const FuncionarioForm = ({
                   setValue={form.setValue}
                   value={form.watch("dtDemissao")}
                   control={form.control}
+                  disabled={disabled}
                   className="row-start-2 col-span-2"
                 />
               </div>
@@ -440,7 +415,7 @@ const FuncionarioForm = ({
                 className="col-span-2"
               />
             </div>
-            <Button type="submit" variant="default">
+            <Button type="submit" variant="default" className={`${action === "View" ? "hidden" : "visible"}`}>
               Salvar
             </Button>
           </form>

@@ -11,7 +11,7 @@ export interface IFuncionario {
   cpf: string;
   rg?: string;
   dtNascimento?: Date;
-  salario?: number | string;
+  salario: number;
   pis?: string;
   cep: string;
   logradouro: string;
@@ -38,7 +38,7 @@ export interface IPutFuncionario {
   email: string;
   telefone?: string;
   celular: string;
-  salario?: number | string;
+  salario: number;
   pis?: string;
   cep: string;
   logradouro: string;
@@ -62,7 +62,7 @@ export interface IPostFuncionario {
   email: string;
   telefone?: string;
   celular: string;
-  salario?: number | string;
+  salario: number;
   pis?: string;
   cep: string;
   logradouro: string;
@@ -75,4 +75,9 @@ export interface IPostFuncionario {
   idCidade: number;
   dtAdmissao?: Date;
   dtDemissao?: Date;
+}
+
+export interface IFuncionarioRef {
+  id: number;
+  funcionario: string;
 }
