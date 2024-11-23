@@ -1,17 +1,26 @@
-import { INotaDetails, INotaModel, IPostNota } from "../Nota/nota.interfaces";
-import { IClienteRef } from "../cliente.interfaces";
+import { INotaModel, IPostNota } from "../Nota/nota.interfaces";
+import { IClienteRef, iCliente } from "../cliente.interfaces";
 import { IFuncionarioRef } from "../funcionario.interfaces";
 import { IContaReceber, IPostContaReceber } from "./contasReceber..interfaces";
 import { IPostProdutoVenda, IProdutoVenda } from "./produtoVenda.interfaces";
 
 export interface IVenda extends INotaModel {
   idCliente: number;
-  cliente: IClienteRef;
-  percDesconto: number;
-  idFuncionario: number;
-  funcionario: IFuncionarioRef;
+  cliente: iCliente;
   produtos: IProdutoVenda[];
   contasReceber: IContaReceber[];
+}
+
+export interface IVendaRequest {
+  vendas: IVenda[];
+  nextIdent: number;
+}
+
+export interface IPutVenda {
+  nrNota: number;
+  nrModelo: number;
+  nrSerie: number;
+  idCliente: number;
 }
 
 export interface IPostVenda extends IPostNota {
@@ -20,19 +29,12 @@ export interface IPostVenda extends IPostNota {
   contasReceber: IPostContaReceber[];
 }
 
-export interface IVendaDetails extends INotaDetails {
-  idCliente: number;
-}
-
 export const initialVenda: IVenda = {
   nrNota: 0,
   nrModelo: 0,
   nrSerie: 0,
   idCliente: 0,
-  cliente: {
-    id: 0,
-    pessoaRazaoSocial: "",
-  },
+  cliente: {} as iCliente,
   dtEmissao: new Date(),
   produtos: [],
   totalProdutos: 0,
@@ -46,10 +48,4 @@ export const initialVenda: IVenda = {
   dtCancelamento: undefined,
   dtCadastro: new Date(),
   dtAlteracao: new Date(),
-  percDesconto: 0,
-  funcionario: {
-    id: 0,
-    funcionario: "",
-  },
-  idFuncionario: 0,
 };

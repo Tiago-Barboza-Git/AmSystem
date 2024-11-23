@@ -43,7 +43,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PostCondicaoPagamento(CondicaoPagamentoPostRequest pCondicaoPagamento)
         {
             string result = condicaoPagamentoService.PostCondicaoPagamento(pCondicaoPagamento);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -54,7 +54,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PutCondicaoPagamento(CondicaoPagamentoPutRequest pCondicaoPagamento)
         {
             string result = condicaoPagamentoService.PutCondicaoPagamento(pCondicaoPagamento);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -65,8 +65,8 @@ namespace ApiAmSystem.Controllers
         public IActionResult DeleteCondicaoPagamento(int pId)
         {
             string result = condicaoPagamentoService.DeleteCondicaoPagamento(pId);
-            if (result != null) return Ok(result);
-            else return BadRequest();
+            if (result.Contains("sucesso")) return Ok(result);
+            else return BadRequest(result);
         }
     }
 }

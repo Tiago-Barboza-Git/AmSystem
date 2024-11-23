@@ -42,7 +42,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PostCliente(ClientePostRequest pCliente)
         {
             string result = clientesService.PostCliente(pCliente);
-            if (result.Contains("Sucesso"))
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -53,7 +53,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PutCliente(ClientePutRequest pCliente)
         {
             string result = clientesService.PutCliente(pCliente);
-            if (result.Contains("Sucesso"))
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);

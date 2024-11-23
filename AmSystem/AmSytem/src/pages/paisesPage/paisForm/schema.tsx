@@ -13,7 +13,6 @@ export const PaisFormSchema = z.object({
   sigla: z
     .string({ message: "Obrigatório" })
     .min(1, "Obrigatório")
-    .max(5, "Só é permitido 5 caracteres")
     .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/, "É permitido apenas letras, acentos e espaços"),
   ativo: z.boolean(),
   dtCadastro: z.custom<Date>(),

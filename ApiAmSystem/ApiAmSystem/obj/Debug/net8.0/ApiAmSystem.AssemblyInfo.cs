@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ApiAmSystem")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e96b0accdbf48ffd4baa9dcfd3f6fbdad6fd1ab8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+df14183afd5861e5e843d40eb8e71c8df4a07a5e")]
 [assembly: System.Reflection.AssemblyProductAttribute("ApiAmSystem")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ApiAmSystem")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

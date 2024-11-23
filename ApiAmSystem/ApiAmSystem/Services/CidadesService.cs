@@ -244,7 +244,7 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pId;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Cidade deletada com sucesso!";
                 }
                 catch (SqlException ex)
                 {

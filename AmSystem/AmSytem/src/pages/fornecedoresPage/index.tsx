@@ -73,6 +73,7 @@ export function FornecedoresPage({ setFornecedor }: FornecedoresPageProps) {
                 setOpen(value);
                 if (!value) setSelectedFornecedor(null);
               }}
+              setFornecedor={setFornecedor}
             />
             <DeleteDialog
               registerId={selectedFornecedor?.id as number}
@@ -88,7 +89,10 @@ export function FornecedoresPage({ setFornecedor }: FornecedoresPageProps) {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getFornecedoresColumns({ onEdit, onDelete, onView }), [])}
+          columns={useMemo(
+            () => getFornecedoresColumns({ onEdit, onDelete: setFornecedor ? undefined : onDelete, onView }),
+            [],
+          )}
           data={fornecedores}
           onAdd={onAdd}
           onGet={onGet}

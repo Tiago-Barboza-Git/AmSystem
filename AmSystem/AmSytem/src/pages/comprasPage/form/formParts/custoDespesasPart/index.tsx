@@ -44,12 +44,15 @@ function CustosDespesasPart({
 }: custosDespesasPartProps) {
   useEffect(() => {
     if (action !== "View") {
-      console.log(Number(watch("seguro")));
       setValue(
         "totalCusto",
-        Number(formatMoney(watch("seguro"))) +
-          Number(formatMoney(watch("outrasDesp"))) +
-          Number(formatMoney(watch("frete"))),
+        Number(
+          Number(
+            Number(formatMoney(watch("seguro"))) +
+              Number(formatMoney(watch("outrasDesp"))) +
+              Number(formatMoney(watch("frete"))),
+          ).toFixed(2),
+        ),
       );
       setValue("totalNota", Number(watch("totalCusto")) + Number(watch("totalProdutos")));
       setValue("idCondicaoPagamento", 0);

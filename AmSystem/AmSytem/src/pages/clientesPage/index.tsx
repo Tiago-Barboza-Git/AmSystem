@@ -71,6 +71,7 @@ export function ClientesPage({ setCliente }: clientesPageProps) {
                 setOpen(value);
                 if (!value) setSelectedCliente(null);
               }}
+              setCliente={setCliente}
             />
             <DeleteDialog
               registerId={selectedCliente?.id as number}
@@ -86,7 +87,10 @@ export function ClientesPage({ setCliente }: clientesPageProps) {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getClientesColumns({ onEdit, onDelete, onView }), [])}
+          columns={useMemo(
+            () => getClientesColumns({ onEdit, onDelete: setCliente ? undefined : onDelete, onView }),
+            [],
+          )}
           data={clientes}
           onAdd={onAdd}
           onGet={onGet}

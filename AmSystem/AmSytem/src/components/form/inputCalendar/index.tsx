@@ -19,7 +19,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Calendar } from "../../calendar";
 import { cn } from "@/lib/utils";
-import { Label } from "@/components/text/text";
+import { Label } from "@radix-ui/react-label";
 
 export interface InputCalendarProps<T extends FieldValues> {
   name: Path<T>;
@@ -31,6 +31,8 @@ export interface InputCalendarProps<T extends FieldValues> {
   disabled?: boolean;
   value?: any;
   setValue?: UseFormSetValue<T>;
+  fromDate?: Date;
+  toDate?: Date;
 }
 
 const InputCalendar = <T extends FieldValues>({
@@ -43,6 +45,8 @@ const InputCalendar = <T extends FieldValues>({
   disabled = false,
   value,
   setValue,
+  fromDate,
+  toDate,
   ...rest
 }: InputCalendarProps<T>) => {
   const {
@@ -70,7 +74,7 @@ const InputCalendar = <T extends FieldValues>({
               variant={"outline"}
               className={cn(
                 `${error ? "border-red-500" : ""}`,
-                "w-[190px] justify-start text-left font-normal",
+                "w-[220px] justify-start text-left font-normal",
                 !data && "text-muted-foreground",
               )}
             >
@@ -85,8 +89,8 @@ const InputCalendar = <T extends FieldValues>({
               captionLayout="dropdown-buttons"
               selected={data}
               onSelect={(date) => (setValue ? setValue(name, date as PathValue<T, Path<T>>) : "")}
-              fromYear={1960}
-              toYear={2030}
+              fromDate={fromDate ? fromDate : undefined}
+              toDate={toDate ? toDate : undefined}
             />
           </PopoverContent>
         </Popover>

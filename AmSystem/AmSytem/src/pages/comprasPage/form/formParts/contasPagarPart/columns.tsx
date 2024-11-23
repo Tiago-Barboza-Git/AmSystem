@@ -3,8 +3,9 @@ import DataTableColumnHeader from "@/components/datatable/dataTableColumnHeader"
 import { DataTableRowActions } from "@/components/datatable/dataTableRowActions";
 import { formatDate } from "@/functions/functions";
 import { IContaPagar, IPostContaPagar } from "@/interfaces/contasPagar";
-import { CurrencyInput } from "react-currency-mask";
+// import { CurrencyInput } from "react-currency-mask";
 import { Input } from "@/components/ui/input";
+import CurrencyInput from "react-currency-input-field";
 
 export const getContaPagarPartColumns = ({}): ColumnDef<IPostContaPagar>[] => [
   {
@@ -36,9 +37,17 @@ export const getContaPagarPartColumns = ({}): ColumnDef<IPostContaPagar>[] => [
       <div>
         {
           <CurrencyInput
+            className={`flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50`}
+            prefix="R$ "
+            // fixedDecimalLength={2}
+            decimalScale={2}
+            allowDecimals={true}
+            allowNegativeValue={false}
+            disabled={true}
+            // onChange={(value) => {
+            //   field.onChange(String(value.target.value));
+            // }}
             value={row.original.valorParcela as string}
-            onChangeValue={() => ""}
-            InputElement={<Input disabled className="bg-transparent border-none shadow-none disabled:!text-red" />}
           />
         }
       </div>

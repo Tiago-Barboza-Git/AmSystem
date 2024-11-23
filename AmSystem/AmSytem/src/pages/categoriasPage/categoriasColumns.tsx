@@ -9,7 +9,7 @@ import { ICategoria } from "@/interfaces/categoria.interfaces";
 
 interface categoriasColumnsProps {
   onEdit: (categoria: ICategoria) => void;
-  onDelete: (categoria: ICategoria) => void;
+  onDelete?: (categoria: ICategoria) => void;
   onView: (categoria: ICategoria) => void;
 }
 

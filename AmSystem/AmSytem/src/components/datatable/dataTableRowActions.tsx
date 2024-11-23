@@ -16,6 +16,7 @@ interface DataTableRowActionsProps<TData> {
   onDelete?: (value: TData, index: number) => void;
   onCancel?: (value: TData, index: number) => void;
   onPagar?: (value: TData) => void;
+  onReceber?: (value: TData) => void;
 }
 
 export function DataTableRowActions<TData>({
@@ -25,6 +26,7 @@ export function DataTableRowActions<TData>({
   onDelete,
   onCancel,
   onPagar,
+  onReceber,
 }: DataTableRowActionsProps<TData>) {
   return (
     <DropdownMenu>
@@ -71,6 +73,12 @@ export function DataTableRowActions<TData>({
           onClick={() => (onPagar !== undefined ? onPagar(row.original) : "")}
         >
           Pagar
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className={`${onReceber === undefined ? "hidden" : "visible"}`}
+          onClick={() => (onReceber !== undefined ? onReceber(row.original) : "")}
+        >
+          Receber
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

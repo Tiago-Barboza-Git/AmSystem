@@ -79,7 +79,7 @@ export const getVendasColumns = ({ onView, onCancel }: vendasColumnsProps): Colu
       <div>
         {row.original.dtCancelamento === null ? (
           <span>
-            {row.original.contasReceber.every((conta) => Number(conta.valorAcertado) > 0) ? (
+            {row.original.contasReceber.every((conta) => Number(conta.valorPago) > 0) ? (
               <Circle color="green" fill="green" size={20} />
             ) : (
               <Circle color="orange" fill="orange" size={20} />
@@ -96,13 +96,12 @@ export const getVendasColumns = ({ onView, onCancel }: vendasColumnsProps): Colu
   {
     id: "actions",
     cell: ({ row }) => {
-      console.log(row.original.dtCancelamento);
       return (
         <DataTableRowActions
           row={row}
           onView={onView}
           onCancel={
-            row.original.contasReceber.some((conta) => Number(conta.valorAcertado) > 0) ||
+            row.original.contasReceber.some((conta) => Number(conta.valorPago) > 0) ||
             row.original.dtCancelamento !== null
               ? undefined
               : onCancel

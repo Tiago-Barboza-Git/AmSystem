@@ -47,7 +47,7 @@ namespace ApiAmSystem.Controllers
         {
             try
             {
-                bool result = compraService.VerificaExistenciaCompra(pNrNota, pNrModelo, pNrSerie, pIdFornecedor);
+                string result = compraService.VerificaExistenciaCompra(pNrNota, pNrModelo, pNrSerie, pIdFornecedor);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -60,18 +60,11 @@ namespace ApiAmSystem.Controllers
         [Route("PutCancelarCompra")]
         public IActionResult PutCancelarCompra(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor)
         {
-            try
-            {
-                string result = compraService.PutCancelarCompra(pNrNota, pNrModelo, pNrSerie, pIdFornecedor);
-                if (result.Contains("sucesso"))
-                    return Ok("Compra cancelada com sucesso");
-                else
-                    return BadRequest("Compra já possui parcelas pagas, com isso não é possível realizar o cancelamento!");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro ao cancelar compra: {ex.Message}");
-            }
+            string result = compraService.PutCancelarCompra(pNrNota, pNrModelo, pNrSerie, pIdFornecedor);
+            if (result.Contains("sucesso"))
+                return Ok(result);
+            else
+                return BadRequest(result);
         }
 
     }

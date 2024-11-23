@@ -216,15 +216,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@DtCadastro", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Funcionário adicionado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
                     if (ex.Number == 2627 || ex.Number == 2601)
                     {
-                        return "CPF ou PIS já cadastrado";
+                        return "CPF ou PIS já cadastrado!";
                     }
-                    return ex.Message;
+                    return "Erro ao adicionar funcionário!";
                 }
                 finally
                 {
@@ -272,15 +272,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@DtDemissao", SqlDbType.Date).Value = pFuncionario.dtDemissao == null ? DBNull.Value : pFuncionario.dtDemissao?.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Funcionário alterado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
                     if (ex.Number == 2627 || ex.Number == 2601)
                     {
-                        return "CPF ou PIS já cadastrado";
+                        return "CPF já cadastrado";
                     }
-                    return ex.Message;
+                    return "Erro ao alterar funcionário!";
                 }
                 finally
                 {
@@ -301,11 +301,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pId;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Funcionário deletado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 547)
+                    {
+                        return "Funcionário está vinculado a outros registros!";
+                    }
+                    return "Erro ao adicionar funcionário!";
                 }
                 finally
                 {

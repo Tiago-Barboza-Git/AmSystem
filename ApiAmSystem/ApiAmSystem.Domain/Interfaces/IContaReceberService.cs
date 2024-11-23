@@ -12,6 +12,8 @@ namespace ApiAmSystem.Domain.Interfaces
     {
         IEnumerable<ContaReceberModel> GetContasReceber(bool pAtivo);
         IEnumerable<ContaReceberModel> GetContasReceberByVenda(int pNrNota, int pNrModelo, int pNrSerie, int pIdCliente);
-        //bool PutContaReceber(ContaPagarPutRequest pContaPagar);
+        string PutContaReceber(ContaReceberPutRequest pContaReceber);
+
+        //string PutContaReceber(ContaPagarPutRequest pContaPagar);
     }
 }

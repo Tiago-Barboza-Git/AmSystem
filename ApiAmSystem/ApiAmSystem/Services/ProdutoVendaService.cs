@@ -26,11 +26,12 @@ namespace ApiAmSystem.Services
                     conn.Open();
                     List<ProdutoVendaModel> result = new List<ProdutoVendaModel>();
                     string query = @"select 
-                                        pc.IdProduto,
+                                        pv.IdProduto,
                                         p.Produto,
-                                        pc.Quantidade,
-                                        pc.PrecoUnit,
-                                        pc.PrecoTotal,
+                                        pv.Quantidade,
+                                        pv.PrecoUnit,
+                                        pv.Desconto,
+                                        pv.PrecoTotal,
                                         p.IdUnidadeMedida,
                                         um.UnidadeMedida
                                     from TbProdutosVenda pv
@@ -57,6 +58,7 @@ namespace ApiAmSystem.Services
                                 IdProduto = reader.GetInt32("IdProduto"),
                                 PrecoUnit = reader.GetDecimal("PrecoUnit"),
                                 PrecoTotal = reader.GetDecimal("PrecoTotal"),
+                                Desconto = reader.GetDecimal("Desconto"),
                                 Quantidade = reader.GetInt32("Quantidade"),
                                 Produto = new ProdutoModel
                                 {

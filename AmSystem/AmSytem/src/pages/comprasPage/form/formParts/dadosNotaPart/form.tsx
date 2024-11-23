@@ -7,9 +7,10 @@ import { ICompra } from "@/interfaces/compra.interfaces";
 import { IFornecedor, IFornecedorRef } from "@/interfaces/fornecedor.interfaces";
 import { CompraFormData } from "@/pages/comprasPage/form/schema";
 import { FornecedoresPage } from "@/pages/fornecedoresPage";
+import { subMonths } from "date-fns";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Control, FieldErrors, UseFormGetValues, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { Control, FieldErrors, UseFormGetValues, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 
 interface dadosNotaPartProps {
   control: Control<CompraFormData>;
@@ -17,6 +18,7 @@ interface dadosNotaPartProps {
   getValue: UseFormGetValues<CompraFormData>;
   watch: UseFormWatch<CompraFormData>;
   errors: FieldErrors<CompraFormData>;
+  trigger: UseFormTrigger<CompraFormData>;
   compra: ICompra;
   action?: string;
   disabled?: boolean;
@@ -32,6 +34,7 @@ function DadosNotaPart({
   compra,
   action,
   disabled,
+  trigger,
   activeStep,
 }: dadosNotaPartProps) {
   const [openFornecedores, setOpenFornecedores] = useState<boolean>(false);
@@ -46,6 +49,7 @@ function DadosNotaPart({
   return (
     <div className="grid grid-cols-12 grid-rows-2 gap-6">
       <FormFieldInput
+        trigger={trigger}
         label="Nr. Nota*"
         name="nrNota"
         control={control}
@@ -56,6 +60,7 @@ function DadosNotaPart({
       />
 
       <FormFieldInput
+        trigger={trigger}
         label="Nr. Modelo*"
         name="nrModelo"
         control={control}
@@ -66,6 +71,7 @@ function DadosNotaPart({
       />
 
       <FormFieldInput
+        trigger={trigger}
         label="Nr. Série*"
         name="nrSerie"
         control={control}
@@ -106,6 +112,8 @@ function DadosNotaPart({
           value={watch("dtEmissao")}
           disabled={disabled}
           errorMessage={errors?.dtEmissao?.message}
+          toDate={new Date()}
+          fromDate={subMonths(new Date(), 2)}
         />
       </div>
 
@@ -118,6 +126,7 @@ function DadosNotaPart({
           value={watch("dtChegada")}
           disabled={disabled}
           errorMessage={errors?.dtChegada?.message}
+          fromDate={watch("dtEmissao")}
         />
       </div>
     </div>

@@ -22,18 +22,21 @@ export const FornecedorFormSchema = z
 
     celularRepresentante: z.string().optional(),
     telefone: z.string().optional(),
-    celular: z.string({ message: "Obrigatório" }),
+    celular: z.string({ message: "Obrigatório" }).min(1, "Obrigatório"),
     email: z.string({ message: "Obrigatório" }).email("Email inválido"),
-    cep: z.string({ message: "Obrigatório" }),
+    cep: z.string({ message: "Obrigatório" }).min(1, "Obrigatório"),
     logradouro: z.string({ message: "Obrigatório" }).min(1, "Obrigatório"),
     numero: z.number().refine((e) => e > 0, {
       message: "Obrigatório",
     }),
     complemento: z.string().optional(),
-    bairro: z.string({ message: "Obrigatório" }),
+    bairro: z.string({ message: "Obrigatório" }).min(1, "Obrigatório"),
     cpfCnpj: z.string().default(""),
-    ieRg: z.string().optional(),
-    dtNascimento: z.custom<Date>(),
+    ieRg: z
+      .string()
+      .transform((value) => String(value))
+      .optional(),
+    dtNascimento: z.custom<Date>().optional(),
     ativo: z.boolean(),
     idCidade: z.number({ message: "Obrigatório" }).refine((value) => value > 0, {
       message: "Obrigatório",
@@ -51,9 +54,6 @@ export const FornecedorFormSchema = z
         path: ["sexo"],
       });
     }
-
-    console.log("Data");
-    console.log(data);
 
     //Validação de CPF e CNPJ
     if (data.cidade.cidade !== undefined) {
@@ -94,6 +94,23 @@ export const defaultValues = {
   id: 0,
   ativo: true,
   numero: 0,
+  sexo: undefined,
+  tpPessoa: "F",
+  pessoaRazaoSocial: "",
+  apelidoNomeFantasia: "",
+  representante: "",
+  celularRepresentante: "",
+  telefone: "",
+  celular: "",
+  email: "",
+  cep: "",
+  logradouro: "",
+  complemento: "",
+  bairro: "",
+  cpfCnpj: "",
+  ieRg: "",
+  idCidade: 0,
+  cidade: undefined,
   dtCadastro: new Date(),
   dtAlteracao: new Date(),
 };

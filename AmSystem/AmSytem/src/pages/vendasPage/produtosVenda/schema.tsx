@@ -12,6 +12,7 @@ export const ProdutoVendaFormSchema = z.object({
   precoUnit: z
     .preprocess((val) => Number(formatMoney(String(val))), z.number())
     .refine((value) => value !== 0, "Deve ser maior que 0"),
+  desconto: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
   precoTotal: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
   idProduto: z.number().min(1, "Obrigatório"),
   produto: z.custom<IProduto>(),
@@ -24,4 +25,5 @@ export const defaultValues = {
   precoUnit: 0,
   precoTotal: 0,
   idProduto: 0,
+  desconto: 0,
 };

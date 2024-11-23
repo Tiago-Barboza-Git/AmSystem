@@ -49,7 +49,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PostEstado(FuncionarioPostRequest pFuncionario)
         {
             string result = funcionariosService.PostFuncionario(pFuncionario);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -62,7 +62,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PutEstado(FuncionarioPutRequest pFuncionario)
         {
             string result = funcionariosService.PutFuncionario(pFuncionario);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -75,7 +75,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult DeleteEstado(int pId)
         {
             string result = funcionariosService.DeleteFuncionario(pId);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);

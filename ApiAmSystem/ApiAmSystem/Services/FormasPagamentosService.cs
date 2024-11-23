@@ -127,7 +127,7 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@DtCadastro", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Forma de pagamento adicionada com sucesso!";
                 }
                 catch (SqlException ex)
                 {
@@ -135,7 +135,7 @@ namespace ApiAmSystem.Services
                     {
                         return "Forma de pagamento já existente";
                     }
-                    return ex.Message;
+                    return "Erro ao adicionar forma de pagamento!";
                 }
                 finally
                 {
@@ -162,7 +162,7 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pFormaPagamento.ativo;
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Forma de pagamento alterada com sucesso!";
                 }
                 catch (SqlException ex)
                 {
@@ -170,7 +170,7 @@ namespace ApiAmSystem.Services
                     {
                         return "Forma de pagamento já existente";
                     }
-                    return ex.Message;
+                    return "Erro ao alterar forma de pagamento!";
                 }
                 finally
                 {
@@ -191,11 +191,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pId;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Forma de pagamento deletada com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 547)
+                    {
+                        return "Forma de pagamento está vinculada a outros registros!";
+                    }
+                    return "Erro ao deletar forma de pagamento!";
                 }
                 finally
                 {

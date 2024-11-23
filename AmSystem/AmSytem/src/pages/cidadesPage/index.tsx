@@ -11,9 +11,10 @@ import CidadeForm from "./cidadeForm";
 
 interface CidadesPageProps {
   setCidade?: (cidade: ICidade) => void;
+  justBrasil?: boolean;
 }
 
-export function CidadesPage({ setCidade }: CidadesPageProps) {
+export function CidadesPage({ setCidade, justBrasil }: CidadesPageProps) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
@@ -55,14 +56,20 @@ export function CidadesPage({ setCidade }: CidadesPageProps) {
   }, []);
 
   const cidadesQuery = GetCidades(ativos);
-  const cidades = cidadesQuery.data || []; // Ensure paises is an array
+  const cidades =
+    justBrasil !== undefined && justBrasil === true
+      ? cidadesQuery.data?.filter(
+          (value) =>
+            value.estado.pais.pais.toLowerCase() === "brasil" || value.estado.pais.sigla.toLowerCase() === "br",
+        )
+      : cidadesQuery.data || []; // Ensure paises is an array
 
   return (
-    <Card className={`h-full !min-w-4xl`}>
+    <Card className={`h-full !w-max-4xl`}>
       <CardHeader>
         <CardTitle>Cidades</CardTitle>
-        <div className="flex justify-between bg-red-400">
-          <div className="bg-red-500 border-red-100 !min-w-max">
+        <div className="flex justify-between">
+          <div>
             <CidadeForm
               action={action}
               isOpen={open}
@@ -71,6 +78,7 @@ export function CidadesPage({ setCidade }: CidadesPageProps) {
                 setOpen(value);
                 if (!value) setSelectedCidade(null);
               }}
+              setCidade={setCidade}
             />
             <DeleteDialog
               registerId={selectedCidade?.id as number}
@@ -86,7 +94,7 @@ export function CidadesPage({ setCidade }: CidadesPageProps) {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getCidadesColumns({ onEdit, onDelete, onView }), [])}
+          columns={useMemo(() => getCidadesColumns({ onEdit, onDelete: setCidade ? undefined : onDelete, onView }), [])}
           data={cidades}
           onAdd={onAdd}
           onGet={onGet}

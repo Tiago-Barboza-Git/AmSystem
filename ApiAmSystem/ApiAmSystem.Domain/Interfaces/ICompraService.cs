@@ -13,7 +13,7 @@ namespace ApiAmSystem.Domain.Interfaces
         CompraModel GetCompra(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor);
         IEnumerable<CompraModel> GetCompras(bool pCanceladas);
         string PostCompra(CompraPostRequest compra);
-        bool VerificaExistenciaCompra(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor);
+        string VerificaExistenciaCompra(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor);
         string PutCancelarCompra(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor);
     }
 }

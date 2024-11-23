@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.t
 import DeleteDialog from "@/components/dialog/deleteDialog/index.tsx";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
+import { AlertDialog } from "@/components/ui/alert-dialog.tsx";
 
 interface PaisesPageProps {
   setPais?: (pais: IPais) => void;
@@ -74,6 +75,7 @@ export const PaisesPage = ({ setPais }: PaisesPageProps) => {
                 setOpen(value);
                 if (!value) setSelectPais(null);
               }}
+              setPais={setPais}
             />
             <DeleteDialog
               registerId={selectPais?.id as number}
@@ -89,7 +91,7 @@ export const PaisesPage = ({ setPais }: PaisesPageProps) => {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getPaisesColumns({ onEdit, onDelete, onView }), [])}
+          columns={useMemo(() => getPaisesColumns({ onEdit, onDelete: setPais ? undefined : onDelete, onView }), [])}
           data={paises}
           onAdd={onAdd}
           onGet={onGet}

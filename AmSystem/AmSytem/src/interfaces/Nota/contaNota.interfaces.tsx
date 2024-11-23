@@ -7,16 +7,16 @@ export interface IContaNota {
   idFormaPagamento: number;
   formaPagamento: IFormaPagamento;
   numParcela: number;
-  valorParcela: number;
+  valorParcela: number | string;
   dtEmissao: Date;
   dtVencimento: Date;
   dtPagamento: Date;
-  juros: number;
-  multa: number;
-  desconto: number;
+  juros: number | string;
+  multa: number | string;
+  desconto: number | string;
   observacao: string;
   cancelada: boolean;
-  valorPago: number;
+  valorPago: number | string;
   dtCadastro: Date;
   dtAlteracao: Date;
 }
@@ -24,7 +24,7 @@ export interface IContaNota {
 export interface IPostContaNota {
   idFormaPagamento: number;
   numParcela: number;
-  valorParcela: number;
+  valorParcela: number | string;
   dtVencimento: Date;
 }
 
@@ -34,11 +34,11 @@ export interface IPutContaNota {
   nrSerie: number;
   idFormaPagamento: number;
   numParcela: number;
-  valorParcela: number;
+  valorParcela: number | string;
   dtPagamento: Date;
-  juros: number;
-  multa: number;
-  desconto: number;
-  valorPago: number;
-  observacao: number;
+  juros: number | string;
+  multa: number | string;
+  desconto: number | string;
+  valorPago: number | string;
+  observacao: string;
 }

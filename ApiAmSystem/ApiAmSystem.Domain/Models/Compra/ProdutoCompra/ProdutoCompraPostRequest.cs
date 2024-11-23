@@ -14,5 +14,6 @@ namespace ApiAmSystem.Domain.Models.Compra.ProdutoCompra
         public decimal CustoProd { get; set; }
         public decimal CustoUnit { get; set; }
         public decimal Rateio { get; set; }
+        public decimal Desconto { get; set; }
     }
 }

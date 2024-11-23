@@ -8,10 +8,11 @@ export const ParcelaFormSchema = z
   .object({
     id: z.number().optional(),
     numParcela: z.number().refine((value) => value > 0, "Obrigatório"),
-    dias: z.number().refine((value) => value > 0, "Obrigatório"),
+    // dias: z.number().refine((value) => value > 0, "Obrigatório"),
+    dias: z.number().optional(),
     porcentagem: z.union([z.string(), z.number()]),
     idFormaPagamento: z.number({ message: "Obrigatório" }).refine((value) => Number(value) > 0, "Obrigatório"),
-    formaPagamento: z.custom<IFormaPagamento>().optional(),
+    formaPagamento: z.custom<IFormaPagamento>(),
   })
   .superRefine((data, ctx) => {
     if (Number(data.porcentagem) <= 0 || isNaN(Number(data.porcentagem)))
@@ -20,6 +21,15 @@ export const ParcelaFormSchema = z
         message: "Obrigatório",
         path: ["porcentagem"],
       });
+
+    console.log(data.porcentagem);
+
+    // if (Number(Number(data.porcentagem).toFixed(0)) > 0 && Number(Number(data.porcentagem).toFixed(0)) < 100)
+    //   ctx.addIssue({
+    //     code: z.ZodIssueCode.custom,
+    //     message: "Obrigatório",
+    //     path: ["dias"],
+    //   });
   });
 
 export type ParcelaFormData = z.infer<typeof ParcelaFormSchema>;
@@ -31,5 +41,3 @@ export const defaultValues = {
   porcentagem: 0,
   idFormaPagamento: 0,
 };
-
-z.union([z.string(), z.number()]).optional();

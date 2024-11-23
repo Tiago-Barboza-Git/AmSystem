@@ -12,11 +12,14 @@ export const insertMaskCPF = (cpf?: string) => {
 export const insertMaskCNPJ = (cnpj?: string) => {
   if (cnpj === null || cnpj === undefined) return "";
   if (!cnpj) return "";
+
+  // Remove caracteres não numéricos e limita o tamanho a 14 dígitos
+  cnpj = cnpj.replace(/\D/g, "").slice(0, 14);
+
   return cnpj
-    .replace(/\D/g, "")
-    .replace(/^(\d{2})(\d)/, "$1.$2")
-    .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
-    .replace(/\.(\d{3})(\d)/, ".$1/$2")
+    .replace(/(\d{2})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1/$2")
     .replace(/(\d{4})(\d)/, "$1-$2");
 };
 
@@ -99,4 +102,10 @@ export function formatPISPASEP(value: string): string {
     .replace(/(\d{2})(\d{1,2})$/, "$1-$2");
 
   return formattedValue;
+}
+
+export function formatJustNumbers(value: string): string {
+  if (value === null || value === undefined) return "";
+  // Remove todos os caracteres que não são números
+  return value.replace(/\D/g, "");
 }

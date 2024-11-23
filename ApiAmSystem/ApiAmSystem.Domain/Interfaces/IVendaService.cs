@@ -10,10 +10,9 @@ namespace ApiAmSystem.Domain.Interfaces
 {
     public interface IVendaService
     {
-        VendaModel GetVenda(int pNrNota, int pNrModelo, int pNrSerie, int pIdCliente);
-        IEnumerable<VendaModel> GetVendas(bool pCanceladas);
-        bool PostVenda(VendaPostRequest venda);
-        bool PutCancelarVenda(int pNrNota, int pNrModelo, int pNrSerie, int pIdCliente);
-        //bool VerificaExistenciaCompra(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor);
+        VendaRequest GetVendas(bool pCanceladas);
+        bool VerificaExistenciaVenda(int pNrNota, int pNrModelo, int pNrSerie, int pIdCliente);
+        string PostVenda(VendaPostRequest venda);
+        string PutCancelarVenda(int pNrNota, int pNrModelo, int pNrSerie, int pIdCliente);
     }
 }

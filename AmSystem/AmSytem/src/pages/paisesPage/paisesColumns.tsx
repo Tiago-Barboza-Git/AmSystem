@@ -6,7 +6,7 @@ import { formatDate } from "@/functions/functions";
 
 interface paisesColumnsProps {
   onEdit: (pais: IPais) => void;
-  onDelete: (pais: IPais) => void;
+  onDelete?: (pais: IPais) => void;
   onView: (pais: IPais) => void;
 }
 

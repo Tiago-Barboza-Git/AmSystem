@@ -1,12 +1,6 @@
 import React from "react";
 import { Control, FieldValues, Path, useController } from "react-hook-form";
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form"; // Ajuste o caminho conforme necessário
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"; // Ajuste o caminho conforme necessário
 import { Textarea } from "@/components/ui/textarea";
 
 export interface FormFieldInputProps<T extends FieldValues> {
@@ -16,6 +10,7 @@ export interface FormFieldInputProps<T extends FieldValues> {
   className?: string;
   errorMessage?: string;
   disabled?: boolean;
+  maxLength?: number;
   [key: string]: any;
 }
 
@@ -26,6 +21,7 @@ const FormFieldTextArea = <T extends FieldValues>({
   className = "",
   errorMessage,
   disabled = false,
+  maxLength,
   ...rest
 }: FormFieldInputProps<T>) => {
   const {
@@ -43,15 +39,18 @@ const FormFieldTextArea = <T extends FieldValues>({
       control={control}
       render={({ field }) => (
         <FormItem className={`flex flex-col gap-2 justify-center ${className}`}>
-          <FormLabel className={`${hasError ? "text-red-500" : ""}`}>
-            {label}
-          </FormLabel>
+          <FormLabel className={`${hasError ? "text-red-500" : ""}`}>{label}</FormLabel>
           <FormControl>
             <Textarea
               disabled={disabled}
               value={field.value}
               onChange={(event) => {
                 const { value } = event.target;
+
+                if (maxLength && value.length > maxLength) {
+                  return; // Bloqueia a digitação se ultrapassar maxLength
+                }
+
                 if (!value) {
                   field.onChange(String(""));
                 } else {
@@ -63,9 +62,7 @@ const FormFieldTextArea = <T extends FieldValues>({
               ref={field.ref}
             />
           </FormControl>
-          {invalid && error && (
-            <FormMessage className="text-red-500">{error.message}</FormMessage>
-          )}
+          {invalid && error && <FormMessage className="text-red-500">{error.message}</FormMessage>}
         </FormItem>
       )}
     />

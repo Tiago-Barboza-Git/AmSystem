@@ -1,3 +1,4 @@
+import { formatMoney } from "@/functions/functions";
 import { ICondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
 import { IFormaPagamento } from "@/interfaces/formaPagamento.interfaces";
 import { IFornecedor } from "@/interfaces/fornecedor.interfaces";
@@ -11,22 +12,21 @@ export const ContaPagarFormSchema = z
     idFornecedor: z.number(),
     idFormaPagamento: z.number(),
     numParcela: z.number(),
-    valorParcela: z.union([z.string(), z.number()]),
+    valorParcela: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
     dtEmissao: z.custom<Date>(),
     dtVencimento: z.custom<Date>(),
     dtPagamento: z.custom<Date>(),
-    juros: z.union([z.string(), z.number()]),
-    multa: z
-      .union([z.string(), z.number()])
-      .optional()
-      .transform((value) => (value === undefined || isNaN(Number(value)) ? 0 : value)),
-    desconto: z.union([z.string(), z.number()]),
-    valorPago: z.union([z.string(), z.number()]),
+    dtCancelamento: z.custom<Date>().optional(),
+    juros: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
+    multa: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
+    desconto: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
+    valorPago: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
     observacao: z
       .string()
       .optional()
       .transform((value) => (value === undefined ? "" : value)),
     cancelada: z.boolean(),
+    avulsa: z.boolean().optional(),
     dtCadastro: z.custom<Date>(),
     dtAlteracao: z.custom<Date>(),
     fornecedor: z.custom<IFornecedor>(),

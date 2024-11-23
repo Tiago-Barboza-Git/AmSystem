@@ -265,7 +265,7 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.DateTime).Value = DateTime.Now;
                     cmd.Parameters.Add("@IdCidade", SqlDbType.Int).Value = pFornecedor.idCidade;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Fornecedor adicionado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
@@ -274,7 +274,7 @@ namespace ApiAmSystem.Services
                         if (pFornecedor.tpPessoa == 'F') return "Cpf já existente";
                         else return "Cnpj já existente";
                     }
-                    return ex.Message;
+                    return "Erro ao adicionar fornecedor!";
                 }
                 finally
                 {
@@ -318,7 +318,7 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.DateTime).Value = DateTime.Now;
                     cmd.Parameters.Add("@IdCidade", SqlDbType.Int).Value = pFornecedor.idCidade;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Fornecedor alterado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
@@ -327,7 +327,7 @@ namespace ApiAmSystem.Services
                         if (pFornecedor.tpPessoa == 'F') return "Cpf já existente";
                         else return "Cnpj já existente";
                     }
-                    return ex.Message;
+                    return "Erro ao alterar fornecedor!";
                 }
                 finally
                 {
@@ -348,11 +348,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pId;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Fornecedor deletado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    return ex.Message;
+                    if (ex.Number == 547)
+                    {
+                        return "Fornecedor está vinculado a outros registros!";
+                    }
+                    return "Erro ao deletar fornecedor!";
                 }
                 finally
                 {

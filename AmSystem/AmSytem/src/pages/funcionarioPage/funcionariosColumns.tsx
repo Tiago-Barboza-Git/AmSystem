@@ -37,7 +37,7 @@ export const getFuncionariosColumns = ({
     enableGlobalFilter: true,
   },
   {
-    accessorKey: "cpfCnpj",
+    accessorKey: "cpf",
     header: "CPF/CNPJ",
     enableGlobalFilter: true,
     cell: ({ row }) => (

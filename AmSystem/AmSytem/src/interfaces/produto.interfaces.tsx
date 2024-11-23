@@ -10,6 +10,7 @@ export interface IProduto {
   precoUltCompra: number;
   dtUltCompra?: Date;
   custoMedio: number;
+  custoUnitUltimaCompra?: number;
   desconto: number;
   observacao?: string;
   ativo: boolean;

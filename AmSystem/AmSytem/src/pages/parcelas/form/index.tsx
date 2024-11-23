@@ -15,6 +15,8 @@ import { PaisesPage } from "@/pages/paisesPage";
 import { FormasPagamentosPage } from "@/pages/formasPagamentosPage";
 import { formatPercentage, definirProximaParcela } from "@/functions/functions";
 import { toast } from "sonner";
+import useConfirmClose from "@/hooks/confirmClose";
+import AlertDialogConfirm from "@/components/form/alertDialogConfirm";
 
 interface ParcelaFormProps {
   isOpen: boolean;
@@ -26,11 +28,19 @@ interface ParcelaFormProps {
 export const ParcelaForm = ({ isOpen, onOpenChange, parcelasData, addParcela }: ParcelaFormProps) => {
   const [openFormaPagamento, setOpenFormaPagamento] = useState<boolean>(false);
   const [formaPagamento, setFormaPagamento] = useState<IFormaPagamento | null>(null);
+
   const form = useForm<ParcelaFormData>({
     mode: "onChange",
     resolver: zodResolver(ParcelaFormSchema),
     defaultValues: defaultValues,
   });
+
+  const { showAlert, setShowAlert, handleCloseDialog, handleConfirmClose } = useConfirmClose(
+    form,
+    `Add`,
+    onOpenChange,
+    "Parcelas",
+  );
 
   useEffect(() => {
     form.reset(defaultValues);
@@ -52,16 +62,17 @@ export const ParcelaForm = ({ isOpen, onOpenChange, parcelasData, addParcela }: 
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="!max-w-screen-md max-h-[80%] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{"Adicionar nova parcela"}</DialogTitle>
-        </DialogHeader>
-        <FormProvider {...form}>
-          <form className="space-y-4 flex flex-col" onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-4">
-              {/* <div className="flex flex-row justify-between col-span-9">
-                <FormFieldInput
+    <>
+      <Dialog open={isOpen} onOpenChange={handleCloseDialog}>
+        <DialogContent className="!max-w-screen-md max-h-[80%] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{"Adicionar nova parcela"}</DialogTitle>
+          </DialogHeader>
+          <FormProvider {...form}>
+            <form className="space-y-4 flex flex-col" onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="flex flex-col gap-4">
+                {/* <div className="flex flex-row justify-between col-span-9">
+                <FormFieldInput trigger={form.trigger}
                   label="Cód."
                   name="id"
                   control={form.control}
@@ -72,73 +83,80 @@ export const ParcelaForm = ({ isOpen, onOpenChange, parcelasData, addParcela }: 
                 />
               </div>
               <Separator className="!mt-10 !mb-9" /> */}
-              <div className="grid grid-cols-8 grid-rows-2 gap-4">
-                <FormFieldInput
-                  label="Núm. Parcela"
-                  name="numParcela"
-                  control={form.control}
-                  isNumber={true}
-                  errorMessage={form.formState.errors.numParcela?.message}
-                  disabled={true}
-                  className="col-span-2"
-                />
+                <div className="grid grid-cols-8 grid-rows-2 gap-4">
+                  <FormFieldInput
+                    trigger={form.trigger}
+                    label="Núm. Parcela"
+                    name="numParcela"
+                    control={form.control}
+                    isNumber={true}
+                    errorMessage={form.formState.errors.numParcela?.message}
+                    disabled={true}
+                    className="col-span-2"
+                  />
 
-                <FormFieldInput
-                  label="Dias"
-                  name="dias"
-                  control={form.control}
-                  isNumber={true}
-                  errorMessage={form.formState.errors.dias?.message}
-                  className="col-span-1"
-                />
+                  <FormFieldInput
+                    trigger={form.trigger}
+                    label="Dias"
+                    name="dias"
+                    control={form.control}
+                    isNumber={true}
+                    errorMessage={form.formState.errors.dias?.message}
+                    className="col-span-1"
+                  />
 
-                <FormFieldInput
-                  label="Porcentagem"
-                  name="porcentagem"
-                  control={form.control}
-                  maskFunction={formatPercentage}
-                  errorMessage={form.formState.errors.porcentagem?.message}
-                  className="col-span-1"
-                />
+                  <FormFieldInput
+                    trigger={form.trigger}
+                    label="Porcentagem"
+                    name="porcentagem"
+                    control={form.control}
+                    maskFunction={formatPercentage}
+                    errorMessage={form.formState.errors.porcentagem?.message}
+                    className="col-span-1"
+                  />
 
-                <FormFieldInput
-                  label="Cód. Form. Pag."
-                  name="idFormaPagamento"
-                  control={form.control}
-                  isNumber={true}
-                  disabled={true}
-                  errorMessage={form.formState.errors.idFormaPagamento?.message}
-                  className="col-span-2 row-start-2"
-                />
+                  <FormFieldInput
+                    trigger={form.trigger}
+                    label="Cód. Form. Pag."
+                    name="idFormaPagamento"
+                    control={form.control}
+                    isNumber={true}
+                    disabled={true}
+                    errorMessage={form.formState.errors.idFormaPagamento?.message}
+                    className="col-span-2 row-start-2"
+                  />
 
-                <FormFieldInput
-                  label="Forma de Pagamento"
-                  name="formaPagamento.formaPagamento"
-                  control={form.control}
-                  disabled={true}
-                  className="col-span-3 row-start-2"
-                />
+                  <FormFieldInput
+                    trigger={form.trigger}
+                    label="Forma de Pagamento"
+                    name="formaPagamento.formaPagamento"
+                    control={form.control}
+                    disabled={true}
+                    className="col-span-3 row-start-2"
+                  />
 
-                <div className="relative row-start-2">
-                  <Dialog open={openFormaPagamento} onOpenChange={(value) => setOpenFormaPagamento(value)}>
-                    <DialogTrigger asChild className="absolute bottom-[30%]">
-                      <Button variant="default">
-                        <Search />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="!p-0">
-                      <FormasPagamentosPage setFormaPagamento={setFormaPagamento} />
-                    </DialogContent>
-                  </Dialog>
+                  <div className="relative row-start-2">
+                    <Dialog open={openFormaPagamento} onOpenChange={(value) => setOpenFormaPagamento(true)}>
+                      <DialogTrigger asChild className="absolute bottom-[0px]">
+                        <Button variant="default">
+                          <Search />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="!p-0 max-w-4xl">
+                        <FormasPagamentosPage setFormaPagamento={setFormaPagamento} />
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </div>
+                <Button type="submit" variant="default">
+                  Salvar
+                </Button>
               </div>
-              <Button type="submit" variant="default">
-                Salvar
-              </Button>
-            </div>
-          </form>
-        </FormProvider>
-      </DialogContent>
-    </Dialog>
+            </form>
+          </FormProvider>
+        </DialogContent>
+      </Dialog>
+      <AlertDialogConfirm open={showAlert} onConfirm={handleConfirmClose} onCancel={() => setShowAlert(false)} />
+    </>
   );
 };

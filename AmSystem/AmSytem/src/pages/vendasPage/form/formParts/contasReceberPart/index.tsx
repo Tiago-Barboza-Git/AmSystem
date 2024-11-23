@@ -18,6 +18,8 @@ import { formatMoney } from "@/functions/functions";
 import { IPostContaReceber } from "@/interfaces/Venda/contasReceber..interfaces";
 import { VendaFormData } from "../../schema";
 import { IVenda } from "@/interfaces/Venda/venda.interface";
+import { H4 } from "@/components/typography";
+import { IParcela } from "@/interfaces/parcela.interfaces";
 
 interface ContasReceberPartProps {
   control: Control<VendaFormData>;
@@ -61,15 +63,28 @@ function ContasReceberPart({
         setValue("idCondicaoPagamento", condicaoPagamento?.id as number);
         setValue("condicaoPagamento", condicaoPagamento as ICondicaoPagamento);
 
+        // Total de produtos + custos
+        const totalProdutos = Number(formatMoney(watch("totalProdutos")));
+
+        let somaParcelas = 0;
         const contasReceber: IPostContaReceber[] =
-          condicaoPagamento?.parcelas.map((parcela, index) => {
+          condicaoPagamento?.parcelas.map((parcela: IParcela, index, arr) => {
+            let valorParcela = 0;
+
+            if (index === condicaoPagamento?.parcelas.length - 1) {
+              // Última parcela: subtrair a soma das parcelas anteriores para garantir o valor restante
+              valorParcela = totalProdutos - somaParcelas;
+            } else {
+              // Parcelas intermediárias: calcular normalmente
+              valorParcela = Number(Number(totalProdutos * ((parcela.porcentagem as number) / 100)).toFixed(2));
+              somaParcelas += valorParcela; // Acumula o valor para as próximas parcelas
+            }
+
             return {
               idFormaPagamento: parcela.idFormaPagamento,
               numParcela: index + 1,
-              valorParcela: formatMoney(
-                Number(formatMoney(watch("totalProdutos")) * ((parcela.porcentagem as number) / 100)),
-              ),
-              dtVencimento: addDays(watch("dtEmissao") as Date, 30 * (index + 1)),
+              valorParcela: formatMoney(valorParcela).toFixed(2),
+              dtVencimento: parcela.dias === 0 ? watch("dtEmissao") : addDays(watch("dtEmissao") as Date, parcela.dias),
               formaPagamento: parcela.formaPagamento,
             };
           }) || [];
@@ -78,7 +93,6 @@ function ContasReceberPart({
       }
     }
   }, [condicaoPagamento]);
-  console.log(watch("contasReceber"));
   // Condição Pagamento End
 
   return (
@@ -103,7 +117,7 @@ function ContasReceberPart({
       />
       <Separator className="!mt-10 !mb-9" />
       <div>
-        <H3>Parcelas</H3>
+        <H4 className="text-center">Parcelas</H4>
         <DataTable
           columns={useMemo(() => getContaReceberPartColumns({}), [])}
           data={watch("contasReceber")}

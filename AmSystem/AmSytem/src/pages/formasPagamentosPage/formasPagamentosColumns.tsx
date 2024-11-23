@@ -6,7 +6,7 @@ import { IFormaPagamento } from "@/interfaces/formaPagamento.interfaces";
 
 interface formasPagamentosColumnsProps {
   onEdit: (formaPagamento: IFormaPagamento) => void;
-  onDelete: (formaPagamento: IFormaPagamento) => void;
+  onDelete?: (formaPagamento: IFormaPagamento) => void;
   onView: (formaPagamento: IFormaPagamento) => void;
 }
 

@@ -4,7 +4,7 @@ import SearchItem from "@/components/searchItem";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { IVenda } from "@/interfaces/Venda/venda.interface";
-import { IClienteRef } from "@/interfaces/cliente.interfaces";
+import { IClienteRef, iCliente } from "@/interfaces/cliente.interfaces";
 import { ICompra } from "@/interfaces/compra.interfaces";
 import { IFornecedor, IFornecedorRef } from "@/interfaces/fornecedor.interfaces";
 import { ClientesPage } from "@/pages/clientesPage";
@@ -12,7 +12,7 @@ import { CompraFormData } from "@/pages/comprasPage/form/schema";
 import { FornecedoresPage } from "@/pages/fornecedoresPage";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Control, FieldErrors, UseFormGetValues, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { Control, FieldErrors, UseFormGetValues, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 import { VendaFormData } from "../../schema";
 
 interface dadosNotaPartProps {
@@ -25,6 +25,7 @@ interface dadosNotaPartProps {
   action?: string;
   disabled?: boolean;
   activeStep: number;
+  trigger?: UseFormTrigger<VendaFormData>;
 }
 
 function DadosNotaPart({
@@ -36,30 +37,33 @@ function DadosNotaPart({
   venda,
   action,
   disabled,
+  trigger,
   activeStep,
 }: dadosNotaPartProps) {
   const [openClientes, setOpenClientes] = useState<boolean>(false);
-  const [cliente, setCliente] = useState<IClienteRef | undefined>(venda?.cliente);
+  const [cliente, setCliente] = useState<iCliente | undefined>(venda?.cliente);
 
   useEffect(() => {
     setValue("idCliente", cliente?.id as number);
-    setValue("cliente", cliente as IClienteRef);
+    setValue("cliente", cliente as iCliente);
     setOpenClientes(false);
   }, [cliente]);
 
   return (
     <div className="grid grid-cols-12 grid-rows-2 gap-6">
       <FormFieldInput
+        trigger={trigger}
         label="Nr. Nota*"
         name="nrNota"
         control={control}
         errorMessage={errors.nrNota?.message}
         isNumber={true}
-        disabled={disabled}
+        disabled={true}
         className="col-span-2"
       />
 
       <FormFieldInput
+        trigger={trigger}
         label="Nr. Modelo*"
         name="nrModelo"
         control={control}
@@ -70,6 +74,7 @@ function DadosNotaPart({
       />
 
       <FormFieldInput
+        trigger={trigger}
         label="Nr. Série*"
         name="nrSerie"
         control={control}
@@ -108,7 +113,7 @@ function DadosNotaPart({
           label="Dt. Emissão"
           setValue={setValue}
           value={watch("dtEmissao")}
-          disabled={disabled}
+          disabled={true}
           errorMessage={errors?.dtEmissao?.message}
         />
       </div>

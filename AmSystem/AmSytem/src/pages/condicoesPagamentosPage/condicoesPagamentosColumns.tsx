@@ -6,7 +6,7 @@ import { ICondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
 
 interface condicoesPagamentosColumnsProps {
   onEdit: (condicaoPagamento: ICondicaoPagamento) => void;
-  onDelete: (condicaoPagamento: ICondicaoPagamento) => void;
+  onDelete?: (condicaoPagamento: ICondicaoPagamento) => void;
   onView: (condicaoPagamento: ICondicaoPagamento) => void;
 }
 

@@ -11,9 +11,14 @@ import { Circle, CircleCheck, CircleX, X } from "lucide-react";
 interface contasPagarColumnsProps {
   onPagar: (contaPagar: IContaPagar) => void;
   onView: (contaPagar: IContaPagar) => void;
+  onCancel: (contaPagar: IContaPagar) => void;
 }
 
-export const getContaPagarColumns = ({ onPagar, onView }: contasPagarColumnsProps): ColumnDef<IContaPagar>[] => [
+export const getContaPagarColumns = ({
+  onPagar,
+  onView,
+  onCancel,
+}: contasPagarColumnsProps): ColumnDef<IContaPagar>[] => [
   {
     accessorKey: "numParcela",
     header: "Parcela",
@@ -118,10 +123,12 @@ export const getContaPagarColumns = ({ onPagar, onView }: contasPagarColumnsProp
   {
     id: "actions",
     cell: ({ row }) => {
-      return row.original.cancelada ? (
+      return row.original.cancelada || row.original.valorPago > 0 ? (
         <DataTableRowActions row={row} onView={onView} />
+      ) : row.original.avulsa ? (
+        <DataTableRowActions row={row} onCancel={onCancel} />
       ) : (
-        <DataTableRowActions row={row} onPagar={onPagar} />
+        <DataTableRowActions row={row} onView={onView} onPagar={onPagar} />
       );
     },
   },

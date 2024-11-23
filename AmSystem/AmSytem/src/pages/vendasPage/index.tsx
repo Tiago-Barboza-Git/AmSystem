@@ -1,14 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
 import DataTable from "@/components/datatable";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "react-query";
-import DeleteDialog from "@/components/dialog/deleteDialog3";
 import { GetVendas, CancelVenda } from "./services/queries";
 import { getVendasColumns } from "./columns";
 import CancelDialog from "@/components/dialog/cancelDialog";
 import { IPutCompraPai } from "@/interfaces/compraPai.interfaces";
 import VendaForm from "./form";
-import { IVenda, IVendaDetails, initialVenda } from "@/interfaces/Venda/venda.interface";
+import { IPutVenda, IVenda, initialVenda } from "@/interfaces/Venda/venda.interface";
 
 export function VendasPage({}) {
   const [open, setOpen] = useState<boolean>(false);
@@ -16,14 +15,16 @@ export function VendasPage({}) {
   const [canceladas, setCanceladas] = useState<boolean>(false);
   const [openCancelDialog, setOpenCancelDialog] = useState<boolean>(false);
   const [selectedVenda, setSelectedVenda] = useState<IVenda | undefined>();
+  const [vendas, setVendas] = useState<IVenda[]>();
+  const [nextIdent, setNextIdent] = useState<number>();
 
   const queryClient = useQueryClient();
-  const cancelCompra = CancelVenda(setOpenCancelDialog);
+  const cancelVenda = CancelVenda(setOpenCancelDialog);
 
   const onGet = useCallback(async () => {
     try {
       setCanceladas(!canceladas);
-      await queryClient.invalidateQueries("GetCompras");
+      await queryClient.invalidateQueries("GetVendas");
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -46,14 +47,22 @@ export function VendasPage({}) {
     setOpen(true);
   }, []);
 
-  const handleCancelCompra = (confirmed: boolean) => {
+  const handleCancelVenda = (confirmed: boolean) => {
     if (confirmed) {
-      cancelCompra.mutate(selectedVenda as IVendaDetails);
+      cancelVenda.mutate(selectedVenda as IPutVenda);
     }
   };
 
   const vendasQuery = GetVendas(canceladas);
-  const vendasData = vendasQuery.data || [];
+
+  useEffect(() => {
+    console.log("teste");
+    if (vendasQuery.data) {
+      console.log(vendasQuery.data);
+      setVendas(vendasQuery.data.vendas || []);
+      setNextIdent(vendasQuery.data.nextIdent);
+    }
+  }, [vendasQuery.data]);
 
   return (
     <Card className={`h-full`}>
@@ -69,20 +78,22 @@ export function VendasPage({}) {
                 setOpen(value);
                 if (!value) setSelectedVenda(undefined);
               }}
+              nextIdent={nextIdent}
             />
-            {/* <CancelDialog
+            <CancelDialog
               isOpen={openCancelDialog}
-              onConfirm={handleCancelCompra}
+              onConfirm={handleCancelVenda}
               onOpenChange={setOpenCancelDialog}
               label="Você têm certeza que deseja cancelar nota?"
-            /> */}
+              buttonLabel="Cancelar"
+            />
           </div>
         </div>
       </CardHeader>
       <CardContent>
         <DataTable
           columns={useMemo(() => getVendasColumns({ onView, onCancel }), [])}
-          data={vendasData}
+          data={vendas}
           onAdd={onAdd}
           onGet={onGet}
           ativos={canceladas}

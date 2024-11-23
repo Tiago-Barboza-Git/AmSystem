@@ -1,4 +1,5 @@
-﻿using ApiAmSystem.Domain.Models.FormaPagamento;
+﻿using ApiAmSystem.Domain.Models.CondicaoPagamento;
+using ApiAmSystem.Domain.Models.FormaPagamento;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ namespace ApiAmSystem.Domain.Models.Nota.ContaNota
         public int NrSerie { get; set; }
         public int IdFormaPagamento { get; set; }
         public FormaPagamentoModel FormaPagamento { get; set; }
+        public int IdCondicaoPagamento { get; set; }
+        public CondicaoPagamentoModel CondicaoPagamento { get; set; }
         public int NumParcela { get; set; }
         public decimal ValorParcela { get; set; }
         public DateTime DtEmissao { get; set; }

@@ -17,6 +17,7 @@ export const ProdutoCompraFormSchema = z.object({
   precoUnit: z
     .preprocess((val) => Number(formatMoney(String(val))), z.number())
     .refine((value) => value !== 0, "Deve ser maior que 0"),
+  desconto: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
   precoTotal: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
   custoProd: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
   custoUnit: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
@@ -35,4 +36,5 @@ export const defaultValues = {
   custoUnit: 0,
   rateio: 0,
   idProduto: 0,
+  produto: undefined,
 };

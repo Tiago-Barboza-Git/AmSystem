@@ -40,10 +40,4 @@ namespace ApiAmSystem.Domain.Models.Cliente
             set { this.CelularRepresentante = value; }
         }
     }
-
-    public class  ClienteRef
-    {
-        public int Id { get; set; }
-        public string PessoaRazaoSocial { get; set; }
-    }
 }

@@ -17,20 +17,23 @@ import { IPais } from "@/interfaces/pais.interfaces.tsx";
 import InputCalendar from "@/components/form/inputCalendar/index.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import SearchItem from "@/components/searchItem/index.tsx";
+import AlertDialogConfirm from "@/components/form/alertDialogConfirm/index.tsx";
+import useConfirmClose from "@/hooks/confirmClose/index.tsx";
+import { H3 } from "@/components/typography/index.tsx";
 
 interface estadoFormProps {
   action: string;
   isOpen: boolean;
   onOpenChange: (value: boolean) => void;
   estado: IEstado | null;
+  setEstado?: (estado: IEstado) => void;
 }
 
-const EstadoForm = ({ action, isOpen, onOpenChange, estado }: estadoFormProps) => {
-  console.log(action);
+const EstadoForm = ({ action, isOpen, onOpenChange, estado, setEstado }: estadoFormProps) => {
   const [disabled, setDisabled] = useState<boolean>(action === "View" ? true : false);
-  console.log(disabled);
   const [openPaises, setOpenPaises] = useState<boolean>(false);
   const [pais, setPais] = useState<IPais | undefined>();
+
   const putEstado = PutEstado(onOpenChange);
   const postEstado = PostEstado(onOpenChange);
   const form = useForm<EstadoFormData>({
@@ -38,6 +41,12 @@ const EstadoForm = ({ action, isOpen, onOpenChange, estado }: estadoFormProps) =
     resolver: zodResolver(EstadoFormSchema),
     defaultValues: defaultValues,
   });
+
+  const { showAlert, setShowAlert, handleCloseDialog, handleConfirmClose } = useConfirmClose(
+    form,
+    action,
+    onOpenChange,
+  );
 
   useEffect(() => {
     if (action === "Edit" || action === "View") {
@@ -71,24 +80,33 @@ const EstadoForm = ({ action, isOpen, onOpenChange, estado }: estadoFormProps) =
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <Dialog open={isOpen} onOpenChange={handleCloseDialog}>
         <DialogContent
           onInteractOutside={(e) => {
             e.preventDefault();
           }}
-          className="max-w-4xl"
+          className="!max-w-screen-sm max-h-[80%] overflow-y-auto"
         >
           <DialogHeader>
-            <DialogTitle>{estado ? "Atualizar o estado" : "Adicionar novo estado"}</DialogTitle>
+            <DialogTitle>
+              <H3 className="text-center">
+                {action === "Edit"
+                  ? "Atualizar o estado"
+                  : action === "Add"
+                    ? "Adicionar novo estado"
+                    : "Visualizar estado"}
+              </H3>
+            </DialogTitle>
           </DialogHeader>
           <FormProvider {...form}>
             <form className="flex flex-col gap-4" onSubmit={form.handleSubmit(onSubmit)}>
               <div className="flex flex-row justify-between">
                 <FormFieldInput
+                  trigger={form.trigger}
                   label="Cód."
                   name="id"
                   control={form.control}
-                  className="col-span-2"
+                  className="w-[5rem]"
                   errorMessage={form.formState.errors.id?.message}
                   isNumber={true}
                   disabled={true}
@@ -99,10 +117,16 @@ const EstadoForm = ({ action, isOpen, onOpenChange, estado }: estadoFormProps) =
                   control={form.control}
                   defaultValue={estado?.ativo}
                   render={({ field }) => (
-                    <FormItem className="flex flex-col gap-2 items-center justify-center">
+                    <FormItem
+                      className={`flex flex-col gap-2 items-center justify-center ${action === "Add" ? "hidden" : "visible"} `}
+                    >
                       <FormLabel>Ativo</FormLabel>
                       <FormControl>
-                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} disabled={disabled} />
+                        <Switch
+                          defaultChecked={field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={setEstado ? true : action === "Add" ? true : disabled}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -111,20 +135,24 @@ const EstadoForm = ({ action, isOpen, onOpenChange, estado }: estadoFormProps) =
 
               <div className="grid grid-cols-8 gap-4">
                 <FormFieldInput
+                  trigger={form.trigger}
                   label="Estado"
                   name="estado"
                   control={form.control}
                   disabled={disabled}
                   errorMessage={form.formState.errors.estado?.message}
+                  maxLength={50}
                   className="col-span-4"
                 />
 
                 <FormFieldInput
+                  trigger={form.trigger}
                   label="UF"
                   name="uf"
                   control={form.control}
                   className="col-span-2"
                   disabled={disabled}
+                  maxLength={5}
                   errorMessage={form.formState.errors.uf?.message}
                 />
               </div>
@@ -172,13 +200,29 @@ const EstadoForm = ({ action, isOpen, onOpenChange, estado }: estadoFormProps) =
                   className="col-span-2"
                 />
               </div>
-              <Button type="submit" variant="default" className={`${action === "View" ? "hidden" : "visible"}`}>
-                Salvar
-              </Button>
+              <div className="flex justify-center gap-4">
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className={`${action === "View" ? "hidden" : "visible"}  w-[10rem]`}
+                  onClick={handleCloseDialog}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  variant="default"
+                  className={`${action === "View" ? "hidden" : "visible"} bg-[#4A90E2] w-[10rem] hover:bg-[#2b5c95]`}
+                >
+                  Salvar
+                </Button>
+              </div>
             </form>
           </FormProvider>
         </DialogContent>
       </Dialog>
+
+      <AlertDialogConfirm open={showAlert} onConfirm={handleConfirmClose} onCancel={() => setShowAlert(false)} />
     </>
   );
 };

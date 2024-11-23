@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 interface clientesColumnsProps {
   onEdit: (cliente: iCliente) => void;
-  onDelete: (cliente: iCliente) => void;
+  onDelete?: (cliente: iCliente) => void;
   onView: (cliente: iCliente) => void;
 }
 
@@ -26,7 +26,7 @@ export const getClientesColumns = ({ onEdit, onDelete, onView }: clientesColumns
     accessorKey: "pessoaRazaoSocial",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Cliente/Razão Social" />,
     cell: ({ row }) => (
-      <div>
+      <div style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
         <span>{row.original.pessoaRazaoSocial}</span>
       </div>
     ),

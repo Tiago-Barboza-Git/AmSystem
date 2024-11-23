@@ -5,7 +5,7 @@ import { z } from "zod";
 export const CondicaoPagamentoFormSchema = z
   .object({
     id: z.number(),
-    condicaoPagamento: z.string({ message: "Obrigatório" }),
+    condicaoPagamento: z.string({ message: "Obrigatório" }).min(1, "Obrigatório"),
     desconto: z.union([z.string(), z.number()]).default(0),
     juros: z.union([z.string(), z.number()]).default(0),
     multa: z.union([z.string(), z.number()]).default(0),

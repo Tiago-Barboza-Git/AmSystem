@@ -8,14 +8,14 @@ import { z } from "zod";
 export const ProdutoFormSchema = z
   .object({
     id: z.number(),
-    produto: z
-      .string({ message: "Obrigatório" })
-      .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/, "É permitido apenas letras, acentos e espaços"),
+    produto: z.string({ message: "Obrigatório" }),
+    // .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/, "É permitido apenas letras, acentos e espaços"),
     quantidade: z.number(),
     precoVenda: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
     precoUltCompra: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
     dtUltCompra: z.custom<Date>().optional(),
     custoMedio: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
+    custoUnitUltCompra: z.preprocess((val) => Number(formatMoney(String(val))), z.number()),
     desconto: z
       .preprocess((val) => Number(formatMoney(String(val))), z.number())
       .refine((value) => !Number.isNaN(value), "Deve ser 0 ou maior"),
@@ -40,6 +40,7 @@ export const defaultValues = {
   precoVenda: 0,
   precoUltCompra: 0,
   custoMedio: 0,
+  custoUnitUltCompra: 0,
   desconto: 0,
   observacao: "",
   ativo: true,

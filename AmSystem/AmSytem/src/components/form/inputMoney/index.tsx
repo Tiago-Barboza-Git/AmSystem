@@ -1,5 +1,6 @@
 import { Label } from "@/components/text/text";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useRef } from "react";
 import CurrencyInput from "react-currency-input-field";
 import { Control, FieldValues, Path, UseFormWatch, useController } from "react-hook-form";
 
@@ -11,6 +12,7 @@ interface InputMoneyProps<T extends FieldValues> {
   nameValor: Path<T>;
   disabled?: boolean;
   className?: string;
+  maxLength?: number;
 }
 
 function InputMoney<T extends FieldValues>({
@@ -21,6 +23,7 @@ function InputMoney<T extends FieldValues>({
   nameValor,
   disabled = false,
   className,
+  maxLength,
 }: InputMoneyProps<T>) {
   const {
     field,
@@ -56,6 +59,20 @@ function InputMoney<T extends FieldValues>({
     }
   };
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleChange = (value: string | undefined) => {
+    field.onChange(value || "0");
+
+    // Mover o cursor para o final após cada mudança
+    if (inputRef.current) {
+      setTimeout(() => {
+        const length = inputRef?.current?.value.length;
+        inputRef?.current?.setSelectionRange(length as number, length as number);
+      }, 0);
+    }
+  };
+
   return (
     <FormItem className={`${className}flex flex-col gap-2`}>
       <FormLabel>{labelName}</FormLabel>
@@ -63,25 +80,25 @@ function InputMoney<T extends FieldValues>({
         <CurrencyInput
           className={`${hasError ? "border-red-500" : ""} flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50`}
           prefix="R$ "
-          // fixedDecimalLength={2}
           decimalScale={2}
           onBlur={() => {
             // Forçar a validação no evento onBlur
             field.onBlur();
             field.onChange(field.value);
           }}
-          ref={field.ref}
+          ref={(node) => {
+            inputRef.current = node;
+            field.ref(node);
+          }}
           allowDecimals={true}
           allowNegativeValue={false}
           disabled={disabled}
-          // onChange={(value) => {
-          //   field.onChange(String(value.target.value));
-          // }}
-          onValueChange={(value) => {
-            field.onChange(value);
-          }}
+          onValueChange={handleChange}
           onKeyDown={handleKeyDown}
           value={watch(nameValor) as string}
+          decimalSeparator=","
+          groupSeparator="."
+          maxLength={maxLength ? maxLength : 7}
         />
       </FormControl>
       {invalid && error && <FormMessage className="text-red-500">{error.message}</FormMessage>}

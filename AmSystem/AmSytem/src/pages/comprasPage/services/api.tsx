@@ -38,7 +38,7 @@ export const GetVerificaExistenciaCompraRequest = (
   idFornecedor: number,
 ) => {
   return axiosInstance
-    .get<boolean>(
+    .get<string>(
       `GetVerificaExistenciaCompra?pNrNota=${nrNota}&pNrModelo=${nrModelo}&pNrSerie=${nrSerie}&pIdFornecedor=${idFornecedor}`,
     )
     .then((response) => response.data);

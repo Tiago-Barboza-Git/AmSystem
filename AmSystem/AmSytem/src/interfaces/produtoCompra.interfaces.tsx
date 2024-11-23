@@ -11,6 +11,7 @@ export interface IProdutoCompra extends ICompraPai {
   rateio: number;
   idProduto: number;
   produto: IProduto;
+  desconto: number;
 }
 
 export interface IPostProdutoCompra {
@@ -21,4 +22,5 @@ export interface IPostProdutoCompra {
   custoUnit: number;
   rateio: number;
   idProduto: number;
+  desconto: number;
 }

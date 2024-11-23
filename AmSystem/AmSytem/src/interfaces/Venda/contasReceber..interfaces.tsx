@@ -10,6 +10,6 @@ export interface IContaReceber extends IContaNota {
 
 export interface IPostContaReceber extends IPostContaNota {}
 
-export interface IPutContasReceber extends IPutContaNota {
+export interface IPutContaReceber extends IPutContaNota {
   idCliente: number;
 }

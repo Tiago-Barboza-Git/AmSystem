@@ -82,13 +82,13 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@DtCadastro", SqlDbType.Date).Value = DateTime.Now;
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Unidade de medida adicionada com sucesso!";
                 }
                 catch (SqlException ex)
                 {
                     if (ex.Number == 2627 || ex.Number == 2601)
-                        return "Unidade de Medida já cadastrada";
-                    return ex.Message;
+                        return "Unidade de Medida já cadastrada!";
+                    return "Erro ao adicionar unidade de medida!";
                 }
                 finally
                 {
@@ -114,13 +114,13 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@DtCadastro", SqlDbType.Date).Value = DateTime.Now;
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Unidade de medida alterada com sucesso!";
                 }
                 catch (SqlException ex)
                 {
                     if (ex.Number == 2627 || ex.Number == 2601)
-                        return "Unidade de Medida já cadastrada";
-                    return ex.Message;
+                        return "Unidade de Medida já cadastrada!";
+                    return "Erro ao cadastrar unidade de medida!";
                 }
                 finally
                 {
@@ -141,11 +141,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pId;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Unidade de medida deletada com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    return ex.Message;
+                    if (ex.Number == 547)
+                    {
+                        return "Unidade de medida está vinculada a outros registros!";
+                    }
+                    return "Erro ao deletar unidade de medida!";
                 }
                 finally
                 {

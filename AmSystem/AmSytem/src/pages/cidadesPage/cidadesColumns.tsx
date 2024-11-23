@@ -8,7 +8,7 @@ import { ICidade } from "@/interfaces/cidade.interfaces";
 
 interface cidadesColumnsProps {
   onEdit: (cidade: ICidade) => void;
-  onDelete: (cidade: ICidade) => void;
+  onDelete?: (cidade: ICidade) => void;
   onView: (cidade: ICidade) => void;
 }
 

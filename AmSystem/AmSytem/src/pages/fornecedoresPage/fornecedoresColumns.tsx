@@ -8,7 +8,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 interface fornecedoresColumnsProps {
   onEdit: (cliente: IFornecedor) => void;
-  onDelete: (cliente: IFornecedor) => void;
+  onDelete?: (cliente: IFornecedor) => void;
   onView: (cliente: IFornecedor) => void;
 }
 
@@ -25,22 +25,21 @@ export const getFornecedoresColumns = ({
         <span>{row.original.id}</span>
       </div>
     ),
-    enableColumnFilter: true,
   },
   {
-    accessorKey: "fornecedorRazaoSocial",
+    accessorKey: "pessoaRazaoSocial",
+    enableGlobalFilter: true,
     header: ({ column }) => <DataTableColumnHeader column={column} title="Fornecedor/Razão Social" />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.pessoaRazaoSocial}</span>
       </div>
     ),
-    enableGlobalFilter: true,
   },
   {
-    accessorKey: "tpFornecedor",
+    accessorKey: "tpPessoa",
     header: "Tipo de Pessoa",
-    enableGlobalFilter: false,
+    enableGlobalFilter: true,
     cell: ({ row }) => (
       <div>
         <span>{row.original.tpPessoa === "F" ? "Física" : "Jurídica"}</span>

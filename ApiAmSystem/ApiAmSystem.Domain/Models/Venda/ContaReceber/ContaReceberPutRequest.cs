@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ApiAmSystem.Domain.Models.Venda.ContaReceber
 {
-    internal class ContaReceberPutRequest: ContaNotaPutRequest
+    public class ContaReceberPutRequest: ContaNotaPutRequest
     {
         public int IdCliente { get; set; }
     }

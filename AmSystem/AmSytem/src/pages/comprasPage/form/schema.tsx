@@ -25,7 +25,9 @@ export const CompraFormSchema = z.object({
     .min(1, "Obrigatório")
     .refine((value) => value > 0, "Obrigatório"),
   fornecedor: z.custom<IFornecedor>(),
-  dtEmissao: z.date({ message: "Obrigatório" }).max(new Date(), "A data de emissão não pode ser no futuro"),
+  dtEmissao: z
+    .date({ message: "Obrigatório" })
+    .max(new Date(new Date().setHours(0, 0, 0, 0)), "A data de emissão não pode ser no futuro"),
   dtChegada: z.date({ message: "Obrigatório" }),
   produtos: z.custom<IProdutoCompra[]>(),
   tpFrete: z.string(),
@@ -50,8 +52,6 @@ export const defaultValues = {
   nrNota: 0,
   nrModelo: 0,
   nrSerie: 0,
-  idFornecedor: 0,
-  idCondicaoPagamento: 0,
   tpFrete: "FOB",
   frete: 0,
   seguro: 0,
@@ -61,7 +61,11 @@ export const defaultValues = {
   totalNota: 0,
   produtos: [],
   contasPagar: [],
-  dtEmissao: new Date(),
+  // idCondicaoPagamento: 0,
+  // idFornecedor: 0,
+  fornecedor: undefined,
+  condicaoPagamento: undefined,
+  dtEmissao: new Date(new Date().setHours(0, 0, 0, 0)),
   dtChegada: new Date(),
   dtCadastro: new Date(),
   dtAlteracao: undefined,

@@ -35,5 +35,28 @@ namespace ApiAmSystem.Controllers
             else
                 return BadRequest();
         }
+
+        [HttpPost]
+        [Route("/PostContaPagarAvulsa")]
+        public IActionResult PostContaPagarAvulsa(ContaPagarAvulsaPostRequest pContaPagar)
+        {
+            string result = contaPagarService.PostContaPagarAvulsa(pContaPagar);
+            if (result.Contains("sucesso"))
+                return Ok(result);
+            else
+                return BadRequest();
+        }
+
+        [HttpPut]
+        [Route("/PutCancelarContaPagarAvulsa")]
+        public IActionResult PutCancelarContaPagarAvulsa(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor)
+        {
+            string result = contaPagarService.PutCancelarContaPagarAvulsa(pNrNota, pNrModelo, pNrSerie, pIdFornecedor);
+            if (result.Contains("sucesso"))
+                return Ok(result);
+            else
+                return BadRequest();
+
+        }
     }
 }

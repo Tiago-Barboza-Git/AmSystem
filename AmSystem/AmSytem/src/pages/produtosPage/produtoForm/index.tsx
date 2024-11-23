@@ -33,15 +33,20 @@ import FormFieldTextArea from "@/components/form/textarea/index.tsx";
 import InputMoney from "@/components/form/inputMoney/index.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import SearchItem from "@/components/searchItem/index.tsx";
+import useConfirmClose from "@/hooks/confirmClose/index.tsx";
+import AlertDialogConfirm from "@/components/form/alertDialogConfirm/index.tsx";
+import { H2, H3, H4 } from "@/components/typography/index.tsx";
+import { toast } from "sonner";
 
 interface produtoFormProps {
   action: string;
   isOpen: boolean;
   onOpenChange: (value: boolean) => void;
   produto: IProduto | null;
+  setProduto?: (produto: IProduto) => void;
 }
 
-const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps) => {
+const ProdutoForm = ({ action, isOpen, onOpenChange, produto, setProduto }: produtoFormProps) => {
   const [disabled, setDisabled] = useState<boolean>();
   const [openUnidadesMedidas, setOpenUnidadesMedidas] = useState<boolean>(false);
   const [unidadeMedida, setUnidadeMedida] = useState<IUnidadeMedida | undefined>(produto?.unidadeMedida);
@@ -55,6 +60,12 @@ const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps
     resolver: zodResolver(ProdutoFormSchema),
     defaultValues: defaultValues,
   });
+
+  const { showAlert, setShowAlert, handleCloseDialog, handleConfirmClose } = useConfirmClose(
+    form,
+    action,
+    onOpenChange,
+  );
 
   useEffect(() => {
     if (action === "Edit" || action === "View") {
@@ -81,35 +92,69 @@ const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps
     setOpenUnidadesMedidas(false);
   }, [unidadeMedida]);
 
+  // useEffect(() => {
+  //   if (form.watch("precoVenda") - form.watch("desconto") <= form.watch("custoMedio")) {
+  //     form.setValue("desconto", 0);
+  //   } else {
+  //   }
+  // }, [form.watch("desconto")]);
+
   const onSubmit = (data: IProduto) => {
     if (openUnidadesMedidas === false && openCategorias == false) {
-      data.precoVenda = formatMoney(data.precoVenda);
-      data.precoUltCompra = formatMoney(data.precoUltCompra);
-      data.custoMedio = formatMoney(data.custoMedio);
-      if (action === "Edit") {
-        putProduto.mutate(data);
+      const precoVenda = isNaN(formatMoney(form.watch("precoVenda"))) ? 0 : formatMoney(form.watch("precoVenda"));
+      const custoMedio = isNaN(formatMoney(form.watch("custoMedio"))) ? 0 : formatMoney(form.watch("custoMedio"));
+
+      if (custoMedio > 0) {
+        if (precoVenda <= custoMedio) {
+          toast.error("O preço de venda não pode ser menor ou igual ao custo médio");
+        } else {
+          data.precoVenda = formatMoney(data.precoVenda);
+          data.precoUltCompra = formatMoney(data.precoUltCompra);
+          data.custoMedio = formatMoney(data.custoMedio);
+          if (action === "Edit") {
+            putProduto.mutate(data);
+          } else {
+            postProduto.mutate(data);
+          }
+        }
       } else {
-        postProduto.mutate(data);
+        data.precoVenda = formatMoney(data.precoVenda);
+        data.precoUltCompra = formatMoney(data.precoUltCompra);
+        data.custoMedio = formatMoney(data.custoMedio);
+        if (action === "Edit") {
+          putProduto.mutate(data);
+        } else {
+          postProduto.mutate(data);
+        }
       }
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="!max-w-screen-lg max-h-[80%] overflow-y-auto"
-        onInteractOutside={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <DialogHeader>
-          <DialogTitle>{produto ? "Atualizar o produto" : "Adicionar novo produto"}</DialogTitle>
-        </DialogHeader>
-        <FormProvider {...form}>
-          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-6 gap-4">
+    <>
+      <Dialog open={isOpen} onOpenChange={handleCloseDialog}>
+        <DialogContent
+          className="!max-w-screen-lg max-h-[80%] overflow-y-auto"
+          onInteractOutside={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle>
+              <H3 className="text-center">
+                {action === "Edit"
+                  ? "Atualizar o produto"
+                  : action === "Add"
+                    ? "Adicionar novo produto"
+                    : "Visualizar produto"}
+              </H3>
+            </DialogTitle>
+          </DialogHeader>
+          <FormProvider {...form}>
+            <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
               <div className="flex flex-row justify-between col-span-6">
                 <FormFieldInput
+                  trigger={form.trigger}
                   className="col-span-2"
                   label="Cód."
                   name="id"
@@ -124,93 +169,116 @@ const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps
                   control={form.control}
                   defaultValue={produto?.ativo}
                   render={({ field }) => (
-                    <FormItem className="flex flex-col gap-2 items-center justify-center">
+                    <FormItem
+                      className={`flex flex-col gap-2 items-center justify-center ${action === "Add" ? "hidden" : "visible"} `}
+                    >
                       <FormLabel>Ativo</FormLabel>
                       <FormControl>
-                        <Switch defaultChecked={field.value} onCheckedChange={field.onChange} disabled={disabled} />
+                        <Switch
+                          defaultChecked={field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={setProduto ? true : action === "Add" ? true : disabled}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
                 />
               </div>
 
-              <FormFieldInput
-                label="Produto"
-                name="produto"
-                control={form.control}
-                errorMessage={form.formState.errors.produto?.message}
-                disabled={disabled}
-                className="col-span-3"
-              />
-
-              <FormFieldInput
-                label="Quantidade"
-                name="quantidade"
-                control={form.control}
-                errorMessage={form.formState.errors.quantidade?.message}
-                isNumber={true}
-                disabled={true}
-                className="col-span-1"
-              />
-
-              <InputMoney
-                control={form.control}
-                watch={form.watch}
-                labelName="Preço Venda"
-                nameValor="precoVenda"
-                disabled={disabled}
-              />
-
-              <InputMoney
-                control={form.control}
-                labelName="Desconto"
-                nameValor="desconto"
-                watch={form.watch}
-                disabled={disabled}
-              />
-
-              <div className="col-span-3">
-                <SearchItem
+              <div className="flex flex-row gap-4">
+                <FormFieldInput
+                  trigger={form.trigger}
+                  label="Produto"
+                  name="produto"
                   control={form.control}
-                  getValue={form.getValues}
-                  setValue={form.setValue}
-                  watch={form.watch}
-                  obj={unidadeMedida}
-                  setObj={setUnidadeMedida}
-                  openSearch={openUnidadesMedidas}
-                  setOpenSearch={setOpenUnidadesMedidas}
-                  labelCod="Cód. Un. Medida*"
-                  nameCod="idUnidadeMedida"
-                  labelNome="Un. Medida*"
-                  nameNome="unidadeMedida.unidadeMedida"
-                  errorMessage={form.formState.errors?.idUnidadeMedida?.message}
+                  errorMessage={form.formState.errors.produto?.message}
                   disabled={disabled}
-                  page={<UnidadesMedidasPage setUnidadeMedida={setUnidadeMedida} />}
-                  hiddenButton={disabled === true ? true : false}
-                  className="flex flex-row gap-4 flex-grow"
+                  className="w-[20rem]"
+                  maxLength={50}
                 />
+
+                <div className={`${action === "Add" ? "hidden" : "visible"} flex flex-row gap-4 `}>
+                  <InputMoney
+                    control={form.control}
+                    watch={form.watch}
+                    labelName="Preço Venda"
+                    nameValor="precoVenda"
+                    disabled={form.watch("custoMedio") === 0 ? true : disabled}
+                  />
+
+                  <FormFieldInput
+                    trigger={form.trigger}
+                    label="Quantidade"
+                    name="quantidade"
+                    control={form.control}
+                    errorMessage={form.formState.errors.quantidade?.message}
+                    isNumber={true}
+                    disabled={true}
+                    className="col-span-1"
+                  />
+
+                  {/* <InputMoney
+                    control={form.control}
+                    labelName="Desconto"
+                    nameValor="desconto"
+                    watch={form.watch}
+                    disabled={form.watch("precoVenda") === 0 ? true : disabled}
+                  /> */}
+
+                  <InputMoney
+                    control={form.control}
+                    watch={form.watch}
+                    labelName="Custo Médio"
+                    nameValor="custoMedio"
+                    disabled={true}
+                  />
+                </div>
               </div>
 
-              <div className="col-span-3">
-                <SearchItem
-                  control={form.control}
-                  getValue={form.getValues}
-                  setValue={form.setValue}
-                  watch={form.watch}
-                  obj={categoria}
-                  setObj={setCategoria}
-                  openSearch={openCategorias}
-                  setOpenSearch={setOpenCategorias}
-                  labelCod="Cód. Categoria*"
-                  nameCod="idCategoria"
-                  labelNome="Categoria*"
-                  nameNome="categoria.categoria"
-                  errorMessage={form.formState.errors?.idCategoria?.message}
-                  disabled={disabled}
-                  page={<CategoriasPage setCategoria={setCategoria} />}
-                  hiddenButton={disabled === true ? true : false}
-                  className="flex flex-row gap-4 flex-grow"
-                />
+              <div className="flex flex-row gap-4">
+                <div className="col-span-3">
+                  <SearchItem
+                    control={form.control}
+                    getValue={form.getValues}
+                    setValue={form.setValue}
+                    watch={form.watch}
+                    obj={unidadeMedida}
+                    setObj={setUnidadeMedida}
+                    openSearch={openUnidadesMedidas}
+                    setOpenSearch={setOpenUnidadesMedidas}
+                    labelCod="Cód. Un. Medida*"
+                    nameCod="idUnidadeMedida"
+                    labelNome="Un. Medida*"
+                    nameNome="unidadeMedida.unidadeMedida"
+                    errorMessage={form.formState.errors?.idUnidadeMedida?.message}
+                    disabled={disabled}
+                    page={<UnidadesMedidasPage setUnidadeMedida={setUnidadeMedida} />}
+                    hiddenButton={disabled === true ? true : false}
+                    className="flex flex-row gap-4 flex-grow"
+                  />
+                </div>
+
+                <div className="col-span-3">
+                  <SearchItem
+                    control={form.control}
+                    getValue={form.getValues}
+                    setValue={form.setValue}
+                    watch={form.watch}
+                    obj={categoria}
+                    setObj={setCategoria}
+                    openSearch={openCategorias}
+                    setOpenSearch={setOpenCategorias}
+                    labelCod="Cód. Categoria*"
+                    nameCod="idCategoria"
+                    labelNome="Categoria*"
+                    nameNome="categoria.categoria"
+                    errorMessage={form.formState.errors?.idCategoria?.message}
+                    disabled={disabled}
+                    page={<CategoriasPage setCategoria={setCategoria} />}
+                    hiddenButton={disabled === true ? true : false}
+                    className="flex flex-row gap-4 flex-grow"
+                  />
+                </div>
               </div>
 
               <FormFieldTextArea
@@ -219,10 +287,13 @@ const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps
                 label="Observação"
                 className="col-span-6"
                 disabled={disabled}
+                maxLength={80}
               />
 
-              <div className="col-span-6 border-2 border-gray-200 rounded-lg p-5 flex flex-col gap-4">
-                <h2 className="text-center">Última compra</h2>
+              <div
+                className={`${action === "Add" ? "hidden" : "visible"} col-span-6 border-2 border-gray-200 rounded-lg p-5 flex flex-col gap-4`}
+              >
+                <H4 className="text-center">Última compra</H4>
                 <div className="flex flex-row gap-4 ">
                   <InputMoney
                     control={form.control}
@@ -235,8 +306,8 @@ const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps
                   <InputMoney
                     control={form.control}
                     watch={form.watch}
-                    labelName="Custo Unitário"
-                    nameValor="custoMedio"
+                    labelName="Custo Ult. Compra"
+                    nameValor="custoUnitUltCompra"
                     disabled={true}
                   />
 
@@ -250,6 +321,16 @@ const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps
                   />
 
                   <FormFieldInput
+                    trigger={form.trigger}
+                    label="Cod. Fornecedor"
+                    name="fornecedor.id"
+                    control={form.control}
+                    disabled={true}
+                    className="w-[15%]"
+                  />
+
+                  <FormFieldInput
+                    trigger={form.trigger}
                     label="Fornecedor"
                     name="fornecedor.pessoaRazaoSocial"
                     control={form.control}
@@ -280,14 +361,29 @@ const ProdutoForm = ({ action, isOpen, onOpenChange, produto }: produtoFormProps
                   className="col-span-2"
                 />
               </div>
-            </div>
-            <Button type="submit" variant="default">
-              Salvar
-            </Button>
-          </form>
-        </FormProvider>
-      </DialogContent>
-    </Dialog>
+              <div className="flex justify-center gap-4">
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className={`${action === "View" ? "hidden" : "visible"}  w-[15rem]`}
+                  onClick={handleCloseDialog}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  variant="default"
+                  className={`${action === "View" ? "hidden" : "visible"} bg-[#4A90E2] w-[15rem] hover:bg-[#2b5c95]`}
+                >
+                  Salvar
+                </Button>
+              </div>
+            </form>
+          </FormProvider>
+        </DialogContent>
+      </Dialog>
+      <AlertDialogConfirm open={showAlert} onConfirm={handleConfirmClose} onCancel={() => setShowAlert(false)} />
+    </>
   );
 };
 

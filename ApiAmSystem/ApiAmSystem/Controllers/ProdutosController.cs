@@ -43,7 +43,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PostProduto(ProdutoPostRequest pProduto)
         {
             string result = produtosService.PostProduto(pProduto);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -54,7 +54,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PutProduto(ProdutoPutRequest pProduto)
         {
             string result = produtosService.PutProduto(pProduto);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -65,7 +65,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult DeleteProduto(int pId)
         {
             string result = produtosService.DeleteProduto(pId);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);

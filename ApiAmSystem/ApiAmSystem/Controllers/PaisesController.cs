@@ -50,7 +50,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PostPais(PaisPostRequest pPais)
         {
             string result = paisesService.PostPais(pPais);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -63,7 +63,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PutPais(PaisPutRequest pPais)
         {
             string result = paisesService.PutPais(pPais);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -76,7 +76,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult DeletePais(int pId)
         {
             string result = paisesService.DeletePais(pId);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);

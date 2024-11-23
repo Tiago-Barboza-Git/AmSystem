@@ -165,7 +165,7 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@DtCadastro", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Condição de pagamento adicionada com sucesso!";
                 }
                 catch (SqlException ex)
                 {
@@ -173,7 +173,7 @@ namespace ApiAmSystem.Services
                     {
                         return "Condição de pagamento já existente";
                     }
-                    return ex.Message;
+                    return "Erro ao adicionar condição de pagamento!";
                 }
                 finally
                 {
@@ -286,7 +286,7 @@ namespace ApiAmSystem.Services
                         }
                     }
 
-                    return "Sucesso";
+                    return "Condição de pagamento alterada com sucesso!";
                 }
                 catch (SqlException ex)
                 {
@@ -294,7 +294,7 @@ namespace ApiAmSystem.Services
                     {
                         return "Condição de pagamento já existente";
                     }
-                    return ex.Message;
+                    return "Erro ao alterar condição de pagamento!";
                 }
                 finally
                 {
@@ -322,11 +322,15 @@ namespace ApiAmSystem.Services
                     cmdCondicaoPagamento.Parameters.Clear();
                     cmdCondicaoPagamento.Parameters.Add("@Id", SqlDbType.Int).Value = pId;
                     cmdCondicaoPagamento.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Condição de pagamento deletado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 547)
+                    {
+                        return "Condição de pagamento está vinculada a outros registros!";
+                    }
+                    return "Erro ao deletar condição de pagamento!";
                 }
                 finally
                 {

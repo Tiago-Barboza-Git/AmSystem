@@ -41,7 +41,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PostFornecedor(FornecedorPostRequest pCliente)
         {
             string result = fornecedoresService.PostFornecedor(pCliente);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -52,7 +52,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PutFornecedor(FornecedorPutRequest pCliente)
         {
             string result = fornecedoresService.PutFornecedor(pCliente);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -63,7 +63,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult DeleteFornecedor(int pId)
         {
             string result = fornecedoresService.DeleteFornecedor(pId);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);

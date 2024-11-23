@@ -71,6 +71,7 @@ export function CategoriasPage({ setCategoria }: CategoriasPageProps) {
                 setOpen(value);
                 if (!value) setSelectedCategoria(null);
               }}
+              setCategoria={setCategoria}
             />
             <DeleteDialog
               registerId={selectedCategoria?.id as number}
@@ -86,7 +87,10 @@ export function CategoriasPage({ setCategoria }: CategoriasPageProps) {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getCategoriasColumns({ onEdit, onDelete, onView }), [])}
+          columns={useMemo(
+            () => getCategoriasColumns({ onEdit, onDelete: setCategoria ? undefined : onDelete, onView }),
+            [],
+          )}
           data={categoriasQuery.data || []}
           onAdd={onAdd}
           onGet={onGet}

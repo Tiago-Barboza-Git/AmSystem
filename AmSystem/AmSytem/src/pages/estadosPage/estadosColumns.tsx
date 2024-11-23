@@ -6,7 +6,7 @@ import { IEstado } from "@/interfaces/estado.interfaces";
 
 interface estadosColumnsProps {
   onEdit: (estado: IEstado) => void;
-  onDelete: (estado: IEstado) => void;
+  onDelete?: (estado: IEstado) => void;
   onView: (estado: IEstado) => void;
 }
 

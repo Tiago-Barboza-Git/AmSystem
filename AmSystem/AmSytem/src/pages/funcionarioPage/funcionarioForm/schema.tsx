@@ -12,11 +12,13 @@ export const FuncionarioFormSchema = z
       .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/, "É permitido apenas letras, acentos e espaços"),
     apelido: z.string().optional(),
     sexo: z.string({ message: "Obrigatório" }).min(1, "Obrigatório"),
-    email: z.string({ message: "Obrigatório" }).min(1, "Obrigatório"),
+    email: z.string({ message: "Obrigatório" }).min(1, "Obrigatório").email({ message: "Inválido" }),
     telefone: z.string().optional(),
     celular: z.string({ message: "Obrigatório" }).min(1, "Obrigatório"),
     // cpf: z.string().default(""),
-    cpf: z.preprocess((val) => String(val ? val : ""), z.string()),
+    cpf: z
+      .preprocess((val) => String(val ? val : ""), z.string({ message: "Obrigatório" }).min(1, "Obrigatório"))
+      .refine((val) => validarCPF(val), { message: "CPF inválido" }),
     rg: z.string().optional(),
     dtNascimento: z.custom<Date>().optional(),
     salario: z
@@ -40,26 +42,22 @@ export const FuncionarioFormSchema = z
     dtAlteracao: z.custom<Date>(),
   })
   .superRefine((data, ctx) => {
-    console.log("Olha a data");
-    console.log(data);
-    if (data.cidade.cidade !== undefined) {
-      if (data.cidade.estado.pais.sigla.toUpperCase() === "BR") {
-        if (data.cpf.length === 0) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Obrigatório",
-            path: ["cpf"],
-          });
-        }
-        if (!validarCPF(String(data.cpf))) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "CPF inválido",
-            path: ["cpf"],
-          });
-        }
-      }
-    }
+    // if (data.cidade.cidade !== undefined) {
+    //   if (data.cpf.length === 0) {
+    //     ctx.addIssue({
+    //       code: z.ZodIssueCode.custom,
+    //       message: "Obrigatório",
+    //       path: ["cpf"],
+    //     });
+    //   }
+    //   if (!validarCPF(String(data.cpf))) {
+    //     ctx.addIssue({
+    //       code: z.ZodIssueCode.custom,
+    //       message: "CPF inválido",
+    //       path: ["cpf"],
+    //     });
+    //   }
+    // }
   });
 
 export type FuncionarioFormData = z.infer<typeof FuncionarioFormSchema>;

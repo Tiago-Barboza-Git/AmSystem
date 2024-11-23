@@ -6,10 +6,10 @@ export const EstadoFormSchema = z.object({
   id: z.number(),
   estado: z
     .string({ message: "Obrigatório" })
+    .min(1, "Obrigatório")
     .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/, "É permitido apenas letras, acentos e espaços"),
   uf: z
     .string({ message: "Obrigatório" })
-    .max(5, "Só é permitido 5 caracteres")
     .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/, "É permitido apenas letras, acentos e espaços"),
   idPais: z.number({ message: "Obrigatório" }).refine((value) => value !== 0, {
     message: "Selecione um País",
@@ -25,6 +25,8 @@ export type EstadoFormData = z.infer<typeof EstadoFormSchema>;
 export const defaultValues = {
   id: 0,
   ativo: true,
+  idPais: 0,
+  pais: undefined,
   dtCadastro: new Date(),
   dtAlteracao: new Date(),
 };

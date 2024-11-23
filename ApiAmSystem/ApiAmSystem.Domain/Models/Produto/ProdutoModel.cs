@@ -20,6 +20,7 @@ namespace ApiAmSystem.Domain.Models.Produto
         public decimal? PrecoUltCompra { get; set; }
         public DateTime? DtUltCompra { get; set; }
         public decimal? CustoMedio { get; set; }
+        public decimal? CustoUnitUltCompra { get; set; }
         public decimal Desconto { get; set; }
         public string? Observacao { get; set; }
         public bool Ativo { get; set; }

@@ -1,6 +1,9 @@
 import { ICondicaoPagamentoRef } from "../condicaoPagamento.interfaces";
 
-export interface INotaModel extends INotaDetails {
+export interface INotaModel {
+  nrNota: number;
+  nrModelo: number;
+  nrSerie: number;
   dtEmissao: Date;
   totalProdutos: number;
   totalNota: number;
@@ -11,15 +14,12 @@ export interface INotaModel extends INotaDetails {
   dtAlteracao: Date;
 }
 
-export interface IPostNota extends INotaDetails {
+export interface IPostNota {
+  nrNota: number;
+  nrModelo: number;
+  nrSerie: number;
   dtEmissao: Date;
   totalProdutos: number;
   totalNota: number;
   idCondicaoPagamento: number;
-}
-
-export interface INotaDetails {
-  nrNota: number;
-  nrModelo: number;
-  nrSerie: number;
 }

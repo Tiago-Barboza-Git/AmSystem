@@ -11,6 +11,7 @@ namespace ApiAmSystem.Domain.Models.Nota.ProdutoNota
     {
         public int IdProduto { get; set; }
         public int Quantidade { get; set; }
+        public decimal Desconto { get; set; }
         public decimal PrecoUnit { get; set; }
         public decimal PrecoTotal { get; set; }
     }

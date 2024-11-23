@@ -6,7 +6,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Switch } from "@/components/ui/switch";
 import { ICondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Search, Trash2 } from "lucide-react";
+import { InspectionPanelIcon, Search, Trash2 } from "lucide-react";
 import { FormProvider, UseFormGetValues, UseFormSetValue, UseFormWatch, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { IFormaPagamento } from "@/interfaces/formaPagamento.interfaces";
@@ -82,21 +82,59 @@ const ProdutoVendaForm = ({
     }
   }, [produto]);
 
+  useEffect(() => {
+    if (isOpen) {
+      const precoUnit = isNaN(formatMoney(form.watch("precoUnit"))) ? 0 : formatMoney(form.watch("precoUnit"));
+      const quantidade = isNaN(formatMoney(form.watch("quantidade"))) ? 0 : formatMoney(form.watch("quantidade"));
+
+      form.setValue("desconto", 0);
+      form.setValue("precoTotal", precoUnit * quantidade - form.watch("desconto"));
+    }
+  }, [form.watch("precoUnit"), form.watch("quantidade")]);
+
   const onSubmit = (data: IProdutoVenda) => {
-    console.log(data);
-    // data.precoUnit = formatMoney(data?.precoUnit);
-    if (action === "Add") {
-      data.precoTotal = data.precoUnit * data?.quantidade;
-      handleAddProdutoVenda(data);
-      toast.success("Produto adicionado com sucesso a compra.");
-    } else {
-      data.precoTotal = data.precoUnit * data?.quantidade;
-      handleEditProdutoVenda(data);
-      toast.success("Produto alterado com sucesso na compra.");
+    if (openProdutos === false) {
+      const precoUnit = isNaN(formatMoney(form.watch("precoUnit"))) ? 0 : formatMoney(form.watch("precoUnit"));
+      const desconto = isNaN(formatMoney(form.watch("desconto"))) ? 0 : formatMoney(form.watch("desconto"));
+
+      if (precoUnit - desconto <= form.watch("produto.custoMedio")) {
+        toast.error("O preço unitário não pode ser inferior ao custo médio!");
+        return;
+      }
+
+      if (produto && data.quantidade > produto.quantidade) {
+        toast.error("A quantidade vendida é superior ao estoque!");
+      } else {
+        if (action === "Add") {
+          // data.precoTotal = data.precoUnit * data?.quantidade - data.desconto;
+          data.desconto = formatMoney(data.desconto);
+          handleAddProdutoVenda(data);
+        } else {
+          // data.precoTotal = data.precoUnit * data?.quantidade - data.desconto;
+          handleEditProdutoVenda(data);
+        }
+      }
     }
   };
 
-  useEffect(() => {}, [form.watch()]);
+  useEffect(() => {
+    if (isOpen) {
+      if (form.watch("desconto") === undefined || isNaN(Number(formatMoney(form.watch("desconto")))))
+        form.setValue("desconto", 0);
+
+      const precoUnit = isNaN(formatMoney(form.watch("precoUnit"))) ? 0 : formatMoney(form.watch("precoUnit"));
+      const desconto = isNaN(formatMoney(form.watch("desconto"))) ? 0 : formatMoney(form.watch("desconto"));
+      const quantidade = isNaN(formatMoney(form.watch("quantidade"))) ? 0 : formatMoney(form.watch("quantidade"));
+      const precoTotal = formatMoney(precoUnit * quantidade);
+      if (desconto >= precoUnit || precoUnit - desconto <= form.watch("produto.custoMedio")) {
+        form.setValue("desconto", 0);
+        form.setValue("precoTotal", precoTotal);
+        toast.error("O preço unitário não pode ser inferior ao custo médio!");
+      } else {
+        form.setValue("precoTotal", ((precoUnit - desconto) * quantidade).toFixed(2) as unknown as number);
+      }
+    }
+  }, [form.watch("desconto")]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -113,7 +151,7 @@ const ProdutoVendaForm = ({
         </DialogHeader>
         <FormProvider {...form}>
           <form className="space-y-4 flex flex-col" onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="">
+            <div className="flex flex-col gap-4">
               <SearchItem
                 control={form.control}
                 getValue={form.getValues}
@@ -123,23 +161,61 @@ const ProdutoVendaForm = ({
                 setObj={setProduto}
                 openSearch={openProdutos}
                 setOpenSearch={setOpenProdutos}
-                labelCod="Cód. Produto"
+                labelCod="Cód. Produto*"
                 nameCod="idProduto"
                 labelNome="Produto*"
                 nameNome="produto.produto"
                 errorMessage={form.formState.errors.idProduto?.message}
                 disabled={disabled}
-                page={<ProdutosPage setProduto={setProduto} />}
+                page={<ProdutosPage setProduto={setProduto} estoque={true} />}
                 hiddenButton={action === "View" ? true : false}
                 className="flex flex-row gap-4 flex-grow"
+              />
+
+              {/* <FormFieldInput
+                trigger={form.trigger}
+                control={form.control}
+                label="Un. Medida"
+                name="produto.unidadeMedida.unidadeMedida"
+                disabled={true}
+                className="w-[20rem]"
+              /> */}
+            </div>
+            <div className="flex flex-row gap-4">
+              <FormFieldInput
+                trigger={form.trigger}
+                control={form.control}
+                label="Qtde. em Estoque"
+                name="produto.quantidade"
+                disabled={true}
+                className="w-[10rem]"
+              />
+
+              <FormFieldInput
+                trigger={form.trigger}
+                control={form.control}
+                label="Preço Venda"
+                name="produto.precoVenda"
+                disabled={true}
+                className="w-[10rem]"
+              />
+
+              <InputMoney
+                watch={form.watch}
+                control={form.control}
+                nameValor="produto.custoMedio"
+                labelName="Custo Médio"
+                disabled={true}
+                className="w-[10rem]"
               />
             </div>
             <div className="flex flex-row gap-4">
               <FormFieldInput
-                label="Quantidade"
+                trigger={form.trigger}
+                label="Quantidade*"
                 name="quantidade"
                 control={form.control}
-                disabled={false}
+                disabled={form.watch("idProduto") === 0 ? true : false}
                 isNumber={true}
                 errorMessage={form.formState.errors.quantidade?.message}
                 className="col-span-3"
@@ -148,10 +224,26 @@ const ProdutoVendaForm = ({
               <InputMoney
                 control={form.control}
                 watch={form.watch}
-                labelName="Preço Unitário"
+                labelName="Preço Unitário*"
                 nameValor="precoUnit"
-                disabled={false}
+                disabled={form.watch("idProduto") === 0 || form.watch("quantidade") === 0 ? true : false}
                 errorMessage={form.formState.errors.precoUnit?.message}
+              />
+
+              <InputMoney
+                control={form.control}
+                watch={form.watch}
+                labelName="Desconto Unit."
+                nameValor="desconto"
+                disabled={form.watch("precoUnit") === 0 ? true : false}
+              />
+
+              <InputMoney
+                control={form.control}
+                watch={form.watch}
+                labelName="Preço Total"
+                nameValor="precoTotal"
+                disabled={true}
               />
             </div>
             <div>

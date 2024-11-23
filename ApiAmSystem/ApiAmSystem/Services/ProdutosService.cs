@@ -110,6 +110,7 @@ namespace ApiAmSystem.Services
                             p.PrecoUltCompra,
                             p.DtUltCompra,
                             p.CustoMedio,
+                            p.CustoUnitUltCompra,
                             p.Desconto,
                             p.Observacao,
                             p.Ativo,
@@ -150,6 +151,7 @@ namespace ApiAmSystem.Services
                                     PrecoUltCompra = reader.IsDBNull("PrecoUltCompra") ? null : Math.Round(reader.GetDecimal("PrecoUltCompra"),2),
                                     DtUltCompra = reader.IsDBNull("DtUltCompra") ? null : reader.GetDateTime("DtUltCompra"),
                                     CustoMedio = reader.IsDBNull("CustoMedio") ? null : reader.GetDecimal("CustoMedio"),
+                                    CustoUnitUltCompra = reader.IsDBNull("CustoUnitUltCompra") ? 0 : reader.GetDecimal("CustoUnitUltCompra"),
                                     Observacao = reader.IsDBNull("Observacao") ? null : reader.GetString("Observacao"),
                                     Desconto = reader.GetDecimal("Desconto"),
                                     IdUnidadeMedida = reader.GetInt32("IdUnidadeMedida"),
@@ -221,11 +223,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@DtCadastro", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Produto adicionado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "Produto já cadastrado!";
+                    }
+                    return "Erro ao cadastrar produto!";
                 }
                 finally
                 {
@@ -267,11 +273,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Add("@Ativo", SqlDbType.Bit).Value = pProduto.Ativo;
                     cmd.Parameters.Add("@DtAlteracao", SqlDbType.Date).Value = DateTime.Now.ToString("yyyy-MM-dd");
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Produto alterado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        return "Produto já cadastrado!";
+                    }
+                    return "Erro ao alterar produto!";
                 }
                 finally
                 {
@@ -292,11 +302,15 @@ namespace ApiAmSystem.Services
                     cmd.Parameters.Clear();
                     cmd.Parameters.Add("@Id", SqlDbType.Int).Value = pId;
                     cmd.ExecuteNonQuery();
-                    return "Sucesso";
+                    return "Produto deletado com sucesso!";
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    if (ex.Number == 547)
+                    {
+                        return "Produto está vinculado a outros registros!";
+                    }
+                    return "Erro ao deletar produto!";
                 }
                 finally
                 {

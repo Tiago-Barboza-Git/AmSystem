@@ -13,5 +13,8 @@ namespace ApiAmSystem.Domain.Interfaces
         IEnumerable<ContaPagarModel> GetContasPagar(bool pAtivo);
         IEnumerable<ContaPagarModel> GetContasPagarByCompra(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor);
         string PutContaPagar(ContaPagarPutRequest pContaPagar);
+        string PostContaPagarAvulsa(ContaPagarAvulsaPostRequest pContaPagar);
+        string PutCancelarContaPagarAvulsa(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor);
+
     }
 }

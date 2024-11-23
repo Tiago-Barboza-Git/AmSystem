@@ -39,6 +39,9 @@ builder.Services.AddTransient<IUnidadeMedidaService, UnidadeMedidaService>();
 builder.Services.AddTransient<IProdutoCompraService, ProdutoCompraService>();
 builder.Services.AddTransient<ICompraService, CompraService>();
 builder.Services.AddTransient<IContaPagarService, ContaPagarService>();
+builder.Services.AddTransient<IProdutoVendaService, ProdutoVendaService>();
+builder.Services.AddTransient<IVendaService, VendaService>();
+builder.Services.AddTransient<IContaReceberService, ContaReceberService>();
 builder.Services.AddTransient<IMappings, Mappings>();
 
 var app = builder.Build();

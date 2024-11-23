@@ -95,7 +95,6 @@ export const getComprasColumns = ({ onView, onCancel }: comprasColumnsProps): Co
   {
     id: "actions",
     cell: ({ row }) => {
-      console.log(row.original.dtCancelamento);
       return (
         <DataTableRowActions
           row={row}

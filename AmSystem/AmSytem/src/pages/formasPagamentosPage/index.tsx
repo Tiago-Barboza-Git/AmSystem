@@ -71,6 +71,7 @@ export function FormasPagamentosPage({ setFormaPagamento }: FormaPagamentoProps)
                 setOpen(value);
                 if (!value) setSelectedFormaPagamento(null);
               }}
+              setFormaPagamento={setFormaPagamento}
             />
             <DeleteDialog
               registerId={selectedFormaPagamento?.id as number}
@@ -86,7 +87,10 @@ export function FormasPagamentosPage({ setFormaPagamento }: FormaPagamentoProps)
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getFormasPagamentosColumns({ onEdit, onDelete, onView }), [])}
+          columns={useMemo(
+            () => getFormasPagamentosColumns({ onEdit, onDelete: setFormaPagamento ? undefined : onDelete, onView }),
+            [],
+          )}
           data={formasPagamentos}
           onAdd={onAdd}
           onGet={onGet}

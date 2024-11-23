@@ -71,6 +71,7 @@ export function EstadosPage({ setEstado }: EstadosPageProps) {
                 setOpen(value);
                 if (!value) setSelectedEstado(null);
               }}
+              setEstado={setEstado}
             />
             <DeleteDialog
               registerId={selectedEstado?.id as number}
@@ -86,7 +87,7 @@ export function EstadosPage({ setEstado }: EstadosPageProps) {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getEstadosColumns({ onEdit, onDelete, onView }), [])}
+          columns={useMemo(() => getEstadosColumns({ onEdit, onDelete: setEstado ? undefined : onDelete, onView }), [])}
           data={estados}
           onAdd={onAdd}
           onGet={onGet}

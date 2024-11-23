@@ -1,5 +1,5 @@
 import DataTable from "@/components/datatable";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
 import DeleteDialog from "@/components/dialog/deleteDialog";
@@ -9,7 +9,7 @@ import { GetUnidadesMedidas, DeleteUnidadeMedida } from "./services/queries.tsx"
 import UnidadeMedidaForm from "./form/index.tsx";
 
 interface UnidadesMedidasPageProps {
-  setUnidadeMedida?: (unidadeMedida: IUnidadeMedida) => void;
+  setUnidadeMedida?: (unidadeMedida: IUnidadeMedida | undefined) => void;
 }
 
 export function UnidadesMedidasPage({ setUnidadeMedida }: UnidadesMedidasPageProps) {
@@ -18,6 +18,7 @@ export function UnidadesMedidasPage({ setUnidadeMedida }: UnidadesMedidasPagePro
   const [ativos, setAtivos] = useState<boolean>(true);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedUnidadeMedida, setSelectedUnidadeMedida] = useState<IUnidadeMedida | null>(null);
+  const [unidadesMedidas, setUnidadesMedidas] = useState<IUnidadeMedida[]>();
 
   const queryClient = useQueryClient();
   const deleteUnidadeMedida = DeleteUnidadeMedida();
@@ -54,8 +55,14 @@ export function UnidadesMedidasPage({ setUnidadeMedida }: UnidadesMedidasPagePro
     setOpen(true);
   }, []);
 
+  // const unidadesMedidasQuery = GetUnidadesMedidas(ativos);
+  // const unidadesMedidasData = unidadesMedidasQuery.data || [];
+
   const unidadesMedidasQuery = GetUnidadesMedidas(ativos);
-  const unidadesMedidasData = unidadesMedidasQuery.data || [];
+
+  useEffect(() => {
+    setUnidadesMedidas(unidadesMedidasQuery.data || []);
+  }, [unidadesMedidasQuery.data]);
 
   return (
     <Card className={`h-full`}>
@@ -71,6 +78,7 @@ export function UnidadesMedidasPage({ setUnidadeMedida }: UnidadesMedidasPagePro
                 setOpen(value);
                 if (!value) setSelectedUnidadeMedida(null);
               }}
+              setUnidadeMedida={setUnidadeMedida}
             />
             <DeleteDialog
               registerId={selectedUnidadeMedida?.id as number}
@@ -86,8 +94,11 @@ export function UnidadesMedidasPage({ setUnidadeMedida }: UnidadesMedidasPagePro
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getUnidadesMedidasColumns({ onEdit, onDelete, onView }), [])}
-          data={unidadesMedidasData}
+          columns={useMemo(
+            () => getUnidadesMedidasColumns({ onEdit, onDelete: setUnidadeMedida ? undefined : onDelete, onView }),
+            [],
+          )}
+          data={unidadesMedidas}
           onAdd={onAdd}
           onGet={onGet}
           ativos={ativos}

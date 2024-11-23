@@ -56,7 +56,6 @@ function ProdutosCompraPart({ getValue, setValue, watch, disabled, actionPai, ac
     if (watch("produtos").find((x) => x.idProduto == produtoCompra.idProduto) == undefined) {
       const updateProdutosCompra = [...(getValue("produtos") || []), produtoCompra];
       setValue("produtos", updateProdutosCompra);
-      console.log(watch("produtos"));
       setValue(
         "totalProdutos",
         watch("produtos").reduce((value, sum) => value + Number(Number(sum.precoTotal).toFixed(2)), 0 as number),

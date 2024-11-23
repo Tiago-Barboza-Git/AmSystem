@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.t
 import DataTable from "@/components/datatable";
 import { useCallback, useMemo, useState } from "react";
 import { useQueryClient } from "react-query";
-import DeleteDialog from "@/components/dialog/deleteDialog3";
 import { ICompra, initialCompra } from "@/interfaces/compra.interfaces";
 import { GetCompras, DeleteCompra, CancelCompra } from "./services/queries";
 import CompraForm from "./form/form";

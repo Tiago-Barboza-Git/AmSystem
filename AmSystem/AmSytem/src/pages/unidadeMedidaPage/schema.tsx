@@ -6,7 +6,7 @@ export const UnidadeMedidaFormSchema = z.object({
     .string({ message: "Obrigatório" })
     .min(1, "Obrigatório")
     .regex(/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]+$/, "É permitido apenas letras, acentos e espaços"),
-  simbolo: z.string().optional(),
+  simbolo: z.string({ message: "Obrigatório" }).min(1, "Obrigatório"),
   ativo: z.boolean(),
   dtCadastro: z.custom<Date>(),
   dtAlteracao: z.custom<Date>(),

@@ -31,7 +31,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PostUnidadeMedida(UnidadeMedidaPostRequest pUnidadeMedida)
         {
             string result = unidadeMedidaService.PostUnidadeMedida(pUnidadeMedida);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -42,7 +42,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PutUnidadeMedida(UnidadeMedidaPutRequest pUnidadeMedida)
         {
             string result = unidadeMedidaService.PutUnidadeMedida(pUnidadeMedida);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -53,7 +53,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult DeleteUnidadeMedida(int pId)
         {
             string result = unidadeMedidaService.DeleteUnidadeMedida(pId);
-            if (result == "Sucesso")
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);

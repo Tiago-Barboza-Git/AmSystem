@@ -2,26 +2,37 @@ import DataTable from "@/components/datatable";
 import { IProdutoCompra } from "@/interfaces/produtoCompra.interfaces";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getProdutosVendaColumns } from "./columns";
-import DeleteDialog2 from "@/components/dialog/deleteDialog";
+import DeleteDialog2 from "@/components/dialog/deleteDialog2";
 import { Separator } from "@/components/ui/separator";
-import { UseFormGetValues, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { Control, UseFormGetValues, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { VendaFormData } from "../../schema";
 import { formatCurrency } from "@/functions/masks";
 import { formatMoney } from "@/functions/functions";
 import { initialCondicaoPagamento } from "@/interfaces/condicaoPagamento.interfaces";
 import { IProdutoVenda } from "@/interfaces/Venda/produtoVenda.interfaces";
 import ProdutoVendaForm from "@/pages/vendasPage/produtosVenda/form";
+import { toast } from "sonner";
+import InputMoney from "@/components/form/inputMoney";
 
 interface produtosVendaPartProps {
   getValue: UseFormGetValues<VendaFormData>;
   setValue: UseFormSetValue<VendaFormData>;
   watch: UseFormWatch<VendaFormData>;
+  control: Control<VendaFormData>;
   disabled: boolean;
   actionPai: string;
   activedStep: number;
 }
 
-function ProdutosVendaPart({ getValue, setValue, watch, disabled, actionPai, activedStep }: produtosVendaPartProps) {
+function ProdutosVendaPart({
+  getValue,
+  setValue,
+  watch,
+  disabled,
+  actionPai,
+  activedStep,
+  control,
+}: produtosVendaPartProps) {
   // Form
   const [action, setAction] = useState<string>("");
   const [index, setIndex] = useState<number>(-1);
@@ -53,18 +64,22 @@ function ProdutosVendaPart({ getValue, setValue, watch, disabled, actionPai, act
   }, []);
 
   const handleAddProdutoVenda = (produtoVenda: IProdutoVenda) => {
-    const updateProdutosCompra = [...(getValue("produtos") || []), produtoVenda];
-    setValue("produtos", updateProdutosCompra);
-    console.log(watch("produtos"));
-    setValue(
-      "totalProdutos",
-      watch("produtos").reduce((value, sum) => value + Number(Number(sum.precoTotal).toFixed(2)), 0 as number),
-    );
-    setValue("totalNota", watch("totalProdutos"));
-    setValue("idCondicaoPagamento", 0);
-    setValue("condicaoPagamento", initialCondicaoPagamento);
-    setValue("contasReceber", []);
-    setOpenProdutosVendaForm(false);
+    if (watch("produtos").find((x) => x.idProduto === produtoVenda.idProduto) === undefined) {
+      const updateProdutosCompra = [...(getValue("produtos") || []), produtoVenda];
+      setValue("produtos", updateProdutosCompra);
+      setValue(
+        "totalProdutos",
+        watch("produtos").reduce((value, sum) => value + Number(Number(sum.precoTotal).toFixed(2)), 0 as number),
+      );
+      setValue("totalNota", watch("totalProdutos"));
+      setValue("idCondicaoPagamento", 0);
+      setValue("condicaoPagamento", initialCondicaoPagamento);
+      setValue("contasReceber", []);
+      setOpenProdutosVendaForm(false);
+      toast.success("Produto adicionado com sucesso a venda!");
+    } else {
+      toast.error("Esse produto já se encontra na venda!");
+    }
   };
 
   const handleEditProdutoVenda = (produtoVenda: IProdutoVenda) => {
@@ -98,7 +113,6 @@ function ProdutosVendaPart({ getValue, setValue, watch, disabled, actionPai, act
       setValue("contasReceber", []);
     }
   };
-
   return (
     <div>
       <div>
@@ -121,14 +135,23 @@ function ProdutosVendaPart({ getValue, setValue, watch, disabled, actionPai, act
       </div>
       <div>
         <DataTable
-          columns={useMemo(() => getProdutosVendaColumns({ onEdit, onDelete, actionPai, activedStep }), [activedStep])}
+          columns={useMemo(() => getProdutosVendaColumns({ onDelete, actionPai, activedStep }), [activedStep])}
           data={watch("produtos")}
           onAdd={onAdd}
           ativos={undefined}
           hidden={disabled}
         />
-        <Separator className="w-[300px] !mt-5 !mb-5 !mr-auto !ml-auto" />
-        <span>Total Produtos: R$ {watch("totalProdutos")}</span>
+      </div>
+      <Separator className="w-[300px] !mt-5 !mb-5 !mr-auto !ml-auto" />
+      <div className="flex flex-row gap-4">
+        <InputMoney
+          className="col-span-2"
+          control={control}
+          watch={watch}
+          labelName="Total Produtos"
+          nameValor="totalProdutos"
+          disabled={true}
+        />
       </div>
     </div>
   );

@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { CancelVendaRequest, GetVendasRequest, PostVendaRequest } from "./api";
+import { CancelVendaRequest, GetVendasRequest, PostVendaRequest, VerificaVendaRequest } from "./api";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { number } from "zod";
 import { CancelCompraRequest } from "@/pages/comprasPage/services/api";
-import { IPostVenda, IVendaDetails } from "@/interfaces/Venda/venda.interface";
+import { IPostVenda, IPutVenda, IVenda } from "@/interfaces/Venda/venda.interface";
+import { useState } from "react";
 
 export function GetVendas(pCanceladas: boolean) {
   return useQuery({
@@ -16,11 +17,11 @@ export function GetVendas(pCanceladas: boolean) {
 export function CancelVenda(onOpenChange: (open: boolean) => void) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: IVendaDetails) => CancelVendaRequest(data),
+    mutationFn: (data: IPutVenda) => CancelVendaRequest(data),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["GetVendas"] });
       onOpenChange(false);
-      toast.success(`${response}`);
+      toast.success(`Venda cancelada com sucesso!`);
     },
     onError: (error: errorAPI) => {
       toast.error(`${error.response.data.message}`);
@@ -43,3 +44,26 @@ export function PostVenda(onOpenChange: (open: boolean) => void) {
     },
   });
 }
+
+export function VerificaVenda() {
+  return useMutation(
+    ({
+      nrNota,
+      nrModelo,
+      nrSerie,
+      idCliente,
+    }: {
+      nrNota: number;
+      nrModelo: number;
+      nrSerie: number;
+      idCliente: number;
+    }) => VerificaVendaRequest(nrNota, nrModelo, nrSerie, idCliente),
+  );
+}
+
+// export function GetVendas(pCanceladas: boolean) {
+//   return useQuery({
+//     queryKey: ["GetVendas", pCanceladas],
+//     queryFn: ({ queryKey }) => GetVendasRequest(Boolean(queryKey[1])),
+//   });
+// }

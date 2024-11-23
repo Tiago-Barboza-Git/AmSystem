@@ -10,9 +10,10 @@ import ProdutoForm from "./produtoForm";
 
 interface produtosPageProps {
   setProduto?: (produto: IProduto) => void;
+  estoque?: boolean;
 }
 
-export function ProdutosPage({ setProduto }: produtosPageProps) {
+export function ProdutosPage({ setProduto, estoque }: produtosPageProps) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
@@ -54,7 +55,7 @@ export function ProdutosPage({ setProduto }: produtosPageProps) {
   }, []);
 
   const produtosQuery = GetProdutos(ativos);
-  const produtos = produtosQuery.data || []; // Ensure paises is an array
+  const produtos = estoque ? produtosQuery.data?.filter((value) => value.quantidade > 0) : produtosQuery.data || []; // Ensure paises is an array
 
   return (
     <Card className="h-full">
@@ -71,6 +72,7 @@ export function ProdutosPage({ setProduto }: produtosPageProps) {
                 setOpen(value);
                 if (!value) setSelectedProduto(null);
               }}
+              setProduto={setProduto}
             />
             <DeleteDialog
               registerId={selectedProduto?.id as number}
@@ -86,7 +88,10 @@ export function ProdutosPage({ setProduto }: produtosPageProps) {
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getProdutosColumns({ onEdit, onDelete, onView }), [])}
+          columns={useMemo(
+            () => getProdutosColumns({ onEdit, onDelete: setProduto ? undefined : onDelete, onView }),
+            [],
+          )}
           data={produtos}
           onAdd={onAdd}
           onGet={onGet}

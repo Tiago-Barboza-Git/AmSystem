@@ -32,7 +32,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PostCategoria(CategoriaPostRequest pCategoria)
         {
             string result = categoriaService.PostCategoria(pCategoria);
-            if (result.Contains("Sucesso"))
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -43,7 +43,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult PutCategoria(CategoriaPutRequest pCategoria)
         {
             string result = categoriaService.PutCategoria(pCategoria);
-            if (result.Contains("Sucesso"))
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);
@@ -54,7 +54,7 @@ namespace ApiAmSystem.Controllers
         public IActionResult DeleteCategoria(int pId)
         {
             string result = categoriaService.DeleteCategoria(pId);
-            if (result.Contains("Sucesso"))
+            if (result.Contains("sucesso"))
                 return Ok(result);
             else
                 return BadRequest(result);

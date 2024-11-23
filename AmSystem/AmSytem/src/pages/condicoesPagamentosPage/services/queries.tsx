@@ -58,8 +58,8 @@ export function DeleteCondicaoPagamento() {
       queryClient.invalidateQueries({ queryKey: ["GetCondicoesPagamentos"] });
       toast.success(`${response}`);
     },
-    onError: (error: AxiosError) => {
-      toast.error(`${error.response?.data}`);
+    onError: (error: errorAPI) => {
+      toast.error(`${error.response.data}`);
     },
   });
 }

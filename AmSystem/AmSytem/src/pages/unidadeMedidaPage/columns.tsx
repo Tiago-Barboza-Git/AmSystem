@@ -10,7 +10,7 @@ import { IUnidadeMedida } from "@/interfaces/unidadeMedida.interfaces";
 
 interface unidadesMedidasColumnsProps {
   onEdit: (unidadeMedida: IUnidadeMedida) => void;
-  onDelete: (unidadeMedida: IUnidadeMedida) => void;
+  onDelete?: (unidadeMedida: IUnidadeMedida) => void;
   onView: (unidadeMedida: IUnidadeMedida) => void;
 }
 
@@ -41,7 +41,7 @@ export const getUnidadesMedidasColumns = ({
   },
   {
     accessorKey: "simbolo",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Símbolo" />,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Conversão" />,
     cell: ({ row }) => (
       <div>
         <span>{row.original.simbolo}</span>

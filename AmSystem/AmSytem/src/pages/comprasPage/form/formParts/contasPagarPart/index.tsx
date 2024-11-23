@@ -58,17 +58,27 @@ function ContasPagarPart({
         setValue("idCondicaoPagamento", condicaoPagamento?.id as number);
         setValue("condicaoPagamento", condicaoPagamento as ICondicaoPagamento);
 
+        // Total de produtos + custos
+        const totalProdutosCusto = Number(formatMoney(watch("totalProdutos")) + formatMoney(watch("totalCusto")));
+
+        let somaParcelas = 0;
         const contasPagar: IPostContaPagar[] =
-          condicaoPagamento?.parcelas.map((parcela, index) => {
+          condicaoPagamento?.parcelas.map((parcela, index, arr) => {
+            let valorParcela = 0;
+
+            if (index === condicaoPagamento?.parcelas.length - 1) {
+              // Última parcela: subtrair a soma das parcelas anteriores para garantir o valor restante
+              valorParcela = totalProdutosCusto - somaParcelas;
+            } else {
+              // Parcelas intermediárias: calcular normalmente
+              valorParcela = Number(Number(totalProdutosCusto * ((parcela.porcentagem as number) / 100)).toFixed(2));
+              somaParcelas += valorParcela; // Acumula o valor para as próximas parcelas
+            }
+
             return {
               idFormaPagamento: parcela.idFormaPagamento,
               numParcela: index + 1,
-              valorParcela: formatMoney(
-                Number(
-                  (formatMoney(watch("totalProdutos")) + formatMoney(watch("totalCusto"))) *
-                    ((parcela.porcentagem as number) / 100),
-                ),
-              ),
+              valorParcela: Number(formatMoney(valorParcela).toFixed(2)),
               dtVencimento: addDays(watch("dtEmissao") as Date, parcela.dias),
               formaPagamento: parcela.formaPagamento,
             };
@@ -78,7 +88,7 @@ function ContasPagarPart({
       }
     }
   }, [condicaoPagamento]);
-  console.log(watch("contasPagar"));
+
   // Condição Pagamento End
 
   return (

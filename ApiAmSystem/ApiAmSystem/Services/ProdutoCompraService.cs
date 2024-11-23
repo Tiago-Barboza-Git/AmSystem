@@ -33,6 +33,7 @@ namespace ApiAmSystem.Services
                                         pc.PrecoTotal,
                                         pc.CustoProd,
                                         pc.CustoUnit,
+                                        pc.Desconto,
                                         pc.Rateio,
                                         p.IdUnidadeMedida,
                                         um.UnidadeMedida
@@ -64,6 +65,7 @@ namespace ApiAmSystem.Services
                                 CustoUnit = reader.GetDecimal("CustoUnit"),
                                 Quantidade = reader.GetInt32("Quantidade"),
                                 Rateio = reader.GetDecimal("Rateio"),
+                                Desconto = reader.GetDecimal("Desconto"),
                                 Produto = new ProdutoModel
                                 {
                                     Id = reader.GetInt32("IdProduto"),

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Command, CommandList, CommandGroup, CommandItem } from "../ui/command";
 import UserItem from "./userItem";
 import {
@@ -20,6 +20,7 @@ import { useState } from "react";
 import "./style.css";
 
 export function Sidebar() {
+  const location = useLocation();
   const menuList = [
     {
       group: "Cadastros",
@@ -100,6 +101,11 @@ export function Sidebar() {
           text: "Vendas",
           icon: <BadgeDollarSign />,
         },
+        {
+          link: "/contasReceber",
+          text: "Contas a Receber",
+          icon: <BadgeDollarSign />,
+        },
       ],
     },
   ];
@@ -113,8 +119,17 @@ export function Sidebar() {
             {menuList.map((menu: any) => (
               <CommandGroup key={menu.group} heading={menu.group}>
                 {menu.items.map((option: any) => (
-                  <Link key={option.link} to={option.link} className="hover:!bg-red-500">
-                    <CommandItem aria-selected={false} aria-multiselectable="false" aria-disabled="true">
+                  <Link
+                    key={option.link}
+                    to={option.link}
+                    // className={`${location.pathname === option.link ? "!text-green-500 !bg-green-500" : "text-black"} bg-transparent`}
+                  >
+                    <CommandItem
+                      aria-selected={location.pathname === option.link}
+                      aria-multiselectable="false"
+                      aria-disabled="true"
+                      className={`${location.pathname === option.link ? "!text-black !bg-green-300" : "!bg-transparent text-black"} `}
+                    >
                       {option.icon}
                       {option.text}
                     </CommandItem>

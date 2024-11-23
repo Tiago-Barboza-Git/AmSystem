@@ -73,6 +73,7 @@ export function CondicoesPagamentosPage({ setCondicaoPagamento }: CondicoesPagam
                 setOpen(value);
                 if (!value) setSelectedCondicaoPagamento(null);
               }}
+              setCondicaoPagamento={setCondicaoPagamento}
             />
             <DeleteDialog
               registerId={selectedCondicaoPagamento?.id as number}
@@ -88,7 +89,11 @@ export function CondicoesPagamentosPage({ setCondicaoPagamento }: CondicoesPagam
       </CardHeader>
       <CardContent>
         <DataTable
-          columns={useMemo(() => getCondicoesPagamentosColumns({ onEdit, onDelete, onView }), [])}
+          columns={useMemo(
+            () =>
+              getCondicoesPagamentosColumns({ onEdit, onDelete: setCondicaoPagamento ? undefined : onDelete, onView }),
+            [],
+          )}
           data={condicoesPagamentos}
           onAdd={onAdd}
           onGet={onGet}

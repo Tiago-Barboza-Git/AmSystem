@@ -35,8 +35,8 @@ namespace ApiAmSystem.Services
                         from TbContasPagar cp
                         inner join TbFornecedores f on f.Id = cp.IdFornecedor
                         inner join TbFormasPagamentos fp on fp.Id = cp.IdFormaPagamento
-                        inner join TbCompras c on c.NrNota = cp.NrNota and c.NrModelo = cp.NrModelo and c.NrSerie = cp.NrSerie and c.IdFornecedor = cp.IdFornecedor
-                        inner join TbCondicoesPagamentos cpag on cpag.Id = c.IdCondicaoPagamento
+                        left join TbCompras c on c.NrNota = cp.NrNota and c.NrModelo = cp.NrModelo and c.NrSerie = cp.NrSerie and c.IdFornecedor = cp.IdFornecedor
+                        left join TbCondicoesPagamentos cpag on cpag.Id = c.IdCondicaoPagamento
                         where cp.Cancelada = @Ativo;
                     ";
 
@@ -57,6 +57,7 @@ namespace ApiAmSystem.Services
                                 IdFormaPagamento = reader.GetInt32("IdFormaPagamento"),
                                 NumParcela = reader.GetInt32("NumParcela"),
                                 ValorParcela = reader.GetDecimal("ValorParcela"),
+                                Observacao = reader.GetString("Observacao"),
                                 DtEmissao = reader.GetDateTime("DtEmissao"),
                                 DtVencimento = reader.GetDateTime("DtVencimento"),
                                 Desconto = reader.GetDecimal("Desconto"),
@@ -65,6 +66,7 @@ namespace ApiAmSystem.Services
                                 ValorPago = reader.GetDecimal("ValorPago"),
                                 DtPagamento = reader.IsDBNull("DtPagamento") ? null : reader.GetDateTime("DtPagamento"),
                                 Cancelada = reader.GetBoolean("Cancelada"),
+                                Avulsa = reader.GetBoolean("Avulsa"),
                                 DtCadastro = reader.GetDateTime("DtCadastro"),
                                 DtAlteracao = reader.GetDateTime("DtAlteracao"),
                                 FormaPagamento = new FormaPagamentoModel
@@ -79,9 +81,9 @@ namespace ApiAmSystem.Services
                                 },
                                 CondicaoPagamento = new CondicaoPagamentoModel
                                 {
-                                    juros = reader.GetDecimal("JurosCondPag"),
-                                    multa = reader.GetDecimal("MultaCondPag"),
-                                    desconto = reader.GetDecimal("DescontoCondPag"),
+                                    juros = reader.IsDBNull("JurosCondPag") ? 0 : reader.GetDecimal("JurosCondPag"),
+                                    multa = reader.IsDBNull("MultaCondPag") ? 0 : reader.GetDecimal("MultaCondPag"),
+                                    desconto = reader.IsDBNull("DescontoCondPag") ? 0 : reader.GetDecimal("DescontoCondPag"),
                                 }
 
                             });
@@ -115,12 +117,14 @@ namespace ApiAmSystem.Services
 	                                cp.ValorParcela,
 	                                cp.DtEmissao,
 	                                cp.DtVencimento,
+                                    cp.DtCancelamento,
 	                                cp.Desconto,
 	                                cp.Juros,
 	                                cp.Multa,
 	                                cp.ValorPago,
 	                                cp.DtPagamento,
                                     cp.Cancelada,
+                                    cp.Avulsa,
 	                                cp.IdFormaPagamento,
 	                                cp.DtCadastro,
 	                                cp.DtAlteracao,
@@ -158,7 +162,9 @@ namespace ApiAmSystem.Services
                                 Multa = reader.GetDecimal("Multa"),
                                 ValorPago = reader.GetDecimal("ValorPago"),
                                 DtPagamento = reader.IsDBNull("DtPagamento") ? null : reader.GetDateTime("DtPagamento"),
+                                DtCancelamento = reader.IsDBNull("DtCancelamento") ? null : reader.GetDateTime("DtCancelamento"),
                                 Cancelada = reader.GetBoolean("Cancelada"),
+                                Avulsa = reader.GetBoolean("Avulsa"),
                                 IdFormaPagamento = reader.GetInt32("IdFormaPagamento"),
                                 DtCadastro = reader.GetDateTime("DtCadastro"),
                                 DtAlteracao = reader.GetDateTime("DtAlteracao"),
@@ -225,6 +231,85 @@ namespace ApiAmSystem.Services
                 finally
                 {
                     this.sqlConnection.Close();
+                }
+            }
+        }
+
+        public string PostContaPagarAvulsa(ContaPagarAvulsaPostRequest pContaPagar)
+        {
+            using (sqlConnection)
+            {
+                try
+                {
+                    this.sqlConnection.Open();
+                    SqlCommand cmd;
+
+                    string query = $@"
+                        ALTER TABLE TbContasPagar NOCHECK CONSTRAINT FK_ContaPagar_Compra;                
+        
+                        insert into TbContasPagar(NrNota, NrModelo, NrSerie, IdFornecedor, IdFormaPagamento, NumParcela, ValorParcela, DtEmissao, DtVencimento, DtPagamento, Juros, Multa, Desconto, ValorPago, Observacao, DtCadastro, DtAlteracao, Cancelada, Avulsa) 
+                        values(@NrNota, @NrModelo, @NrSerie, @IdFornecedor, @IdFormaPagamento, @NumParcela, @ValorParcela, @DtEmissao, @DtVencimento, @DtPagamento, @Juros, @Multa, @Desconto, @ValorPago, @Observacao, @DtCadastro, @DtAlteracao, @Cancelada, @Avulsa);
+
+                        ALTER TABLE TbContasPagar CHECK CONSTRAINT FK_ContaPagar_Compra;
+                        ";
+
+                    cmd = new SqlCommand(query, sqlConnection);
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.AddWithValue("@NrNota", pContaPagar.NrNota);
+                    cmd.Parameters.AddWithValue("@NrModelo", pContaPagar.NrModelo);
+                    cmd.Parameters.AddWithValue("@NrSerie", pContaPagar.NrSerie);
+                    cmd.Parameters.AddWithValue("@IdFormaPagamento", pContaPagar.IdFormaPagamento);
+                    cmd.Parameters.AddWithValue("@IdFornecedor", pContaPagar.IdFornecedor);
+                    cmd.Parameters.AddWithValue("@NumParcela", pContaPagar.NumParcela);
+                    cmd.Parameters.AddWithValue("@ValorParcela", pContaPagar.ValorParcela);
+                    cmd.Parameters.AddWithValue("@DtEmissao", pContaPagar.DtEmissao);
+                    cmd.Parameters.AddWithValue("@DtVencimento", pContaPagar.DtVencimento);
+                    cmd.Parameters.AddWithValue("@DtPagamento", pContaPagar.DtPagamento);
+                    cmd.Parameters.AddWithValue("@Juros", pContaPagar.Juros);
+                    cmd.Parameters.AddWithValue("@Multa", pContaPagar.Multa);
+                    cmd.Parameters.AddWithValue("@Desconto", pContaPagar.Desconto);
+                    cmd.Parameters.AddWithValue("@ValorPago", pContaPagar.ValorPago);
+                    cmd.Parameters.AddWithValue("@Observacao", pContaPagar.Observacao);
+                    cmd.Parameters.AddWithValue("@DtCadastro", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@DtAlteracao", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@Cancelada", false);
+                    cmd.Parameters.AddWithValue("@Avulsa", true);
+                    cmd.ExecuteNonQuery();
+
+                    return "Conta a pagar adicionada com sucesso!";
+                }
+                catch (SqlException ex)
+                {
+                    return "Erro ao adicionar conta a pagar";
+                }
+                finally
+                {
+                    this.sqlConnection.Close();
+                }
+            }
+        }
+
+        public string PutCancelarContaPagarAvulsa(int pNrNota, int pNrModelo, int pNrSerie, int pIdFornecedor)
+        {
+            using (sqlConnection)
+            {
+                try
+                {
+                    sqlConnection.Open();
+                    string query = $@"update TbContasPagar set DtCancelamento = '{DateTime.Now.ToString("yyyy-MM-dd")}', Cancelada = 1 where NrNota = {pNrNota} and NrModelo = {pNrModelo} and NrSerie = {pNrSerie} and IdFornecedor = {pIdFornecedor}";
+                    SqlCommand cmd = new SqlCommand(query, sqlConnection);
+                    cmd.Parameters.Clear();
+                    cmd.ExecuteNonQuery();
+                    return "Conta a pagar cancelada com sucesso!";
+
+                }
+                catch (SqlException ex)
+                {
+                    return "Erro ao cancelar conta a pagar!";
+                }
+                finally
+                {
+                    sqlConnection.Close();
                 }
             }
         }

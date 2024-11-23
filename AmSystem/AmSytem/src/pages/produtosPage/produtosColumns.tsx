@@ -9,7 +9,7 @@ import InputMoney from "@/components/form/inputMoney";
 
 interface produtosColumnsProps {
   onEdit: (produto: IProduto) => void;
-  onDelete: (produto: IProduto) => void;
+  onDelete?: (produto: IProduto) => void;
   onView: (produto: IProduto) => void;
 }
 
@@ -52,6 +52,8 @@ export const getProdutosColumns = ({ onEdit, onDelete, onView }: produtosColumns
             allowDecimals={true}
             allowNegativeValue={false}
             disabled={true}
+            groupSeparator="."
+            decimalSeparator=","
             value={row.original.precoVenda}
           />
         }
@@ -71,8 +73,10 @@ export const getProdutosColumns = ({ onEdit, onDelete, onView }: produtosColumns
             decimalScale={2}
             allowDecimals={true}
             allowNegativeValue={false}
+            groupSeparator="."
+            decimalSeparator=","
             disabled={true}
-            value={row.original.precoVenda}
+            value={row.original.precoUltCompra}
           />
         }
       </div>

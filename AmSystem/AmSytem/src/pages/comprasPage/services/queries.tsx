@@ -67,9 +67,9 @@ export function CancelCompra(onOpenChange: (open: boolean) => void) {
   return useMutation({
     mutationFn: (data: IPutCompraPai) => CancelCompraRequest(data),
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: ["GetCompras"] });
       onOpenChange(false);
-      toast.success(`${response}`);
+      toast.success("Compra cancelada com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["GetCompras"] });
     },
     onError: (error: AxiosError) => {
       toast.error(`${error.response?.data}`);

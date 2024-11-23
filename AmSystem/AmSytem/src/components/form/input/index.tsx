@@ -3,7 +3,7 @@ import { Control, FieldValues, Path, UseFormWatch, useController, useWatch } fro
 import { Input } from "@/components/ui/input"; // Ajuste o caminho conforme necessário
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"; // Ajuste o caminho conforme necessário
 import { error } from "console";
-import { Label } from "@/components/text/text";
+import { Label } from "@radix-ui/react-label";
 
 export interface FormFieldInputProps<T extends FieldValues> {
   name: Path<T>;
@@ -14,6 +14,8 @@ export interface FormFieldInputProps<T extends FieldValues> {
   isNumber?: boolean;
   disabled?: boolean;
   maskFunction?: (value: string) => string;
+  trigger?: (name: Path<T>) => Promise<boolean>; // Adiciona a prop trigger
+  maxLength?: number;
   [key: string]: any;
 }
 
@@ -27,11 +29,14 @@ const FormFieldInput = <T extends FieldValues>({
   disabled = false,
   maskFunction,
   parseFunction,
+  trigger,
+  maxLength,
   ...rest
 }: FormFieldInputProps<T>) => {
   const {
     field,
     fieldState: { error, invalid },
+    formState,
   } = useController({
     name,
     control,
@@ -49,8 +54,13 @@ const FormFieldInput = <T extends FieldValues>({
           disabled={disabled}
           value={maskFunction ? maskFunction(field.value) : field.value}
           className={`${hasError ? "border-red-500" : ""}`}
-          onChange={(event) => {
+          onChange={async (event) => {
             const { value } = event.target;
+
+            if (maxLength && value.length > maxLength) {
+              return; // Bloqueia a digitação se ultrapassar maxLength
+            }
+
             if (!value) {
               if (isNumber) {
                 field.onChange(Number(0));
@@ -67,6 +77,7 @@ const FormFieldInput = <T extends FieldValues>({
                 field.onChange(maskedValue);
               }
             }
+            trigger && (await trigger(name)); // Trigger validation in real-time as user types
           }}
           onBlur={field.onBlur}
           ref={field.ref}
